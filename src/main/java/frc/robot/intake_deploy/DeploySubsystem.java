@@ -2,7 +2,6 @@ package frc.robot.intake_deploy;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -61,10 +60,10 @@ public class DeploySubsystem extends StateMachine<DeployState> {
 
   @Override
   public void robotPeriodic() {
-      super.robotPeriodic();
+    super.robotPeriodic();
 
-      DogLog.log("Deploy/AtGoal", atGoal());
-      DogLog.log("Deploy/Angle", currentAngle);
+    DogLog.log("Deploy/AtGoal", atGoal());
+    DogLog.log("Deploy/Angle", currentAngle);
   }
 
   @Override
