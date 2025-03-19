@@ -29,7 +29,7 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
   private double leftMotorCurrent;
   private double rightMotorCurrent;
 
-  private final double RAISE_WRIST_EARLY_THRESHOLD = 25.0;
+  private final double RAISE_ARM_EARLY_THRESHOLD = 25.0;
 
   private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
 
@@ -200,9 +200,9 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
       case COLLISION_AVOIDANCE ->
           MathUtil.isNear(collisionAvoidanceGoal, averageMeasuredHeight, TOLERANCE);
       // This state is only used when it's safe to cancel the move partway
-      // Since the next state is same setpoint, different wrist angle
-      case CORAL_CENTERED_L4_RAISE_WRIST, CORAL_DISPLACED_L4_RAISE_WRIST ->
-          averageMeasuredHeight > getState().height - RAISE_WRIST_EARLY_THRESHOLD;
+      // Since the next state is same setpoint, different arm angle
+      case CORAL_CENTERED_L4_RAISE_ARM, CORAL_DISPLACED_L4_RAISE_ARM ->
+          averageMeasuredHeight > getState().height - RAISE_ARM_EARLY_THRESHOLD;
       case INTAKING_CORAL_STATION_BACK, INTAKING_CORAL_STATION_FRONT ->
           MathUtil.isNear(
               getState().height + getStationIntakeSide().offset, averageMeasuredHeight, TOLERANCE);

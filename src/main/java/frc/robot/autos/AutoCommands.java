@@ -20,8 +20,7 @@ public class AutoCommands {
   public AutoCommands(RobotCommands robotCommands, RobotManager robotManager) {
     this.robotCommands = robotCommands;
     this.robotManager = robotManager;
-    var requirementsList =
-        List.of(robotManager.elevator, robotManager.wrist, robotManager.roll, robotManager.intake);
+    var requirementsList = List.of(robotManager.elevator, robotManager.arm, robotManager.intake);
     requirements = requirementsList.toArray(Subsystem[]::new);
   }
 
@@ -153,8 +152,7 @@ public class AutoCommands {
     return robotManager.autoAlign.isTagAlignedDebounced()
         && robotManager.imu.isFlatDebounced()
         && robotManager.elevator.atGoal()
-        && robotManager.wrist.atGoal()
-        && robotManager.roll.atGoal();
+        && robotManager.arm.atGoal();
   }
 
   public Command waitForAlignedForScore() {

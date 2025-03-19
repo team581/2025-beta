@@ -11,8 +11,7 @@ public class RobotCommands {
 
   public RobotCommands(RobotManager robot) {
     this.robot = robot;
-    var requirementsList =
-        List.of(robot.elevator, robot.wrist, robot.roll, robot.intake, robot.climber);
+    var requirementsList = List.of(robot.elevator, robot.arm, robot.intake, robot.climber);
     requirements = requirementsList.toArray(Subsystem[]::new);
   }
 
@@ -32,9 +31,7 @@ public class RobotCommands {
 
   public Command stowCommand() {
     return Commands.runOnce(robot::stowRequest, requirements)
-        .andThen(
-            Commands.waitUntil(
-                () -> robot.elevator.atGoal() && robot.wrist.atGoal() && robot.roll.atGoal()))
+        .andThen(Commands.waitUntil(() -> robot.elevator.atGoal() && robot.arm.atGoal()))
         .withName("StowCommand");
   }
 
@@ -99,8 +96,8 @@ public class RobotCommands {
         .withName("RehomeElevatorCommand");
   }
 
-  public Command rehomeWristCommand() {
-    return Commands.runOnce(robot::rehomeWristRequest, requirements).withName("RehomeWristCommand");
+  public Command rehomeArmCommand() {
+    return Commands.runOnce(robot::rehomeArmRequest, requirements).withName("RehomeArmCommand");
   }
 
   public Command rehomeRollCommand() {

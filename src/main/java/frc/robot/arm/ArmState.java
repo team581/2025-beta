@@ -1,6 +1,6 @@
-package frc.robot.wrist;
+package frc.robot.arm;
 
-public enum WristState {
+public enum ArmState {
   UNTUNED(0),
 
   CORAL_STOWED(33.0),
@@ -59,11 +59,11 @@ public enum WristState {
 
   public final double angle;
 
-  WristState(double angle) {
+  ArmState(double angle) {
     this.angle = angle;
   }
 
-  WristState(WristState other) {
+  ArmState(ArmState other) {
     this(other.angle);
   }
 }

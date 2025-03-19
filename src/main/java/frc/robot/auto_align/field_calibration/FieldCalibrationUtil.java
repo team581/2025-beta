@@ -3,6 +3,8 @@ package frc.robot.auto_align.field_calibration;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.arm.ArmState;
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.auto_align.ReefPipe;
 import frc.robot.auto_align.ReefPipeLevel;
 import frc.robot.config.RobotConfig;
@@ -11,8 +13,7 @@ import frc.robot.elevator.ElevatorSubsystem;
 import frc.robot.lights.LightsState;
 import frc.robot.lights.LightsSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
-import frc.robot.wrist.WristState;
-import frc.robot.wrist.WristSubsystem;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -26,12 +27,12 @@ import java.util.List;
  * <ul>
  *   <li>Lights: green & yellow lights show whether scoring align & superstructure is good
  *   <li>Elevator: in coast mode while disabled
- *   <li>Wrist: assumes it is at bottom hardstop when code starts
+ *   <li>Arm: assumes it is at bottom hardstop when code starts
  */
 public class FieldCalibrationUtil {
   private static final double ELEVATOR_TOLERANCE = RobotConfig.get().elevator().tolerance();
-  // Copied from WristSubsystem
-  private static final double WRIST_TOLERANCE = 2.0;
+  // Copied from ArmSubsystem
+  private static final double ARM_TOLERANCE = 2.0;
   // Copied from TagAlign
   private static final double TRANSLATION_TOLERANCE = 0.05;
 
@@ -41,16 +42,16 @@ public class FieldCalibrationUtil {
   private static Summary createSummary(
       ElevatorState wantedElevator,
       double actualElevator,
-      WristState wantedWrist,
-      double actualWrist,
+      ArmState wantedArm,
+      double actualArm,
       Translation2d wantedTranslation,
       Translation2d actualTranslation) {
     var elevatorError = wantedElevator.height - actualElevator;
-    var wristError = wantedWrist.angle - actualWrist;
+    var armError = wantedArm.angle - actualArm;
     var alignError = wantedTranslation.getDistance(actualTranslation);
 
     var elevatorState = MechanismState.OK;
-    var wristState = MechanismState.OK;
+    var armState = MechanismState.OK;
     var alignOk = MathUtil.isNear(0, alignError, TRANSLATION_TOLERANCE);
 
     if (elevatorError > ELEVATOR_TOLERANCE) {
@@ -59,13 +60,13 @@ public class FieldCalibrationUtil {
       elevatorState = MechanismState.TOO_HIGH;
     }
 
-    if (wristError > WRIST_TOLERANCE) {
-      wristState = MechanismState.TOO_LOW;
-    } else if (wristError < -WRIST_TOLERANCE) {
-      wristState = MechanismState.TOO_HIGH;
+    if (armError > ARM_TOLERANCE) {
+      armState = MechanismState.TOO_LOW;
+    } else if (armError < -ARM_TOLERANCE) {
+      armState = MechanismState.TOO_HIGH;
     }
 
-    return new Summary(elevatorState, wristState, alignOk);
+    return new Summary(elevatorState, armState, alignOk);
   }
 
   private static ElevatorState branchToElevator(ReefPipeLevel level, boolean centered) {
@@ -86,36 +87,36 @@ public class FieldCalibrationUtil {
     };
   }
 
-  private static WristState branchToWrist(ReefPipeLevel level, boolean centered) {
+  private static ArmState branchToArm(ReefPipeLevel level, boolean centered) {
     return switch (level) {
       case L2 ->
           centered
-              ? WristState.CORAL_SCORE_CENTERED_LINEUP_L2
-              : WristState.CORAL_SCORE_DISPLACED_LINEUP_L2;
+              ? ArmState.CORAL_SCORE_CENTERED_LINEUP_L2
+              : ArmState.CORAL_SCORE_DISPLACED_LINEUP_L2;
       case L3 ->
           centered
-              ? WristState.CORAL_SCORE_CENTERED_LINEUP_L3
-              : WristState.CORAL_SCORE_DISPLACED_LINEUP_L3;
+              ? ArmState.CORAL_SCORE_CENTERED_LINEUP_L3
+              : ArmState.CORAL_SCORE_DISPLACED_LINEUP_L3;
       case L4 ->
           centered
-              ? WristState.CORAL_SCORE_CENTERED_LINEUP_L4
-              : WristState.CORAL_SCORE_DISPLACED_LINEUP_L4;
-      default -> WristState.UNTUNED;
+              ? ArmState.CORAL_SCORE_CENTERED_LINEUP_L4
+              : ArmState.CORAL_SCORE_DISPLACED_LINEUP_L4;
+      default -> ArmState.UNTUNED;
     };
   }
 
   private final ElevatorSubsystem elevator;
-  private final WristSubsystem wrist;
+  private final ArmSubsystem arm;
   private final LightsSubsystem lights;
   private final LocalizationSubsystem localization;
 
   public FieldCalibrationUtil(
       ElevatorSubsystem elevator,
-      WristSubsystem wrist,
+      ArmSubsystem arm,
       LightsSubsystem lights,
       LocalizationSubsystem localization) {
     this.elevator = elevator;
-    this.wrist = wrist;
+    this.arm = arm;
     this.lights = lights;
     this.localization = localization;
   }
@@ -192,10 +193,10 @@ public class FieldCalibrationUtil {
   private Summary createSummary(
       ReefPipe pipe, boolean isRedAlliance, ReefPipeLevel level, boolean centered) {
     var actualElevator = elevator.getHeight();
-    var actualWrist = wrist.getAngle();
+    var actualArm = arm.getAngle();
 
     var wantedElevator = branchToElevator(level, centered);
-    var wantedWrist = branchToWrist(level, centered);
+    var wantedArm = branchToArm(level, centered);
 
     var wantedTranslation = pipe.getPose(level, isRedAlliance).getTranslation();
     var actualTranslation = localization.getPose().getTranslation();
@@ -203,8 +204,8 @@ public class FieldCalibrationUtil {
     return createSummary(
         wantedElevator,
         actualElevator,
-        wantedWrist,
-        actualWrist,
+        wantedArm,
+        actualArm,
         wantedTranslation,
         actualTranslation);
   }

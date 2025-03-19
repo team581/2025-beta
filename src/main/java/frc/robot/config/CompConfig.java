@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import frc.robot.config.RobotConfig.ClawConfig;
 import frc.robot.config.RobotConfig.ClimberConfig;
 import frc.robot.config.RobotConfig.DeployConfig;
 import frc.robot.config.RobotConfig.ElevatorConfig;
@@ -28,7 +29,7 @@ import frc.robot.config.RobotConfig.LightsConfig;
 import frc.robot.config.RobotConfig.RollConfig;
 import frc.robot.config.RobotConfig.SwerveConfig;
 import frc.robot.config.RobotConfig.VisionConfig;
-import frc.robot.config.RobotConfig.WristConfig;
+import frc.robot.config.RobotConfig.ArmConfig;
 import frc.robot.generated.CompBotTunerConstants;
 
 class CompConfig {
@@ -104,11 +105,26 @@ class CompConfig {
               0.5),
           new IntakeConfig(
               RIO_CAN_NAME,
+              999,
+              999,
+              new Debouncer(0.1, DebounceType.kBoth),
+              new TalonFXConfiguration()
+                  .withCurrentLimits(
+                      new CurrentLimitsConfigs()
+                          .withStatorCurrentLimit(15)
+                          .withSupplyCurrentLimit(20))
+                  .withMotorOutput(
+                      new MotorOutputConfigs()
+                          .withInverted(InvertedValue.CounterClockwise_Positive)
+                          .withNeutralMode(NeutralModeValue.Coast))
+                  .withTorqueCurrent(
+                      new TorqueCurrentConfigs()
+                          .withPeakForwardTorqueCurrent(70.0)
+                          .withPeakReverseTorqueCurrent(70.0))),
+          new ClawConfig(
+              RIO_CAN_NAME,
               20,
               21,
-              26,
-              true,
-              new Debouncer(0.1, DebounceType.kBoth),
               new Debouncer(0.1, DebounceType.kBoth),
               new TalonFXConfiguration()
                   .withCurrentLimits(
@@ -118,19 +134,6 @@ class CompConfig {
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
-                          .withNeutralMode(NeutralModeValue.Coast))
-                  .withTorqueCurrent(
-                      new TorqueCurrentConfigs()
-                          .withPeakForwardTorqueCurrent(80.0)
-                          .withPeakReverseTorqueCurrent(80.0)),
-              new TalonFXConfiguration()
-                  .withCurrentLimits(
-                      new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(80)
-                          .withSupplyCurrentLimit(80))
-                  .withMotorOutput(
-                      new MotorOutputConfigs()
-                          .withInverted(InvertedValue.CounterClockwise_Positive)
                           .withNeutralMode(NeutralModeValue.Coast))
                   .withTorqueCurrent(
                       new TorqueCurrentConfigs()
@@ -174,7 +177,7 @@ class CompConfig {
                   .withMotorOutput(
                       new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))),
           new VisionConfig(4, 0.4, Double.MAX_VALUE),
-          new WristConfig(
+          new ArmConfig(
               RIO_CAN_NAME,
               22,
               new TalonFXConfiguration()

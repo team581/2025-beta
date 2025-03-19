@@ -1,9 +1,7 @@
 package frc.robot.intake;
 
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.S1StateValue;
 import com.ctre.phoenix6.signals.S2StateValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.Debouncer;
@@ -14,91 +12,43 @@ import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
 public class IntakeSubsystem extends StateMachine<IntakeState> {
-  private final TalonFX topMotor;
-  private final TalonFX bottomMotor;
+  private final TalonFX motor;
   private final CANdi candi;
-  private final Debouncer rightDebouncer = RobotConfig.get().intake().rightDebouncer();
-  private final Debouncer leftDebouncer = RobotConfig.get().intake().leftDebouncer();
+  private final Debouncer debouncer = RobotConfig.get().intake().debouncer();
 
-  private final TorqueCurrentFOC algaeHoldRequest =
-      new TorqueCurrentFOC(RobotConfig.get().intake().algaeHoldCurrent())
-          .withMaxAbsDutyCycle(RobotConfig.get().intake().algaeHoldMaxDutyCycle());
-
-  private boolean rightSensorRaw = false;
-  private boolean leftSensorRaw = false;
-  private boolean rightSensorDebounced = false;
-  private boolean leftSensorDebounced = false;
+  private double motorVelocity = 0.0;
+  private boolean CoralVelocityGp = false;
   private boolean sensorsHaveGP = false;
+  private boolean sensorRaw = false;
 
-  private double topMotorVelocity = 0.0;
-  private double bottomMotorVelocity = 0.0;
+  private boolean sensorDebounced = false;
 
-  private final VelocityDetector topMotorAlgaeDetection = new VelocityDetector(32, 0.2, 0.0);
-  private final VelocityDetector bottomMotorAlgaeDetection = new VelocityDetector(30, 0.2, 0.0);
-  private boolean topMotorAlgaeVelocityGp = false;
-  private boolean bottomMotorAlgaeVelocityGp = false;
+  private final VelocityDetector CoralDetection = new VelocityDetector(78, 0.2, 0.1);
 
-  private final VelocityDetector topMotorCoralDetection = new VelocityDetector(78, 0.2, 0.1);
-  private final VelocityDetector bottomMotorCoralDetection = new VelocityDetector(70, 0.2, 0.1);
-  private boolean topMotorCoralVelocityGp = false;
-  private boolean bottomMotorCoralVelocityGp = false;
-
-  public IntakeSubsystem(TalonFX topMotor, TalonFX bottomMotor, CANdi candi) {
+  public IntakeSubsystem(TalonFX motor, CANdi candi) {
     super(SubsystemPriority.INTAKE, IntakeState.IDLE_NO_GP);
 
-    topMotor.getConfigurator().apply(RobotConfig.get().intake().topMotorConfig());
-    bottomMotor.getConfigurator().apply(RobotConfig.get().intake().bottomMotorConfig());
-    this.topMotor = topMotor;
-    this.bottomMotor = bottomMotor;
+    motor.getConfigurator().apply(RobotConfig.get().claw().motorConfig());
+    this.motor = motor;
     this.candi = candi;
   }
 
   @Override
   protected void collectInputs() {
-    topMotorVelocity = topMotor.getVelocity().getValueAsDouble();
-    bottomMotorVelocity = bottomMotor.getVelocity().getValueAsDouble();
+    CoralVelocityGp = CoralDetection.hasGamePiece(motorVelocity, 65);
 
-    topMotorAlgaeVelocityGp = topMotorAlgaeDetection.hasGamePiece(topMotorVelocity, 20);
-    bottomMotorAlgaeVelocityGp = bottomMotorAlgaeDetection.hasGamePiece(bottomMotorVelocity, 20);
-
-    topMotorCoralVelocityGp = topMotorCoralDetection.hasGamePiece(topMotorVelocity, 65);
-    bottomMotorCoralVelocityGp = bottomMotorCoralDetection.hasGamePiece(bottomMotorVelocity, 65);
-    DogLog.log("Intake/TopMotor/Velocity", topMotorVelocity);
-    DogLog.log("Intake/BottomMotor/Velocity", bottomMotorVelocity);
-
-    if (RobotConfig.get().intake().sensorFlipped()) {
-      leftSensorRaw = candi.getS2State().getValue() != S2StateValue.Low;
-      rightSensorRaw = candi.getS1State().getValue() != S1StateValue.Low;
-    } else {
-      leftSensorRaw = candi.getS2State().getValue() == S2StateValue.Low;
-      rightSensorRaw = candi.getS1State().getValue() == S1StateValue.Low;
-    }
-
-    leftSensorDebounced = leftDebouncer.calculate(leftSensorRaw);
-    rightSensorDebounced = rightDebouncer.calculate(rightSensorRaw);
-
-    sensorsHaveGP = rightSensorDebounced || leftSensorDebounced;
-  }
-
-  public boolean isCoralCentered() {
-    return leftSensorDebounced && rightSensorDebounced;
-  }
-
-  public boolean getRightSensor() {
-    return rightSensorDebounced;
-  }
-
-  public boolean getLeftSensor() {
-    return leftSensorDebounced;
+    double motorVelocity = motor.getVelocity().getValueAsDouble();
+    DogLog.log("Intake/MotorVelocity", motorVelocity);
+    sensorRaw = candi.getS2State().getValue() != S2StateValue.Low;
+    sensorDebounced = debouncer.calculate(sensorRaw);
   }
 
   public boolean getHasGP() {
     return switch (getState()) {
-      case INTAKING_CORAL ->
+      case INTAKING ->
           FeatureFlags.INTAKE_VELOCITY_CORAL_DETECTION.getAsBoolean()
-              ? topMotorCoralVelocityGp && bottomMotorCoralVelocityGp && sensorsHaveGP
+              ? CoralVelocityGp && sensorsHaveGP
               : sensorsHaveGP;
-      case INTAKING_ALGAE -> topMotorAlgaeVelocityGp && bottomMotorAlgaeVelocityGp;
       default -> sensorsHaveGP;
     };
   }
@@ -111,48 +61,20 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   protected void afterTransition(IntakeState newState) {
     switch (newState) {
       case IDLE_NO_GP -> {
-        topMotor.disable();
-        bottomMotor.disable();
+        motor.disable();
       }
-      case IDLE_W_ALGAE -> {
-        topMotor.setVoltage(12.0);
-        bottomMotor.setVoltage(12.0);
+      case IDLE_GP -> {
+        motor.setVoltage(0);
       }
-      case IDLE_W_CORAL -> {
-        topMotor.setVoltage(1);
-        bottomMotor.setVoltage(1);
+      case INTAKING -> {
+        motor.setVoltage(0);
+        CoralDetection.reset();
       }
-      case INTAKING_ALGAE -> {
-        topMotor.setVoltage(12.0);
-        bottomMotor.setVoltage(12.0);
-        topMotorAlgaeDetection.reset();
-        bottomMotorAlgaeDetection.reset();
-      }
-      case INTAKING_CORAL -> {
-        topMotor.setVoltage(10.0);
-        bottomMotor.setVoltage(9.0);
-        topMotorCoralDetection.reset();
-        bottomMotorCoralDetection.reset();
-      }
-      case SCORE_ALGAE_NET_FORWARD -> {
-        topMotor.setVoltage(-3.0);
-        bottomMotor.setVoltage(-3.0);
-      }
-      case SCORE_ALGAE_NET_BACK -> {
-        topMotor.setVoltage(-3.0);
-        bottomMotor.setVoltage(-3.0);
-      }
-      case SCORE_ALGAE_PROCESSOR -> {
-        topMotor.setVoltage(-1.0);
-        bottomMotor.setVoltage(-1.0);
-      }
-      case SCORE_CORAL -> {
-        topMotor.setVoltage(-2.0);
-        bottomMotor.setVoltage(-2.0);
+      case SCORING -> {
+        motor.setVoltage(0);
       }
       case OUTTAKING -> {
-        topMotor.setVoltage(-1.0);
-        bottomMotor.setVoltage(-1.0);
+        motor.setVoltage(0);
       }
     }
   }
@@ -161,13 +83,8 @@ public class IntakeSubsystem extends StateMachine<IntakeState> {
   public void robotPeriodic() {
     super.robotPeriodic();
 
-    DogLog.log("Intake/TopMotor/AppliedVoltage", topMotor.getMotorVoltage().getValueAsDouble());
-    DogLog.log(
-        "Intake/BottomMotor/AppliedVoltage", bottomMotor.getMotorVoltage().getValueAsDouble());
-    DogLog.log("Intake/Sensors/RightSensorRaw", rightSensorRaw);
-    DogLog.log("Intake/Sensors/LeftSensorRaw", leftSensorRaw);
-    DogLog.log("Intake/Sensors/RightSensorDebounced", rightSensorDebounced);
-    DogLog.log("Intake/Sensors/LeftSensorDebounced", leftSensorDebounced);
+    DogLog.log("Intake/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Intake/Sensors/RightSensorDebounced", sensorDebounced);
     DogLog.log("Intake/SensorsHaveGP", sensorsHaveGP);
   }
 }

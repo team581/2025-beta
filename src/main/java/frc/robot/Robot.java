@@ -9,10 +9,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.auto_align.AutoAlign;
 import frc.robot.auto_align.field_calibration.FieldCalibrationUtil;
 import frc.robot.autos.Autos;
 import frc.robot.autos.Trailblazer;
+import frc.robot.claw.ClawSubsystem;
 import frc.robot.climber.ClimberSubsystem;
 import frc.robot.config.FeatureFlags;
 import frc.robot.config.RobotConfig;
@@ -28,7 +30,6 @@ import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.collision_avoidance.CollisionBox;
-import frc.robot.roll.RollSubsystem;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.ElasticLayoutUtil;
 import frc.robot.util.Stopwatch;
@@ -38,7 +39,6 @@ import frc.robot.vision.game_piece_detection.CoralMap;
 import frc.robot.vision.limelight.Limelight;
 import frc.robot.vision.limelight.LimelightModel;
 import frc.robot.vision.limelight.LimelightState;
-import frc.robot.wrist.WristSubsystem;
 
 public class Robot extends TimedRobot {
   private Command autonomousCommand = Commands.none();
@@ -65,11 +65,9 @@ public class Robot extends TimedRobot {
   private final RumbleControllerSubsystem rumbleController =
       new RumbleControllerSubsystem(hardware.driverController, true);
 
-  private final IntakeSubsystem intake =
-      new IntakeSubsystem(hardware.intakeTopMotor, hardware.intakeBottomMotor, hardware.candi);
+  private final ClawSubsystem intake = new ClawSubsystem(hardware.intakeMotor, hardware.candi);
 
-  private final WristSubsystem wrist = new WristSubsystem(hardware.wristMotor);
-  private final RollSubsystem roll = new RollSubsystem(hardware.rollMotor, intake);
+  private final ArmSubsystem arm = new ArmSubsystem(hardware.armMotor);
   private final LightsSubsystem lights = new LightsSubsystem(hardware.candle);
   private final ClimberSubsystem climber =
       new ClimberSubsystem(
@@ -83,9 +81,8 @@ public class Robot extends TimedRobot {
   private final RobotManager robotManager =
       new RobotManager(
           intake,
-          wrist,
+          arm,
           elevator,
-          roll,
           vision,
           imu,
           swerve,
@@ -96,7 +93,7 @@ public class Robot extends TimedRobot {
           climber,
           rumbleController);
   private final FieldCalibrationUtil fieldCalibrationUtil =
-      new FieldCalibrationUtil(elevator, wrist, lights, localization);
+      new FieldCalibrationUtil(elevator, arm, lights, localization);
 
   private final RobotCommands robotCommands = new RobotCommands(robotManager);
   private final Autos autos = new Autos(robotManager, trailblazer);
@@ -252,7 +249,7 @@ public class Robot extends TimedRobot {
     hardware.driverController.back().onTrue(localization.getZeroCommand());
 
     hardware.operatorController.a().onTrue(robotCommands.rehomeElevatorCommand());
-    hardware.operatorController.b().onTrue(robotCommands.rehomeWristCommand());
+    hardware.operatorController.b().onTrue(robotCommands.rehomeArmCommand());
     hardware.operatorController.y().onTrue(robotCommands.rehomeRollCommand());
     hardware.operatorController.x().onTrue(robotCommands.unjamStationCommand());
   }

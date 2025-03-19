@@ -1,4 +1,4 @@
-package frc.robot.wrist;
+package frc.robot.arm;
 
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -15,7 +15,7 @@ import frc.robot.config.RobotConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 
-public class WristSubsystem extends StateMachine<WristState> {
+public class ArmSubsystem extends StateMachine<ArmState> {
   private final TalonFX motor;
   private double motorAngle;
   private double motorCurrent;
@@ -34,22 +34,22 @@ public class WristSubsystem extends StateMachine<WristState> {
 
   private final PositionVoltage pidRequest = new PositionVoltage(0).withEnableFOC(false);
 
-  public WristSubsystem(TalonFX motor) {
-    super(SubsystemPriority.WRIST, WristState.PRE_MATCH_HOMING);
-    motor.getConfigurator().apply(RobotConfig.get().wrist().motorConfig());
+  public ArmSubsystem(TalonFX motor) {
+    super(SubsystemPriority.ARM, ArmState.PRE_MATCH_HOMING);
+    motor.getConfigurator().apply(RobotConfig.get().arm().motorConfig());
 
     this.motor = motor;
 
-    // In field calibration mode, boot wrist to lower hardstop angle
+    // In field calibration mode, boot arm to lower hardstop angle
     if (FeatureFlags.FIELD_CALIBRATION.getAsBoolean()) {
-      motor.setPosition(Units.degreesToRotations(RobotConfig.get().wrist().homingPosition()));
+      motor.setPosition(Units.degreesToRotations(RobotConfig.get().arm().homingPosition()));
     }
   }
 
-  public void setState(WristState newState) {
+  public void setState(ArmState newState) {
     switch (getState()) {
       case PRE_MATCH_HOMING -> {
-        if (newState == WristState.MID_MATCH_HOMING) {
+        if (newState == ArmState.MID_MATCH_HOMING) {
           setStateFromRequest(newState);
         }
       }
@@ -66,7 +66,7 @@ public class WristSubsystem extends StateMachine<WristState> {
 
   public void setCollisionAvoidanceGoal(double angle) {
     collisionAvoidanceGoal = angle;
-    DogLog.log("Wrist/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
+    DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
   }
 
   public boolean atGoal() {
@@ -90,7 +90,7 @@ public class WristSubsystem extends StateMachine<WristState> {
   }
 
   @Override
-  protected void afterTransition(WristState newState) {
+  protected void afterTransition(ArmState newState) {
     switch (newState) {
       case MID_MATCH_HOMING -> {
         motor.setVoltage(-0.5);
@@ -111,19 +111,19 @@ public class WristSubsystem extends StateMachine<WristState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    DogLog.log("Wrist/StatorCurrent", motorCurrent);
-    DogLog.log("Wrist/AverageStatorCurrent", averageMotorCurrent);
-    DogLog.log("Wrist/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
-    DogLog.log("Wrist/Angle", motorAngle);
-    DogLog.log("Wrist/AtGoal", atGoal());
+    DogLog.log("Arm/StatorCurrent", motorCurrent);
+    DogLog.log("Arm/AverageStatorCurrent", averageMotorCurrent);
+    DogLog.log("Arm/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Arm/Angle", motorAngle);
+    DogLog.log("Arm/AtGoal", atGoal());
     if (DriverStation.isDisabled()) {
-      DogLog.log("Wrist/LowestAngle", lowestSeenAngle);
-      DogLog.log("Wrist/HighestAngle", highestSeenAngle);
+      DogLog.log("Arm/LowestAngle", lowestSeenAngle);
+      DogLog.log("Arm/HighestAngle", highestSeenAngle);
     }
     if (rangeOfMotionGood()) {
-      DogLog.clearFault("Wrist not seen range of motion");
+      DogLog.clearFault("Arm not seen range of motion");
     } else {
-      DogLog.logFault("Wrist not seen range of motion", AlertType.kWarning);
+      DogLog.logFault("Arm not seen range of motion", AlertType.kWarning);
     }
 
     switch (getState()) {
@@ -132,9 +132,9 @@ public class WristSubsystem extends StateMachine<WristState> {
           if (DriverStation.isEnabled()) {
             motor.setPosition(
                 Units.degreesToRotations(
-                    RobotConfig.get().wrist().minAngle() + (motorAngle - lowestSeenAngle)));
+                    RobotConfig.get().arm().minAngle() + (motorAngle - lowestSeenAngle)));
 
-            setStateFromRequest(WristState.CORAL_STOWED);
+            setStateFromRequest(ArmState.CORAL_STOWED);
           } else {
             motor.setControl(brakeNeutralRequest);
           }
@@ -149,11 +149,11 @@ public class WristSubsystem extends StateMachine<WristState> {
   }
 
   @Override
-  protected WristState getNextState(WristState currentState) {
-    if (currentState == WristState.MID_MATCH_HOMING
-        && averageMotorCurrent > RobotConfig.get().wrist().homingCurrentThreshold()) {
-      motor.setPosition(Units.degreesToRotations(RobotConfig.get().wrist().homingPosition()));
-      return WristState.CORAL_STOWED;
+  protected ArmState getNextState(ArmState currentState) {
+    if (currentState == ArmState.MID_MATCH_HOMING
+        && averageMotorCurrent > RobotConfig.get().arm().homingCurrentThreshold()) {
+      motor.setPosition(Units.degreesToRotations(RobotConfig.get().arm().homingPosition()));
+      return ArmState.CORAL_STOWED;
     }
 
     // Don't do anything
@@ -166,6 +166,6 @@ public class WristSubsystem extends StateMachine<WristState> {
 
   private static double clamp(double armAngle) {
     return MathUtil.clamp(
-        armAngle, RobotConfig.get().wrist().minAngle(), RobotConfig.get().wrist().maxAngle());
+        armAngle, RobotConfig.get().arm().minAngle(), RobotConfig.get().arm().maxAngle());
   }
 }

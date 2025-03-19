@@ -10,9 +10,10 @@ public record RobotConfig(
     String robotName,
     ElevatorConfig elevator,
     IntakeConfig intake,
+    ClawConfig claw,
     SwerveConfig swerve,
     VisionConfig vision,
-    WristConfig wrist,
+    ArmConfig arm,
     RollConfig roll,
     DeployConfig deploy,
     ClimberConfig climber,
@@ -31,14 +32,17 @@ public record RobotConfig(
 
   public record IntakeConfig(
       String canBusName,
-      int topMotorID,
-      int bottomMotorID,
+      int motorID,
       int candiID,
-      boolean sensorFlipped,
-      Debouncer rightDebouncer,
-      Debouncer leftDebouncer,
-      TalonFXConfiguration topMotorConfig,
-      TalonFXConfiguration bottomMotorConfig,
+      Debouncer debouncer,
+      TalonFXConfiguration motorConfig) {}
+
+  public record ClawConfig(
+      String canBusName,
+      int motorID,
+      int candiID,
+      Debouncer debouncer,
+      TalonFXConfiguration motorConfig,
       double algaeHoldCurrent,
       double algaeHoldMaxDutyCycle) {}
 
@@ -53,7 +57,7 @@ public record RobotConfig(
   public record VisionConfig(
       int translationHistoryArraySize, double xyStdDev, double thetaStdDev) {}
 
-  public record WristConfig(
+  public record ArmConfig(
       String canBusName,
       int motorID,
       TalonFXConfiguration motorConfig,
