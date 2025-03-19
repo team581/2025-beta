@@ -14,6 +14,7 @@ public record RobotConfig(
     VisionConfig vision,
     WristConfig wrist,
     RollConfig roll,
+    DeployConfig deploy,
     ClimberConfig climber,
     LightsConfig lights) {
   public record ElevatorConfig(
@@ -82,6 +83,16 @@ public record RobotConfig(
       double maxAngle,
       double homingCurrentThreshold,
       double homingPosition) {}
+
+  public record DeployConfig(
+      String canBusName,
+      int motorID,
+      TalonFXConfiguration motorConfig,
+      double minAngle,
+      double maxAngle,
+      double homingVoltage,
+      double homingCurrent,
+      double homingCurrentThreshold) {}
 
   public record LightsConfig(String canBusName, int candleID) {}
 

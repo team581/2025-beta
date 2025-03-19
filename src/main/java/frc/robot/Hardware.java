@@ -10,6 +10,10 @@ import frc.robot.config.RobotConfig;
 
 public class Hardware {
   // public final PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+
+  public final TalonFX deployMotor =
+      new TalonFX(RobotConfig.get().deploy().motorID(), RobotConfig.get().deploy().canBusName());
+
   public final TalonFX elevatorLeftMotor =
       new TalonFX(
           RobotConfig.get().elevator().leftMotorID(), RobotConfig.get().elevator().canBusName());

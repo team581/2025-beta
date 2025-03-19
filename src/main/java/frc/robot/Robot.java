@@ -22,6 +22,7 @@ import frc.robot.fms.FmsSubsystem;
 import frc.robot.generated.BuildConstants;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.intake.IntakeSubsystem;
+import frc.robot.intake_deploy.DeploySubsystem;
 import frc.robot.lights.LightsSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.robot_manager.RobotCommands;
@@ -43,6 +44,8 @@ public class Robot extends TimedRobot {
   private Command autonomousCommand = Commands.none();
   private final FmsSubsystem fms = new FmsSubsystem();
   private final Hardware hardware = new Hardware();
+
+  private final DeploySubsystem intakeDeploy = new DeploySubsystem(hardware.deployMotor);
 
   private final SwerveSubsystem swerve = new SwerveSubsystem();
   private final ImuSubsystem imu = new ImuSubsystem(swerve.drivetrainPigeon);
