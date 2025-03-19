@@ -232,8 +232,8 @@ class CompConfig {
               999,
               new TalonFXConfiguration()
                   .withFeedback(
-                    new FeedbackConfigs()
-                        .withSensorToMechanismRatio((50/8)*(50/18)*(40/10)))
+                      new FeedbackConfigs()
+                          .withSensorToMechanismRatio((50 / 8) * (50 / 18) * (40 / 10)))
                   .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
                   .withMotionMagic(
                       new MotionMagicConfigs()
