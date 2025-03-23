@@ -251,7 +251,5 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
         distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
     rightSim.setRotorVelocity(
         distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
-
-    elevatorSim.update(0.02);
   }
 }

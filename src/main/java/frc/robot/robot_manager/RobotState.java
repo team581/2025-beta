@@ -6,134 +6,122 @@ import java.util.Map;
 public enum RobotState {
   // Idle states
   /** Idle without any game piece. */
-  CLAW_EMPTY_DEPLOY_EMPTY,
+  CLAW_EMPTY_DEPLOY_EMPTY(ClawGamePiece.EMPTY, false, false),
   /** Deploy is holding coral, claw isn't doing anything. */
-  CLAW_EMPTY_DEPLOY_CORAL(true, false),
+  CLAW_EMPTY_DEPLOY_CORAL(ClawGamePiece.EMPTY, true, false),
   /** Claw holding algae, deploy is holding coral. */
-  CLAW_ALGAE_DEPLOY_CORAL(true, true),
+  CLAW_ALGAE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
   /** Claw holding algae, deploy is empty. */
-  CLAW_ALGAE_DEPLOY_EMPTY(false, true),
+  CLAW_ALGAE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
   /** Claw holding coral, deploy is empty. */
-  CLAW_CORAL_DEPLOY_EMPTY(true, false),
+  CLAW_CORAL_DEPLOY_EMPTY(ClawGamePiece.CORAL, false, false),
 
   // Intake states
-  CORAL_INTAKE_FLOOR_CLAW_EMPTY,
-  CORAL_INTAKE_FLOOR_CLAW_ALGAE(false, true),
+  CORAL_INTAKE_FLOOR_CLAW_EMPTY(ClawGamePiece.EMPTY, false, false),
+  CORAL_INTAKE_FLOOR_CLAW_ALGAE(ClawGamePiece.ALGAE, false, false),
   // In theory we could have intake upright while holding algae but nobody is going to use that
-  CORAL_INTAKE_LOLLIPOP_CLAW_EMPTY,
+  CORAL_INTAKE_LOLLIPOP_CLAW_EMPTY(ClawGamePiece.EMPTY, false, false),
   // Same for this, we only do this in auto, so no algae in claw
-  CORAL_INTAKE_ASSIST_FLOOR_CLAW_EMPTY,
+  CORAL_INTAKE_ASSIST_FLOOR_CLAW_EMPTY(ClawGamePiece.EMPTY, false, false),
 
-  ALGAE_INTAKE_FLOOR_DEPLOY_EMPTY,
-  ALGAE_INTAKE_L2_LEFT_DEPLOY_EMPTY,
-  ALGAE_INTAKE_L3_LEFT_DEPLOY_EMPTY,
-  ALGAE_INTAKE_L2_RIGHT_DEPLOY_EMPTY,
-  ALGAE_INTAKE_L3_RIGHT_DEPLOY_EMPTY,
+  ALGAE_INTAKE_FLOOR_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_INTAKE_L2_LEFT_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_INTAKE_L3_LEFT_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_INTAKE_L2_RIGHT_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_INTAKE_L3_RIGHT_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
 
-  ALGAE_INTAKE_FLOOR_DEPLOY_CORAL(true, false),
-  ALGAE_INTAKE_L2_LEFT_DEPLOY_CORAL(true, false),
-  ALGAE_INTAKE_L3_LEFT_DEPLOY_CORAL(true, false),
-  ALGAE_INTAKE_L2_RIGHT_DEPLOY_CORAL(true, false),
-  ALGAE_INTAKE_L3_RIGHT_DEPLOY_CORAL(true, false),
+  ALGAE_INTAKE_FLOOR_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_INTAKE_L2_LEFT_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_INTAKE_L3_LEFT_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_INTAKE_L2_RIGHT_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_INTAKE_L3_RIGHT_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
 
   // L1 scoring using the ground intake
-  CORAL_L1_DEPLOY_PREPARE_CLAW_ALGAE(true, true),
-  CORAL_L1_DEPLOY_PREPARE_CLAW_EMPTY(true, false),
-  CORAL_L1_DEPLOY_SCORE_CLAW_ALGAE(true, true),
-  CORAL_L1_DEPLOY_SCORE_CLAW_EMPTY(true, false),
+  CORAL_L1_DEPLOY_PREPARE_CLAW_ALGAE(ClawGamePiece.ALGAE, true, false),
+  CORAL_L1_DEPLOY_PREPARE_CLAW_EMPTY(ClawGamePiece.EMPTY, true, false),
+  CORAL_L1_DEPLOY_SCORE_CLAW_ALGAE(ClawGamePiece.ALGAE, true, false),
+  CORAL_L1_DEPLOY_SCORE_CLAW_EMPTY(ClawGamePiece.EMPTY, true, false),
 
   // L1 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
-  CORAL_L1_PREPARE_HANDOFF(true, false),
-  CORAL_L1_RELEASE_HANDOFF(true, false),
+  CORAL_L1_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L1_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
   /** Coral is in the claw, let's get ready to score L1. */
-  CORAL_L1_APPROACH(true, false),
-  CORAL_L1_LEFT_LINEUP(true, false),
-  CORAL_L1_RIGHT_LINEUP(true, false),
-  CORAL_L1_LEFT_RELEASE(true, false),
-  CORAL_L1_RIGHT_RELEASE(true, false),
+  CORAL_L1_APPROACH(ClawGamePiece.CORAL, false, false),
+  CORAL_L1_LEFT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L1_RIGHT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L1_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
+  CORAL_L1_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
   // L2 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
-  CORAL_L2_PREPARE_HANDOFF(true, false),
-  CORAL_L2_RELEASE_HANDOFF(true, false),
+  CORAL_L2_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L2_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
 
   /** Coral is in the claw, let's get ready to score L2. */
-  CORAL_L2_APPROACH(true, false),
-  CORAL_L2_LEFT_LINEUP(true, false),
-  CORAL_L2_RIGHT_LINEUP(true, false),
-  CORAL_L2_LEFT_RELEASE(true, false),
-  CORAL_L2_RIGHT_RELEASE(true, false),
+  CORAL_L2_APPROACH(ClawGamePiece.CORAL, false, false),
+  CORAL_L2_LEFT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L2_RIGHT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L2_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
+  CORAL_L2_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
   // L3 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
-  CORAL_L3_PREPARE_HANDOFF(true, false),
-  CORAL_L3_RELEASE_HANDOFF(true, false),
+  CORAL_L3_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L3_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
   /** Coral is in the claw, let's get ready to score L3. */
-  CORAL_L3_APPROACH(true, false),
-  CORAL_L3_LEFT_LINEUP(true, false),
-  CORAL_L3_RIGHT_LINEUP(true, false),
-  CORAL_L3_LEFT_RELEASE(true, false),
-  CORAL_L3_RIGHT_RELEASE(true, false),
+  CORAL_L3_APPROACH(ClawGamePiece.CORAL, false, false),
+  CORAL_L3_LEFT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L3_RIGHT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L3_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
+  CORAL_L3_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
   // L4 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
-  CORAL_L4_PREPARE_HANDOFF(true, false),
-  CORAL_L4_RELEASE_HANDOFF(true, false),
+  CORAL_L4_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L4_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
   /** Coral is in the claw, let's get ready to score L4. */
-  CORAL_L4_APPROACH(true, false),
-  CORAL_L4_LEFT_LINEUP(true, false),
-  CORAL_L4_RIGHT_LINEUP(true, false),
-  CORAL_L4_LEFT_RELEASE(true, false),
-  CORAL_L4_RIGHT_RELEASE(true, false),
+  CORAL_L4_APPROACH(ClawGamePiece.CORAL, false, false),
+  CORAL_L4_LEFT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L4_RIGHT_LINEUP(ClawGamePiece.CORAL, false, false),
+  CORAL_L4_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
+  CORAL_L4_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
   // Algae scoring states
-  ALGAE_NET_LEFT_WAITING_DEPLOY_EMPTY(false, true),
-  ALGAE_NET_LEFT_RELEASE_DEPLOY_EMPTY(false, true),
-  ALGAE_NET_LEFT_WAITING_DEPLOY_CORAL(true, true),
-  ALGAE_NET_LEFT_RELEASE_DEPLOY_CORAL(true, true),
+  ALGAE_NET_LEFT_WAITING_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_NET_LEFT_RELEASE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_NET_LEFT_WAITING_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_NET_LEFT_RELEASE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
 
-  ALGAE_NET_RIGHT_WAITING_DEPLOY_EMPTY(false, true),
-  ALGAE_NET_RIGHT_RELEASE_DEPLOY_EMPTY(false, true),
-  ALGAE_NET_RIGHT_WAITING_DEPLOY_CORAL(true, true),
-  ALGAE_NET_RIGHT_RELEASE_DEPLOY_CORAL(true, true),
+  ALGAE_NET_RIGHT_WAITING_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_NET_RIGHT_RELEASE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_NET_RIGHT_WAITING_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_NET_RIGHT_RELEASE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
 
-  ALGAE_PROCESSOR_WAITING_DEPLOY_EMPTY(false, true),
-  ALGAE_PROCESSOR_RELEASE_DEPLOY_EMPTY(false, true),
-  ALGAE_PROCESSOR_WAITING_DEPLOY_CORAL(true, true),
-  ALGAE_PROCESSOR_RELEASE_DEPLOY_CORAL(true, true),
+  ALGAE_PROCESSOR_WAITING_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_PROCESSOR_RELEASE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_PROCESSOR_WAITING_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  ALGAE_PROCESSOR_RELEASE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
 
   // Climbing states
-  CLIMBING_1_LINEUP(true),
-  CLIMBING_2_HANGING(true),
+  CLIMBING_1_LINEUP(ClawGamePiece.EMPTY, false, true),
+  CLIMBING_2_HANGING(ClawGamePiece.EMPTY, false, true),
 
   // Misc states
-  UNJAM,
-  ALGAE_OUTTAKE_DEPLOY_EMPTY(false, true),
-  ALGAE_OUTTAKE_DEPLOY_CORAL(true, true),
-  REHOME_DEPLOY(true),
-  REHOME_ELEVATOR(true);
+  ALGAE_OUTTAKE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
+  ALGAE_OUTTAKE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
+  UNJAM(ClawGamePiece.EMPTY, false, false),
+  REHOME_DEPLOY(ClawGamePiece.EMPTY, false, true),
+  REHOME_ELEVATOR(ClawGamePiece.EMPTY, false, true);
 
-  public final boolean hasCoral;
-  public final boolean hasAlgae;
+  public final ClawGamePiece clawGp;
+  public final boolean deployHasCoral;
   public final boolean climbingOrRehoming;
 
-  private RobotState() {
-    this.hasCoral = false;
-    this.hasAlgae = false;
-    this.climbingOrRehoming = false;
-  }
-
-  private RobotState(boolean climbingOrRehoming) {
-    this.hasCoral = false;
-    this.hasAlgae = false;
+  private RobotState(ClawGamePiece clawGp, boolean deployHasCoral, boolean climbingOrRehoming) {
+    this.clawGp = clawGp;
+    this.deployHasCoral = deployHasCoral;
     this.climbingOrRehoming = climbingOrRehoming;
-  }
-
-  private RobotState(boolean hasCoral, boolean hasAlgae) {
-    this.hasCoral = hasCoral;
-    this.hasAlgae = hasAlgae;
-    this.climbingOrRehoming = false;
   }
 
   private static final Map<RobotState, RobotState> lineupToRelease =

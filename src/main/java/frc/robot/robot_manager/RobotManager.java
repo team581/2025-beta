@@ -1106,7 +1106,7 @@ public class RobotManager extends StateMachine<RobotState> {
         // Technically claw could be holding coral but that shouldn't happen
         setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_CORAL);
       } else {
-        if (getState().hasAlgae) {
+        if (getState().clawGp == ClawGamePiece.ALGAE) {
           setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_EMPTY);
         } else {
           setStateFromRequest(RobotState.CLAW_CORAL_DEPLOY_EMPTY);
@@ -1123,7 +1123,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void intakeFloorAlgaeRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasCoral) {
+      if (getState().deployHasCoral) {
         setStateFromRequest(RobotState.ALGAE_INTAKE_FLOOR_DEPLOY_CORAL);
       } else {
         setStateFromRequest(RobotState.ALGAE_INTAKE_FLOOR_DEPLOY_EMPTY);
@@ -1133,7 +1133,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void intakeFloorCoralHorizontalRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasAlgae) {
+      if (getState().clawGp == ClawGamePiece.ALGAE) {
         setStateFromRequest(RobotState.CORAL_INTAKE_FLOOR_CLAW_ALGAE);
       } else {
         setStateFromRequest(RobotState.CORAL_INTAKE_FLOOR_CLAW_EMPTY);
@@ -1149,7 +1149,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void processorWaitingRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasCoral) {
+      if (getState().deployHasCoral) {
         setStateFromRequest(RobotState.ALGAE_PROCESSOR_WAITING_DEPLOY_CORAL);
       } else {
         setStateFromRequest(RobotState.ALGAE_PROCESSOR_WAITING_DEPLOY_EMPTY);
@@ -1169,7 +1169,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void highLineupRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasAlgae) {
+      if (getState().clawGp == ClawGamePiece.ALGAE) {
         algaeNetRequest();
       } else {
         l4CoralApproachRequest();
@@ -1199,7 +1199,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void lowLineupRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasAlgae) {
+      if (getState().clawGp == ClawGamePiece.ALGAE) {
         processorWaitingRequest();
       } else {
         l1CoralApproachRequest();
@@ -1219,7 +1219,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void algaeReefIntakeRequest() {
     if (!getState().climbingOrRehoming) {
-      if (getState().hasCoral) {
+      if (getState().deployHasCoral) {
         if (robotScoringSide == RobotScoringSide.LEFT) {
           if (nearestReefSide.algaeHeight == ReefPipeLevel.L3) {
             setStateFromRequest(RobotState.ALGAE_INTAKE_L3_LEFT_DEPLOY_CORAL);
