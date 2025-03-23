@@ -7,9 +7,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.config.FeatureFlags;
 import frc.robot.config.RobotConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
@@ -126,5 +129,35 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   public boolean rangeOfMotionGood() {
     return (highestSeenAngle - lowestSeenAngle) > MINIMUM_EXPECTED_HOMING_ANGLE_CHANGE;
+  }
+
+  private final SingleJointedArmSim armSim =
+      new SingleJointedArmSim(
+          DCMotor.getKrakenX60(1),
+          RobotConfig.get().arm().motorConfig().Feedback.SensorToMechanismRatio,
+          0.1592519043,
+          Units.inchesToMeters(37.536396),
+          Double.MIN_VALUE,
+          Double.MAX_VALUE,
+          true,
+          Units.degreesToRadians(90));
+
+  @Override
+  public void simulationPeriodic() {
+    var motorSim = motor.getSimState();
+
+    motorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    armSim.setInputVoltage(motorSim.getMotorVoltage());
+    armSim.update(0.02);
+
+    motorSim.setRawRotorPosition(
+        Units.radiansToRotations(
+            armSim.getAngleRads()
+                * RobotConfig.get().arm().motorConfig().Feedback.SensorToMechanismRatio));
+    motorSim.setRotorVelocity(
+        Units.radiansToRotations(
+            armSim.getVelocityRadPerSec()
+                * RobotConfig.get().arm().motorConfig().Feedback.SensorToMechanismRatio));
   }
 }
