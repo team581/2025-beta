@@ -3,6 +3,7 @@ package frc.robot.elevator;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.ChassisReference;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -25,12 +26,13 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
         height, RobotConfig.get().elevator().minHeight(), RobotConfig.get().elevator().maxHeight());
   }
 
-private static double rotationsToDistance(double rot) {
-  return rot * (Math.PI * RobotConfig.get().elevator().drumDiameterInches());
-}
-private static double distanceToRotations(double dist) {
-  return dist / (Math.PI * RobotConfig.get().elevator().drumDiameterInches());
-}
+  private static double rotationsToDistance(double rot) {
+    return rot * (Math.PI * RobotConfig.get().elevator().drumDiameterInches());
+  }
+
+  private static double distanceToRotations(double dist) {
+    return dist / (Math.PI * RobotConfig.get().elevator().drumDiameterInches());
+  }
 
   private final TalonFX leftMotor;
   private final TalonFX rightMotor;
@@ -162,8 +164,10 @@ private static double distanceToRotations(double dist) {
       }
 
       case COLLISION_AVOIDANCE -> {
-        leftMotor.setControl(positionRequest.withPosition(distanceToRotations(clampHeight(collisionAvoidanceGoal))));
-        rightMotor.setControl(positionRequest.withPosition(distanceToRotations(clampHeight(collisionAvoidanceGoal))));
+        leftMotor.setControl(
+            positionRequest.withPosition(distanceToRotations(clampHeight(collisionAvoidanceGoal))));
+        rightMotor.setControl(
+            positionRequest.withPosition(distanceToRotations(clampHeight(collisionAvoidanceGoal))));
       }
       default -> {}
     }
@@ -214,25 +218,40 @@ private static double distanceToRotations(double dist) {
       new ElevatorSim(
           DCMotor.getKrakenX60(2),
           RobotConfig.get().elevator().leftMotorConfig().Feedback.SensorToMechanismRatio,
-          999,
-          1.274,
+          20,
+          Units.metersToInches(1.274),
           RobotConfig.get().elevator().minHeight(),
           RobotConfig.get().elevator().maxHeight(),
           true,
           RobotConfig.get().elevator().minHeight());
 
+  private final double gearing = RobotConfig.get().elevator().rightMotorConfig().Feedback.SensorToMechanismRatio;
   @Override
   public void simulationPeriodic() {
     var leftSim = leftMotor.getSimState();
     var rightSim = rightMotor.getSimState();
 
+    leftSim.Orientation = ChassisReference.Clockwise_Positive;
+    rightSim.Orientation = ChassisReference.CounterClockwise_Positive;
+
     leftSim.setSupplyVoltage(RobotController.getBatteryVoltage());
     rightSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     elevatorSim.setInputVoltage((leftSim.getMotorVoltage() + rightSim.getMotorVoltage()) / 2.0);
-    elevatorSim.update(0.02);
+    elevatorSim.setState(elevatorSim.getPositionMeters(), rotationsToDistance(positionRequest.Position) - Units.metersToInches(elevatorSim.getPositionMeters()));
 
-    leftSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
-    rightSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
+    leftSim.setRawRotorPosition(
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters()))
+            * gearing);
+    rightSim.setRawRotorPosition(
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters()))
+            * gearing);
+
+    leftSim.setRotorVelocity(
+        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
+    rightSim.setRotorVelocity(
+        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
+
+    elevatorSim.update(0.02);
   }
 }
