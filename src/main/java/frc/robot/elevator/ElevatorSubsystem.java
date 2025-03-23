@@ -215,7 +215,7 @@ private static double distanceToRotations(double dist) {
           DCMotor.getKrakenX60(2),
           RobotConfig.get().elevator().leftMotorConfig().Feedback.SensorToMechanismRatio,
           999,
-          999,
+          1.274,
           RobotConfig.get().elevator().minHeight(),
           RobotConfig.get().elevator().maxHeight(),
           true,
@@ -232,7 +232,7 @@ private static double distanceToRotations(double dist) {
     elevatorSim.setInputVoltage((leftSim.getMotorVoltage() + rightSim.getMotorVoltage()) / 2.0);
     elevatorSim.update(0.02);
 
-    // TODO: Handle drum radius
-    leftSim.setRawRotorPosition(Units.metersToInches(elevatorSim.getPositionMeters()));
+    leftSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
+    rightSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
   }
 }
