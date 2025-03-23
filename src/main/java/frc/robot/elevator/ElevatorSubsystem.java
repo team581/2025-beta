@@ -6,7 +6,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.config.FeatureFlags;
 import frc.robot.config.RobotConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
@@ -207,5 +211,31 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
       // Since the next state is same setpoint, different arm angle
       default -> MathUtil.isNear(getState().height, averageMeasuredHeight, TOLERANCE);
     };
+  }
+
+  private final ElevatorSim elevatorSim =
+      new ElevatorSim(
+          DCMotor.getKrakenX60(2),
+          RobotConfig.get().elevator().leftMotorConfig().Feedback.SensorToMechanismRatio,
+          999,
+          999,
+          RobotConfig.get().elevator().minHeight(),
+          RobotConfig.get().elevator().maxHeight(),
+          true,
+          RobotConfig.get().elevator().minHeight());
+
+  @Override
+  public void simulationPeriodic() {
+    var leftSim = leftMotor.getSimState();
+    var rightSim = rightMotor.getSimState();
+
+    leftSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+    rightSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    elevatorSim.setInputVoltage((leftSim.getMotorVoltage() + rightSim.getMotorVoltage()) / 2.0);
+    elevatorSim.update(0.02);
+
+    // TODO: Handle drum radius
+    leftSim.setRawRotorPosition(Units.metersToInches(elevatorSim.getPositionMeters()));
   }
 }
