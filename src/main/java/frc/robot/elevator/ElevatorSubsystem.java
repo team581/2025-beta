@@ -225,7 +225,9 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
           true,
           RobotConfig.get().elevator().minHeight());
 
-  private final double gearing = RobotConfig.get().elevator().rightMotorConfig().Feedback.SensorToMechanismRatio;
+  private final double gearing =
+      RobotConfig.get().elevator().rightMotorConfig().Feedback.SensorToMechanismRatio;
+
   @Override
   public void simulationPeriodic() {
     var leftSim = leftMotor.getSimState();
@@ -238,18 +240,21 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
     rightSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     elevatorSim.setInputVoltage((leftSim.getMotorVoltage() + rightSim.getMotorVoltage()) / 2.0);
-    elevatorSim.setState(elevatorSim.getPositionMeters(), rotationsToDistance(positionRequest.Position) - Units.metersToInches(elevatorSim.getPositionMeters()));
+    elevatorSim.setState(
+        elevatorSim.getPositionMeters(),
+        rotationsToDistance(positionRequest.Position)
+            - Units.metersToInches(elevatorSim.getPositionMeters()));
 
     leftSim.setRawRotorPosition(
-        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters()))
-            * gearing);
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())) * gearing);
     rightSim.setRawRotorPosition(
-        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters()))
-            * gearing);
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())) * gearing);
 
     leftSim.setRotorVelocity(
-        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
+        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()))
+            * gearing);
     rightSim.setRotorVelocity(
-        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond())) * gearing);
+        distanceToRotations(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()))
+            * gearing);
   }
 }
