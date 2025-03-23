@@ -235,7 +235,9 @@ public class ElevatorSubsystem extends StateMachine<ElevatorState> {
     elevatorSim.setInputVoltage((leftSim.getMotorVoltage() + rightSim.getMotorVoltage()) / 2.0);
     elevatorSim.update(0.02);
 
-    leftSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
-    rightSim.setRawRotorPosition(distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
+    leftSim.setRawRotorPosition(
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
+    rightSim.setRawRotorPosition(
+        distanceToRotations(Units.metersToInches(elevatorSim.getPositionMeters())));
   }
 }
