@@ -75,6 +75,20 @@ public class FieldCalibrationUtil {
     return new Summary(elevatorState, armState, alignOk, headingOk);
   }
 
+  private Summary createSummary(ReefPipeLevel level, ScoringPosition position) {
+    var actualElevator = elevator.getHeight();
+    var actualArm = arm.getAngle();
+
+    var wantedElevator = branchToElevator(level, position.side());
+    var wantedArm = branchToArm(level, position.side());
+
+    var wantedPose = position.getPose(level);
+    var actualPose = localization.getPose();
+
+    return createSummary(
+        wantedElevator, actualElevator, wantedArm, actualArm, wantedPose, actualPose);
+  }
+
   private static ElevatorState branchToElevator(ReefPipeLevel level, RobotScoringSide side) {
     return switch (level) {
       case L2 ->
@@ -154,7 +168,7 @@ public class FieldCalibrationUtil {
         anyOk ? LightsState.SCORE_ALIGN_READY : LightsState.SCORE_ALIGN_NOT_READY);
   }
 
-  private void logAllScoringPositions(boolean isRedAlliance, RobotScoringSide side) {
+  private static void logAllScoringPositions(boolean isRedAlliance, RobotScoringSide side) {
     var allianceLabel = isRedAlliance ? "Red" : "Blue";
     var sideLabel = side == RobotScoringSide.LEFT ? "Left" : "Right";
 
@@ -165,20 +179,6 @@ public class FieldCalibrationUtil {
             pipe.getPose(level, isRedAlliance, side));
       }
     }
-  }
-
-  private Summary createSummary(ReefPipeLevel level, ScoringPosition position) {
-    var actualElevator = elevator.getHeight();
-    var actualArm = arm.getAngle();
-
-    var wantedElevator = branchToElevator(level, position.side());
-    var wantedArm = branchToArm(level, position.side());
-
-    var wantedPose = position.getPose(level);
-    var actualPose = localization.getPose();
-
-    return createSummary(
-        wantedElevator, actualElevator, wantedArm, actualArm, wantedPose, actualPose);
   }
 
   private ScoringPosition getBestScoringPosition(ReefPipeLevel level) {
