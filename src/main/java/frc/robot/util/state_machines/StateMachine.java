@@ -7,10 +7,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.util.scheduling.LifecycleSubsystem;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
 import frc.robot.util.scheduling.SubsystemPriority;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /** A state machine backed by {@link LifecycleSubsystem}. */
 public abstract class StateMachine<S extends Enum<S>> extends LifecycleSubsystem {
+  private final Queue<PeriodicInput<?>> periodicInputs = new ArrayDeque<>();
   private S state;
   private boolean isInitialized = false;
   private double lastTransitionTimestamp = Timer.getFPGATimestamp();
@@ -37,6 +41,9 @@ public abstract class StateMachine<S extends Enum<S>> extends LifecycleSubsystem
       isInitialized = true;
     }
 
+    for (var input : periodicInputs) {
+      input.calculate();
+    }
     collectInputs();
 
     setStateFromRequest(getNextState(state));
@@ -135,6 +142,19 @@ public abstract class StateMachine<S extends Enum<S>> extends LifecycleSubsystem
     var currentStateDuration = Timer.getFPGATimestamp() - lastTransitionTimestamp;
 
     return currentStateDuration > duration;
+  }
+
+  /**
+   * Returns a wrapped supplier that ensures a value is only calculated once per loop.
+   *
+   * @param <T> The type of the supplier.
+   * @param supplier The supplier to use to calculate the value.
+   * @param initialValue The initial value to use before the value is calculated.
+   */
+  protected <T> Supplier<T> periodicInput(Supplier<T> supplier, T initialValue) {
+    var input = new PeriodicInput<>(supplier, initialValue);
+    periodicInputs.add(input);
+    return input;
   }
 
   /** Run side effects that occur when a state transition happens. */
