@@ -69,7 +69,7 @@ public class AlignmentCostUtil {
     return distanceCost + driveAngleCost;
   }
 
-  public static final Comparator<Translation2d> ALIGN_COST_COMPARATOR;
+  public final Comparator<Translation2d> alignCostComparator;
 
   private final LocalizationSubsystem localization;
   private final SwerveSubsystem swerve;
@@ -90,7 +90,7 @@ public class AlignmentCostUtil {
     this.reefState = reefState;
     this.side = side;
 
-    ALIGN_COST_COMPARATOR =
+    alignCostComparator =
         Comparator.comparingDouble(
             translation ->
                 getAlignCost(
