@@ -331,6 +331,5 @@ public final class PracticeBotTunerConstants {
     }
   }
 
-
-private PracticeBotTunerConstants() {}
+  private PracticeBotTunerConstants() {}
 }

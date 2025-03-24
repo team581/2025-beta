@@ -1,6 +1,5 @@
 package frc.robot.vision.game_piece_detection;
 
-import com.google.errorprone.annotations.Var;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -82,7 +81,7 @@ public final class GamePieceDetectionUtil {
 
     double adjustedThetaY = limelightToRobotOffset.getRotation().getY() - newThetaY;
 
-    @Var double forwardOffset = 0;
+    double forwardOffset = 0;
     if (adjustedThetaY == 0) {
       forwardOffset = Math.abs(limelightToRobotOffset.getY());
     } else {
@@ -108,6 +107,5 @@ public final class GamePieceDetectionUtil {
         .plus(robotPose.getTranslation());
   }
 
-
-private GamePieceDetectionUtil() {}
+  private GamePieceDetectionUtil() {}
 }

@@ -60,6 +60,5 @@ public final class IntakeAssistUtil {
     return Optional.of(fieldRelativeIntakePose);
   }
 
-
-private IntakeAssistUtil() {}
+  private IntakeAssistUtil() {}
 }

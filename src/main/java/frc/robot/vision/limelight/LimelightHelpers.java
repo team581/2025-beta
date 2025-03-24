@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.errorprone.annotations.Var;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -806,8 +805,8 @@ public final class LimelightHelpers {
 
       rawDetections[i] =
           new RawDetection(
-              classId, txnc, tync, ta, corner0X, corner0Y, corner1X, corner1Y, corner2X,
-              corner2Y, corner3X, corner3Y);
+              classId, txnc, tync, ta, corner0X, corner0Y, corner1X, corner1Y, corner2X, corner2Y,
+              corner3X, corner3Y);
     }
 
     return rawDetections;
@@ -1272,7 +1271,7 @@ public final class LimelightHelpers {
    * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
    */
   public static PoseEstimate getBotPoseEstimate_wpiBlue(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_wpiblue", /* isMegaTag2= */false);
+    return getBotPoseEstimate(limelightName, "botpose_wpiblue", /* isMegaTag2= */ false);
   }
 
   /**
@@ -1281,7 +1280,7 @@ public final class LimelightHelpers {
    * setRobotOrientation() before calling this method.
    */
   public static PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue", /* isMegaTag2= */true);
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue", /* isMegaTag2= */ true);
   }
 
   /** Gets the Pose2d for easy use with Odometry vision pose estimator (addVisionMeasurement) */
@@ -1296,7 +1295,7 @@ public final class LimelightHelpers {
    * you are on the RED alliance
    */
   public static PoseEstimate getBotPoseEstimate_wpiRed(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_wpired", /* isMegaTag2= */false);
+    return getBotPoseEstimate(limelightName, "botpose_wpired", /* isMegaTag2= */ false);
   }
 
   /**
@@ -1304,7 +1303,7 @@ public final class LimelightHelpers {
    * you are on the RED alliance
    */
   public static PoseEstimate getBotPoseEstimate_wpiRed_MegaTag2(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_orb_wpired", /* isMegaTag2= */true);
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpired", /* isMegaTag2= */ true);
   }
 
   /** Gets the Pose2d for easy use with Odometry vision pose estimator (addVisionMeasurement) */
@@ -1438,7 +1437,7 @@ public final class LimelightHelpers {
       double roll,
       double rollRate) {
     setRobotOrientationInternal(
-        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */true);
+        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */ true);
   }
 
   public static void SetRobotOrientation_NoFlush(
@@ -1450,7 +1449,7 @@ public final class LimelightHelpers {
       double roll,
       double rollRate) {
     setRobotOrientationInternal(
-        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */false);
+        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */ false);
   }
 
   private static void setRobotOrientationInternal(
@@ -1528,7 +1527,7 @@ public final class LimelightHelpers {
    *     0 for pipeline control.
    */
   public static void SetFiducialDownscalingOverride(String limelightName, float downscale) {
-    @Var int d = 0; // pipeline
+    int d = 0; // pipeline
     if (downscale == 1.0) {
       d = 1;
     }
@@ -1628,10 +1627,11 @@ public final class LimelightHelpers {
   public static LimelightResults getLatestResults(String limelightName) {
 
     long start = System.nanoTime();
-    @Var LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
+    LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
     if (mapper == null) {
       mapper =
-          new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, /* state= */false);
+          new ObjectMapper()
+              .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, /* state= */ false);
     }
 
     try {
@@ -1650,6 +1650,5 @@ public final class LimelightHelpers {
     return results;
   }
 
-
-private LimelightHelpers() {}
+  private LimelightHelpers() {}
 }

@@ -1,7 +1,6 @@
 package frc.robot.lights;
 
 import com.ctre.phoenix.led.CANdle;
-import com.google.errorprone.annotations.Var;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -52,8 +51,8 @@ public class LightsSubsystem extends StateMachine<LightsState> {
       candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
     } else {
       double time = blinkTimer.get();
-      @Var double onDuration = 0;
-      @Var double offDuration = 0;
+      double onDuration = 0;
+      double offDuration = 0;
 
       if (usedState.pattern == BlinkPattern.BLINK_FAST) {
         onDuration = BlinkPattern.BLINK_FAST.duration;

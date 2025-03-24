@@ -1,6 +1,5 @@
 package frc.robot.autos.trackers.pure_pursuit;
 
-import com.google.errorprone.annotations.Var;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -113,11 +112,11 @@ public class PurePursuitUtils {
   public static Pose2d getTargetPose(
       Pose2d currentPose,
       List<AutoPoint> points,
-      @Var int currentPointIndex,
+      int currentPointIndex,
       double lookaheadDistance,
       Pose2d startingRobotPose) {
-    @Var var lastTargetWaypoint = Pose2d.kZero;
-    @Var var currentTargetWaypoint = Pose2d.kZero;
+    var lastTargetWaypoint = Pose2d.kZero;
+    var currentTargetWaypoint = Pose2d.kZero;
 
     if (points.isEmpty()) {
       return Pose2d.kZero;

@@ -57,8 +57,7 @@ public class LocalizationSubsystem extends StateMachine<LocalizationState> {
     latestResult = vision.getTagResult();
   }
 
-  
-public Pose2d getPose() {
+  public Pose2d getPose() {
     return swerve.getDrivetrainState().Pose;
   }
 
@@ -66,7 +65,6 @@ public Pose2d getPose() {
     var newTimestamp = Utils.fpgaToCurrentTime(timestamp);
     return swerve.drivetrain.samplePoseAt(newTimestamp).orElseGet(this::getPose);
   }
-
 
   public Pose2d getLookaheadPose(double lookahead) {
     return MathHelpers.poseLookahead(getPose(), swerve.getFieldRelativeSpeeds(), lookahead);

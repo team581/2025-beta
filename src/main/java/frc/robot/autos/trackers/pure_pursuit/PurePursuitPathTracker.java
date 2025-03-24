@@ -1,6 +1,5 @@
 package frc.robot.autos.trackers.pure_pursuit;
 
-import com.google.errorprone.annotations.Var;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -125,7 +124,7 @@ public class PurePursuitPathTracker implements PathTracker {
   }
 
   private void updateRotation() {
-    @Var var lastTargetPoint = Pose2d.kZero;
+    var lastTargetPoint = Pose2d.kZero;
     if (currentRobotFollowedPointIndex == 0) {
       lastTargetPoint = startingRobotPose;
     } else {
@@ -169,9 +168,10 @@ public class PurePursuitPathTracker implements PathTracker {
                   startingRobotPose,
                   points.get(0).poseSupplier.get(),
                   points.get(1).poseSupplier.get()),
-              /* immediateChnage= */false);
+              /* immediateChnage= */ false);
         } else {
-          requestNewLookaheadDistance(PurePursuitUtils.DYNAMIC_LOOKAHEAD_MAX, /* immediateChnage= */false);
+          requestNewLookaheadDistance(
+              PurePursuitUtils.DYNAMIC_LOOKAHEAD_MAX, /* immediateChnage= */ false);
         }
       } else if (getCurrentPointIndex() == points.size() - 1) {
         requestNewLookaheadDistance(
@@ -179,16 +179,16 @@ public class PurePursuitPathTracker implements PathTracker {
                 points.get(getCurrentPointIndex() - 2).poseSupplier.get(),
                 lastTargetWaypoint,
                 currentTargetWaypoint),
-            /* immediateChnage= */false);
+            /* immediateChnage= */ false);
       } else {
         var thirdPoint = points.get(getCurrentPointIndex() + 1).poseSupplier.get();
         requestNewLookaheadDistance(
             PurePursuitUtils.getDynamicLookaheadDistance(
                 lastTargetWaypoint, currentTargetWaypoint, thirdPoint),
-            /* immediateChnage= */false);
+            /* immediateChnage= */ false);
       }
     } else {
-      requestNewLookaheadDistance(NON_DYNAMIC_LOOKAHEAD_DISTANCE, /* immediateChnage= */true);
+      requestNewLookaheadDistance(NON_DYNAMIC_LOOKAHEAD_DISTANCE, /* immediateChnage= */ true);
     }
   }
 

@@ -46,6 +46,5 @@ public final class ControllerHelpers {
     }
   }
 
-
-private ControllerHelpers() {}
+  private ControllerHelpers() {}
 }

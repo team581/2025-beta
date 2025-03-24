@@ -5,7 +5,6 @@ import com.google.common.graph.ImmutableValueGraph;
 import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
-import com.google.errorprone.annotations.Var;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -141,7 +140,7 @@ public class CollisionAvoidance {
       Map<Waypoint, Waypoint> cameFrom, Waypoint endWaypoint) {
     Deque<Waypoint> totalPath = new ArrayDeque<Waypoint>();
     totalPath.add(endWaypoint);
-    @Var Waypoint current = endWaypoint;
+    Waypoint current = endWaypoint;
     while (cameFrom.containsKey(current)) {
       current = cameFrom.get(current);
       totalPath.addFirst(current);
@@ -168,7 +167,7 @@ public class CollisionAvoidance {
     Waypoint goalWaypoint = Waypoint.getClosest(desiredPosition);
 
     gscore.put(startWaypoint, 0.0);
-    @Var Waypoint current = Waypoint.STOWED;
+    Waypoint current = Waypoint.STOWED;
     while (!openSet.isEmpty()) {
       // current is equal to the waypoint in openset that has the smallest gscore
       var maybeCurrent =

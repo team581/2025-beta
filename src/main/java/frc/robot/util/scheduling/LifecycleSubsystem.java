@@ -1,6 +1,5 @@
 package frc.robot.util.scheduling;
 
-import com.google.errorprone.annotations.Var;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -25,7 +24,7 @@ public class LifecycleSubsystem extends SubsystemBase {
 
     LifecycleSubsystemManager.registerSubsystem(this);
 
-    @Var String name = this.getClass().getSimpleName();
+    String name = this.getClass().getSimpleName();
     name = name.substring(name.lastIndexOf('.') + 1);
     if (name.endsWith("Subsystem")) {
       name = name.substring(0, name.length() - "Subsystem".length());
@@ -58,7 +57,6 @@ public class LifecycleSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     Stopwatch.start(loggerName);
-    
 
     LifecycleStage stage = LifecycleSubsystemManager.getStage();
 

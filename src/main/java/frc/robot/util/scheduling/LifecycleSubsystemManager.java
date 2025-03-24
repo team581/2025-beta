@@ -40,7 +40,8 @@ public final class LifecycleSubsystemManager {
 
   private static final List<LifecycleSubsystem> subsystems = new ArrayList<>();
   private static final CommandScheduler commandScheduler = CommandScheduler.getInstance();
-  private static final ImmutableSet<Command> scheduledCommands = ImmutableSet.copyOf(getScheduledCommands());
+  private static final ImmutableSet<Command> scheduledCommands =
+      ImmutableSet.copyOf(getScheduledCommands());
 
   public static void ready() {
     subsystems.sort(
@@ -63,6 +64,5 @@ public final class LifecycleSubsystemManager {
     commandScheduler.unregisterSubsystem(subsystem);
   }
 
-
-private LifecycleSubsystemManager() {}
+  private LifecycleSubsystemManager() {}
 }

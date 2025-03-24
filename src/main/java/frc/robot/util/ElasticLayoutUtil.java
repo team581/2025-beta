@@ -37,6 +37,5 @@ public final class ElasticLayoutUtil {
     isServerRunning = false;
   }
 
-
-private ElasticLayoutUtil() {}
+  private ElasticLayoutUtil() {}
 }

@@ -6,7 +6,6 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-import com.google.errorprone.annotations.Var;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -184,13 +183,13 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   public void driveTeleop(double x, double y, double theta) {
     rawControllerXValue = x;
     rawControllerYValue = y;
-    @Var double leftY =
+    double leftY =
         -1.0
             * MathHelpers.signedExp(
                 ControllerHelpers.deadbandJoystickValue(y, LEFT_Y_DEADBAND), 2.0);
-    @Var double leftX =
+    double leftX =
         MathHelpers.signedExp(ControllerHelpers.deadbandJoystickValue(x, LEFT_X_DEADBAND), 2.0);
-    @Var double rightX =
+    double rightX =
         MathHelpers.signedExp(
             ControllerHelpers.deadbandJoystickValue(theta, RIGHT_X_DEADBAND), 2.0);
 
@@ -384,7 +383,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   }
 
   public void snapsDriveRequest(double snapAngle) {
-    snapsDriveRequest(snapAngle, /* teleopOnly= */false);
+    snapsDriveRequest(snapAngle, /* teleopOnly= */ false);
   }
 
   public void coralAlignmentDriveRequest() {
@@ -454,7 +453,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     simNotifier =
         new Notifier(
             () -> {
-               double currentTime = Utils.getCurrentTimeSeconds();
+              double currentTime = Utils.getCurrentTimeSeconds();
               double deltaTime = currentTime - lastSimTime;
               lastSimTime = currentTime;
 

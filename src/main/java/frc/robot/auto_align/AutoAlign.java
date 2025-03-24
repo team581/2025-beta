@@ -103,8 +103,7 @@ public class AutoAlign extends StateMachine<AutoAlignState> {
     }
   }
 
-  
-public static boolean isCloseToReefSide(
+  public static boolean isCloseToReefSide(
       Pose2d robotPose, Pose2d nearestReefSide, double thresholdMeters) {
     return robotPose.getTranslation().getDistance(nearestReefSide.getTranslation())
         < thresholdMeters;
@@ -120,7 +119,6 @@ public static boolean isCloseToReefSide(
         LINEAR_VELOCITY_TO_REEF_SIDE_DISTANCE_KS
             + LINEAR_VELOCITY_TO_REEF_SIDE_DISTANCE_KP * linearVelocity);
   }
-
 
   private static final double LINEAR_VELOCITY_TO_REEF_SIDE_DISTANCE_KS = 1.5;
   private static final double LINEAR_VELOCITY_TO_REEF_SIDE_DISTANCE_KP = 0.625;
@@ -186,7 +184,8 @@ public static boolean isCloseToReefSide(
     usedScoringPose = tagAlign.getUsedScoringPose(bestReefPipe);
     isAligned = tagAlign.isAligned(bestReefPipe);
     isAlignedDebounced = isAlignedDebouncer.calculate(isAligned);
-    tagAlignSpeeds = tagAlign.getPoseAlignmentChassisSpeeds(usedScoringPose, /* forwardOnly= */false);
+    tagAlignSpeeds =
+        tagAlign.getPoseAlignmentChassisSpeeds(usedScoringPose, /* forwardOnly= */ false);
     algaeAlignSpeeds =
         tagAlign.getAlgaeAlignmentSpeeds(ReefSide.fromPipe(bestReefPipe).getPose(robotScoringSide));
   }

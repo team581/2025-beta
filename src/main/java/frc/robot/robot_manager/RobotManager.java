@@ -251,7 +251,6 @@ public class RobotManager extends StateMachine<RobotState> {
 
       case CLIMBING_1_LINEUP ->
           climber.holdingCage() ? RobotState.CLIMBING_2_HANGING : currentState;
-      
     };
   }
 
@@ -1390,7 +1389,7 @@ public class RobotManager extends StateMachine<RobotState> {
   private boolean latestUnsafe = false;
 
   private void moveSuperstructure(ElevatorState elevatorGoal, ArmState armGoal) {
-    moveSuperstructure(elevatorGoal, armGoal, /* unsafe= */false);
+    moveSuperstructure(elevatorGoal, armGoal, /* unsafe= */ false);
   }
 
   private void moveSuperstructure(ElevatorState elevatorGoal, ArmState armGoal, boolean unsafe) {

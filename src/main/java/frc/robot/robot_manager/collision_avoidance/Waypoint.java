@@ -1,7 +1,6 @@
 package frc.robot.robot_manager.collision_avoidance;
 
 import com.google.common.graph.MutableValueGraph;
-import com.google.errorprone.annotations.Var;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.robot_manager.SuperstructurePosition;
@@ -58,8 +57,8 @@ public enum Waypoint {
    * @param position The position of the superstructure.
    */
   public static Waypoint getClosest(SuperstructurePosition position) {
-    @Var Waypoint closestWaypoint = STOWED;
-    @Var double closestDistance = Double.MAX_VALUE;
+    Waypoint closestWaypoint = STOWED;
+    double closestDistance = Double.MAX_VALUE;
     Translation2d point = position.getTranslation();
 
     for (int i = 0; Waypoint.values().length > i; i++) {

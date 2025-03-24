@@ -331,6 +331,5 @@ public final class CompBotTunerConstants {
     }
   }
 
-
-private CompBotTunerConstants() {}
+  private CompBotTunerConstants() {}
 }

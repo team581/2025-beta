@@ -1,6 +1,5 @@
 package frc.robot.autos;
 
-import com.google.errorprone.annotations.Var;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.autos.constraints.AutoConstraintOptions;
 import frc.robot.util.PoseErrorTolerance;
@@ -67,7 +66,7 @@ public class AutoSegment {
   public double getRemainingDistance(Pose2d robotPose, int currentIndex) {
     var remainingPoints = points.subList(currentIndex, points.size());
 
-    @Var var distance = 0.0;
+    var distance = 0.0;
 
     for (var i = 0; i < remainingPoints.size(); i++) {
       var previous = i == 0 ? robotPose : remainingPoints.get(i - 1).poseSupplier.get();
