@@ -9,7 +9,7 @@ import java.util.List;
 public class HeuristicPathTracker implements PathTracker {
   private List<AutoPoint> points = List.of();
   private Pose2d currentPose = Pose2d.kZero;
-  private final double proximityRadius = 0.5;
+  private static final double PROXIMITY_RADIUS = 0.5;
   private int currentPointIndex = 0;
 
   @Override
@@ -34,7 +34,7 @@ public class HeuristicPathTracker implements PathTracker {
     double distanceToTarget =
         currentPose.getTranslation().getDistance(currentTargetPose.getTranslation());
 
-    if (distanceToTarget < proximityRadius && currentPointIndex < points.size() - 1) {
+    if (distanceToTarget < PROXIMITY_RADIUS && currentPointIndex < points.size() - 1) {
       currentPointIndex++;
     }
 

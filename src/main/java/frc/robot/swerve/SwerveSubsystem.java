@@ -99,7 +99,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   private ChassisSpeeds autoAlignAutoSpeeds = new ChassisSpeeds();
 
   private final ChassisSpeeds previousSpeeds = new ChassisSpeeds();
-  private final double previousTimestamp = 0.0;
+  private static final double PREVIOUS_TIMESTAMP = 0.0;
   private double teleopSlowModePercent = 0.0;
   private double rawControllerXValue = 0.0;
   private double rawControllerYValue = 0.0;
