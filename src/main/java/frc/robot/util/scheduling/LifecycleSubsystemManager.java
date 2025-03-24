@@ -1,6 +1,5 @@
 package frc.robot.util.scheduling;
 
-import com.google.common.collect.ImmutableSet;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,8 +39,7 @@ public final class LifecycleSubsystemManager {
 
   private static final List<LifecycleSubsystem> subsystems = new ArrayList<>();
   private static final CommandScheduler commandScheduler = CommandScheduler.getInstance();
-  private static final ImmutableSet<Command> scheduledCommands =
-      ImmutableSet.copyOf(getScheduledCommands());
+  private static final Set<Command> scheduledCommands = getScheduledCommands();
 
   public static void ready() {
     subsystems.sort(
