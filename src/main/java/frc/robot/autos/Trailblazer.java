@@ -43,7 +43,7 @@ public class Trailblazer {
   }
 
   public Command followSegment(AutoSegment segment) {
-    return followSegment(segment, /* shouldEnd= */ true);
+    return followSegment(segment, true);
   }
 
   public Command followSegment(AutoSegment segment, boolean shouldEnd) {

@@ -383,7 +383,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   }
 
   public void snapsDriveRequest(double snapAngle) {
-    snapsDriveRequest(snapAngle, /* teleopOnly= */ false);
+    snapsDriveRequest(snapAngle, false);
   }
 
   public void coralAlignmentDriveRequest() {

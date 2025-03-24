@@ -131,11 +131,7 @@ class CompConfig {
                       new TorqueCurrentConfigs()
                           .withPeakForwardTorqueCurrent(80.0)
                           .withPeakReverseTorqueCurrent(80.0))),
-          new SwerveConfig(
-              new PhoenixPIDController(5.75, 0, 0),
-              /* invertRotation= */ true,
-              /* invertX= */ true,
-              /* invertY= */ true),
+          new SwerveConfig(new PhoenixPIDController(5.75, 0, 0), true, true, true),
           new VisionConfig(
               4,
               0.05,

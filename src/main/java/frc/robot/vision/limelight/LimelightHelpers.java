@@ -1271,7 +1271,7 @@ public final class LimelightHelpers {
    * (addVisionMeasurement) in the WPILib Blue alliance coordinate system.
    */
   public static PoseEstimate getBotPoseEstimate_wpiBlue(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_wpiblue", /* isMegaTag2= */ false);
+    return getBotPoseEstimate(limelightName, "botpose_wpiblue", false);
   }
 
   /**
@@ -1280,7 +1280,7 @@ public final class LimelightHelpers {
    * setRobotOrientation() before calling this method.
    */
   public static PoseEstimate getBotPoseEstimate_wpiBlue_MegaTag2(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue", /* isMegaTag2= */ true);
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpiblue", true);
   }
 
   /** Gets the Pose2d for easy use with Odometry vision pose estimator (addVisionMeasurement) */
@@ -1295,7 +1295,7 @@ public final class LimelightHelpers {
    * you are on the RED alliance
    */
   public static PoseEstimate getBotPoseEstimate_wpiRed(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_wpired", /* isMegaTag2= */ false);
+    return getBotPoseEstimate(limelightName, "botpose_wpired", false);
   }
 
   /**
@@ -1303,7 +1303,7 @@ public final class LimelightHelpers {
    * you are on the RED alliance
    */
   public static PoseEstimate getBotPoseEstimate_wpiRed_MegaTag2(String limelightName) {
-    return getBotPoseEstimate(limelightName, "botpose_orb_wpired", /* isMegaTag2= */ true);
+    return getBotPoseEstimate(limelightName, "botpose_orb_wpired", true);
   }
 
   /** Gets the Pose2d for easy use with Odometry vision pose estimator (addVisionMeasurement) */
@@ -1437,7 +1437,7 @@ public final class LimelightHelpers {
       double roll,
       double rollRate) {
     setRobotOrientationInternal(
-        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */ true);
+        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, true);
   }
 
   public static void SetRobotOrientation_NoFlush(
@@ -1449,7 +1449,7 @@ public final class LimelightHelpers {
       double roll,
       double rollRate) {
     setRobotOrientationInternal(
-        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, /* flush= */ false);
+        limelightName, yaw, yawRate, pitch, pitchRate, roll, rollRate, false);
   }
 
   private static void setRobotOrientationInternal(
@@ -1630,8 +1630,7 @@ public final class LimelightHelpers {
     LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
     if (mapper == null) {
       mapper =
-          new ObjectMapper()
-              .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, /* state= */ false);
+          new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     try {

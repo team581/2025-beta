@@ -1389,7 +1389,7 @@ public class RobotManager extends StateMachine<RobotState> {
   private boolean latestUnsafe = false;
 
   private void moveSuperstructure(ElevatorState elevatorGoal, ArmState armGoal) {
-    moveSuperstructure(elevatorGoal, armGoal, /* unsafe= */ false);
+    moveSuperstructure(elevatorGoal, armGoal, false);
   }
 
   private void moveSuperstructure(ElevatorState elevatorGoal, ArmState armGoal, boolean unsafe) {

@@ -168,10 +168,9 @@ public class PurePursuitPathTracker implements PathTracker {
                   startingRobotPose,
                   points.get(0).poseSupplier.get(),
                   points.get(1).poseSupplier.get()),
-              /* immediateChnage= */ false);
+              false);
         } else {
-          requestNewLookaheadDistance(
-              PurePursuitUtils.DYNAMIC_LOOKAHEAD_MAX, /* immediateChnage= */ false);
+          requestNewLookaheadDistance(PurePursuitUtils.DYNAMIC_LOOKAHEAD_MAX, false);
         }
       } else if (getCurrentPointIndex() == points.size() - 1) {
         requestNewLookaheadDistance(
@@ -179,16 +178,16 @@ public class PurePursuitPathTracker implements PathTracker {
                 points.get(getCurrentPointIndex() - 2).poseSupplier.get(),
                 lastTargetWaypoint,
                 currentTargetWaypoint),
-            /* immediateChnage= */ false);
+            false);
       } else {
         var thirdPoint = points.get(getCurrentPointIndex() + 1).poseSupplier.get();
         requestNewLookaheadDistance(
             PurePursuitUtils.getDynamicLookaheadDistance(
                 lastTargetWaypoint, currentTargetWaypoint, thirdPoint),
-            /* immediateChnage= */ false);
+            false);
       }
     } else {
-      requestNewLookaheadDistance(NON_DYNAMIC_LOOKAHEAD_DISTANCE, /* immediateChnage= */ true);
+      requestNewLookaheadDistance(NON_DYNAMIC_LOOKAHEAD_DISTANCE, true);
     }
   }
 

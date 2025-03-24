@@ -1,13 +1,13 @@
 package frc.robot.auto_align;
 
 public enum ReefAlignState {
-  ALL_CAMERAS_DEAD(/* aligned= */ false),
+  ALL_CAMERAS_DEAD(false),
 
   // Checking based on tags
-  NO_TAGS_WRONG_POSITION(/* aligned= */ false),
-  NO_TAGS_IN_POSITION(/* aligned= */ true),
-  HAS_TAGS_WRONG_POSITION(/* aligned= */ false),
-  HAS_TAGS_IN_POSITION(/* aligned= */ true);
+  NO_TAGS_WRONG_POSITION(false),
+  NO_TAGS_IN_POSITION(true),
+  HAS_TAGS_WRONG_POSITION(false),
+  HAS_TAGS_IN_POSITION(true);
 
   public final boolean aligned;
 

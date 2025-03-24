@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
       new ElevatorSubsystem(hardware.elevatorLeftMotor, hardware.elevatorRightMotor);
   private final Trailblazer trailblazer = new Trailblazer(swerve, localization);
   private final RumbleControllerSubsystem rumbleController =
-      new RumbleControllerSubsystem(hardware.driverController, /* matchTimeRumble= */ true);
+      new RumbleControllerSubsystem(hardware.driverController, true);
 
   private final ClawSubsystem claw = new ClawSubsystem(hardware.clawMotor, hardware.clawCandi);
   private final IntakeSubsystem intake =
