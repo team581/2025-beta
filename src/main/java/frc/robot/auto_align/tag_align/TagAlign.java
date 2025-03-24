@@ -14,12 +14,11 @@ import frc.robot.auto_align.ReefState;
 import frc.robot.auto_align.RobotScoringSide;
 import frc.robot.localization.LocalizationSubsystem;
 import frc.robot.swerve.SwerveSubsystem;
-import java.util.List;
 import java.util.Optional;
 
 public class TagAlign {
   private static final ImmutableList<ReefPipe> ALL_REEF_PIPES =
-      ImmutableList.copyOf(List.of(ReefPipe.values()));
+      ImmutableList.copyOf(ReefPipe.values());
 
   private static final PIDController TAG_SIDEWAYS_PID = new PIDController(6.0, 0.0, 0.0);
   private static final PIDController TAG_FORWARD_PID = new PIDController(3.0, 0.0, 0.0);

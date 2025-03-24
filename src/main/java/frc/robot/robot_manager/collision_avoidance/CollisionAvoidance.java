@@ -3,7 +3,6 @@ package frc.robot.robot_manager.collision_avoidance;
 import com.google.common.graph.ElementOrder;
 import com.google.common.graph.ImmutableValueGraph;
 import com.google.common.graph.MutableValueGraph;
-import com.google.common.graph.ValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.ArrayDeque;
@@ -17,7 +16,7 @@ import java.util.Set;
 
 public class CollisionAvoidance {
 
-  private static final ValueGraph<Waypoint, WaypointEdge> graph = createGraph();
+  private static final ImmutableValueGraph<Waypoint, WaypointEdge> graph = createGraph();
 
   /**
    * Returns an {@link Optional} containing the next {@link Waypoint} in the graph to go to. Returns
@@ -202,7 +201,7 @@ public class CollisionAvoidance {
   }
 
   /** Don't use this. */
-  static ValueGraph<Waypoint, WaypointEdge> getRawGraph() {
+  static ImmutableValueGraph<Waypoint, WaypointEdge> getRawGraph() {
     return graph;
   }
 
