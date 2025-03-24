@@ -34,18 +34,18 @@ public class ClimberSubsystem extends StateMachine<ClimberState> {
   private boolean holdingCage = false;
 
   public ClimberSubsystem(
-      TalonFX climbMotor, CANcoder encoder, TalonFX grabMotor, CANrange canrange) {
+      TalonFX climbMotor, CANcoder encoder, TalonFX grabMotor, CANrange canRange) {
     super(SubsystemPriority.CLIMBER, ClimberState.STOWED);
 
     this.climbMotor = climbMotor;
     this.encoder = encoder;
     this.grabMotor = grabMotor;
-    this.canRange = canrange;
+    this.canRange = canRange;
 
     climbMotor.getConfigurator().apply(RobotConfig.get().climber().climbMotorConfig());
     encoder.getConfigurator().apply(RobotConfig.get().climber().cancoderConfig());
     grabMotor.getConfigurator().apply(RobotConfig.get().climber().grabMotorConfig());
-    canrange.getConfigurator().apply(RobotConfig.get().climber().canRangeConfig());
+    canRange.getConfigurator().apply(RobotConfig.get().climber().canRangeConfig());
 
     DogLog.log("Climber/DirectionBad", climberDirectionBad);
   }
