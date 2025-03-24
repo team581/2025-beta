@@ -25,7 +25,6 @@ import frc.robot.util.MathHelpers;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 import java.util.Map;
-import org.jspecify.annotations.Nullable;
 
 public class SwerveSubsystem extends StateMachine<SwerveState> {
   public static final double MaxSpeed = 4.75;
@@ -81,7 +80,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
           .withMaxAbsRotationalRate(maxAngularRate);
 
   private double lastSimTime;
-  private @Nullable Notifier simNotifier = null;
+  private Notifier simNotifier = null;
 
   private SwerveDriveState drivetrainState = new SwerveDriveState();
   private ChassisSpeeds robotRelativeSpeeds = new ChassisSpeeds();

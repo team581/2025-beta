@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.util.Stopwatch;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Extends {@link SubsystemBase} by adding in lifecycle methods for robotInit, teleopPeriodic, etc.,
@@ -17,7 +16,7 @@ public class LifecycleSubsystem extends SubsystemBase {
 
   protected final String subsystemName;
 
-  private @Nullable LifecycleStage previousStage = null;
+  private LifecycleStage previousStage = null;
 
   public LifecycleSubsystem(SubsystemPriority priority) {
     this.priority = priority;

@@ -131,7 +131,7 @@ tasks.withType(JavaCompile).configureEach {
 	// A regular expression pattern (as a string) of file paths to exclude from Error Prone checking
 	options.errorprone.excludedPaths = "LimelightHelpers.java"
 
-	options.errorprone.disable("InlineMeSuggester", "ImmutableEnumChecker", "UnusedVariable", "InconsistentCapitalization", "Var", "BooleanParameter", "Java7ApiChecker", "Java8ApiChecker", "ImmutableMemberCollection")
+	options.errorprone.disable("InlineMeSuggester", "ImmutableEnumChecker", "UnusedVariable", "InconsistentCapitalization", "Var", "BooleanParameter", "Java7ApiChecker", "Java8ApiChecker", "ImmutableMemberCollection", "ReturnMissingNullable", "FieldMissingNullable", "ParameterMissingNullable", "EqualsMissingNullable")
 
 	// Set the ERRORPRONE_AUTOFIX environment variable to fix files in place
 	if (System.getenv().containsKey("ERRORPRONE_AUTOFIX")) {
