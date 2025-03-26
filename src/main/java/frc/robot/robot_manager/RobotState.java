@@ -140,8 +140,8 @@ public enum RobotState {
   CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
   CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
 
-  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_STOW(ClawGamePiece.CORAL, true, false),
-  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_STOW(ClawGamePiece.CORAL, true, false),
+  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
   /** Coral is being handed off to the claw, will go back to lineup */
   CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
   CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
@@ -272,12 +272,183 @@ public enum RobotState {
           Map.entry(CLAW_ALGAE_DEPLOY_CORAL, ALGAE_OUTTAKE_DEPLOY_CORAL),
           Map.entry(CLAW_EMPTY_DEPLOY_CORAL, ALGAE_OUTTAKE_DEPLOY_CORAL));
 
-  private static final ImmutableMap<RobotState, RobotState> multiScoreLeft =
+  private static final ImmutableMap<RobotState, RobotState> multiscoreHandoffReadyToPrepareHandoff =
       ImmutableMap.ofEntries(
-          Map.entry(CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE, ALGAE_OUTTAKE_DEPLOY_EMPTY));
-  private static final ImmutableMap<RobotState, RobotState> multiScoreRight =
+          Map.entry(
+              CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF));
+
+  private static final ImmutableMap<RobotState, RobotState> multiscoreToPrepareHandoff =
       ImmutableMap.ofEntries(
-          Map.entry(CLAW_CORAL_DEPLOY_EMPTY, ALGAE_OUTTAKE_DEPLOY_EMPTY));
+          Map.entry(
+              CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF),
+          Map.entry(
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF));
+
+  private static final ImmutableMap<RobotState, RobotState> multiscoreToReleaseAndHandoff =
+      ImmutableMap.ofEntries(
+          Map.entry(
+              CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF));
+
+  private static final ImmutableMap<RobotState, RobotState> multiscoreToIntakeAndHandoff =
+      ImmutableMap.ofEntries(
+          Map.entry(
+              CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF),
+          Map.entry(
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF));
+
+  private static final ImmutableMap<RobotState, RobotState>
+      multiscorePrepareHandoffToReleaseToLineup =
+          ImmutableMap.ofEntries(
+              Map.entry(
+                  CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(
+                  CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF),
+              Map.entry(CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF, CORAL_L1_LEFT_LINEUP),
+              Map.entry(CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF, CORAL_L2_LEFT_LINEUP),
+              Map.entry(CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF, CORAL_L3_LEFT_LINEUP),
+              Map.entry(CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF, CORAL_L4_LEFT_LINEUP),
+              Map.entry(CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF, CORAL_L1_RIGHT_LINEUP),
+              Map.entry(CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF, CORAL_L2_RIGHT_LINEUP),
+              Map.entry(CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF, CORAL_L3_RIGHT_LINEUP),
+              Map.entry(CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF, CORAL_L4_RIGHT_LINEUP));
+  private static final ImmutableMap<RobotState, RobotState> multiscoreAfterReleaseStates =
+      ImmutableMap.ofEntries(
+          Map.entry(CORAL_L1_LEFT_RELEASE, CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L2_LEFT_RELEASE, CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L3_LEFT_RELEASE, CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L4_LEFT_RELEASE, CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L1_LEFT_RELEASE, CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L2_LEFT_RELEASE, CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L3_LEFT_RELEASE, CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE),
+          Map.entry(CORAL_L4_LEFT_RELEASE, CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE));
 
   public RobotState getLineupToReleaseState() {
     return lineupToRelease.getOrDefault(this, this);
@@ -315,12 +486,38 @@ public enum RobotState {
     return map.getOrDefault(this, this);
   }
 
-  public RobotState getNextMultiscoreState(RobotScoringSide scoringSide) {
-    var map =
-        scoringSide == RobotScoringSide.LEFT
-            ? multiScoreLeft
-            : multiScoreRight;
+  public RobotState getAfterMultiscoreState(boolean clawGP, boolean intakeGP) {
+    ImmutableMap<RobotState, RobotState> map;
+    if (clawGP) {
+      if (intakeGP) {
+        // Claw has not released coral and intake has coral, get deploy ready for handoff
+        map = multiscoreToReleaseAndHandoff;
+      } else {
+        // Both the claw and intake aren't ready to transition
+        return this;
+      }
+    } else {
+      if (intakeGP) {
+        // Claw has released coral and intake has coral, start handoff
+        map = multiscoreToPrepareHandoff;
+      } else {
+        // Claw is has released coral and intake hasn't gotten any coral, get claw ready for handoff
+        map = multiscoreToIntakeAndHandoff;
+      }
+    }
     return map.getOrDefault(this, this);
+  }
+
+  public RobotState getAfterMultiscoreHalfStageState() {
+    return multiscoreHandoffReadyToPrepareHandoff.getOrDefault(this, this);
+  }
+
+  public RobotState getAfterMultiscoreHandoffState() {
+    return multiscorePrepareHandoffToReleaseToLineup.getOrDefault(this, this);
+  }
+
+  public RobotState getMultiscoreState() {
+    return multiscoreAfterReleaseStates.getOrDefault(this, this);
   }
 
   public RobotState getDeployScorePrepareToRelease() {

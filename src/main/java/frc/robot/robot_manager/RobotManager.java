@@ -121,8 +121,10 @@ public class RobotManager extends StateMachine<RobotState> {
               ALGAE_OUTTAKE_DEPLOY_CORAL ->
           currentState;
 
-      case MULTICORAL_OUTTAKE_PREPARE -> elevator.atGoal() && arm.atGoal() ? RobotState.MULTICORAL_OUTTAKE_RELEASE : currentState;
-      case MULTICORAL_OUTTAKE_RELEASE -> !claw.getHasGP() ? RobotState.CLAW_EMPTY_DEPLOY_CORAL : currentState;
+      case MULTICORAL_OUTTAKE_PREPARE ->
+          elevator.atGoal() && arm.atGoal() ? RobotState.MULTICORAL_OUTTAKE_RELEASE : currentState;
+      case MULTICORAL_OUTTAKE_RELEASE ->
+          !claw.getHasGP() ? RobotState.CLAW_EMPTY_DEPLOY_CORAL : currentState;
 
       case REHOME_ELEVATOR ->
           elevator.getState() == ElevatorState.STOWED
@@ -196,19 +198,60 @@ public class RobotManager extends StateMachine<RobotState> {
       }
 
       // Multiscore states
-      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
-      CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
-      CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
-      CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
-        if (!claw.getHasGP() && !intake.getHasGP()) {
-          yield RobotState.CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF;
-        } else if (!claw.getHasGP() && intake.getHasGP()) {
-          yield RobotState.CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF;
-        } else if (claw.getHasGP() && intake.getHasGP()) {
-          yield RobotState.CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF;
-        }
-        yield currentState;
-      }
+      // entered if the driver intakes while scoring in release
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE ->
+          currentState.getAfterMultiscoreState(claw.getHasGP(), intake.getHasGP());
+
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF ->
+          !claw.getHasGP() && intake.getHasGP()
+              ? currentState.getAfterMultiscoreHalfStageState()
+              : currentState;
+
+      case CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF ->
+          deploy.atGoal() && elevator.atGoal() && arm.atGoal()
+              ? currentState.getAfterMultiscoreHandoffState()
+              : currentState;
+
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF ->
+          claw.getHasGP() && !intake.getHasGP()
+              ? currentState.getAfterMultiscoreHandoffState()
+              : currentState;
 
       // Algae scoring
       case ALGAE_PROCESSOR_RELEASE_DEPLOY_CORAL,
@@ -1074,25 +1117,81 @@ public class RobotManager extends StateMachine<RobotState> {
     reefSnapAngle = autoAlign.getUsedScoringPose().getRotation().getDegrees();
     scoringLevel =
         switch (getState()) {
-          case CORAL_L1_LEFT_LINEUP,
-                  CORAL_L1_RIGHT_LINEUP,
+          case CORAL_L1_DEPLOY_PREPARE_CLAW_ALGAE,
+                  CORAL_L1_DEPLOY_PREPARE_CLAW_EMPTY,
+                  CORAL_L1_DEPLOY_SCORE_CLAW_ALGAE,
+                  CORAL_L1_DEPLOY_SCORE_CLAW_EMPTY,
+                  CORAL_L1_PREPARE_HANDOFF,
+                  CORAL_L1_RELEASE_HANDOFF,
+                  CORAL_L1_APPROACH,
+                  CORAL_L1_LEFT_LINEUP,
                   CORAL_L1_LEFT_RELEASE,
-                  CORAL_L1_RIGHT_RELEASE ->
+                  CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF,
+                  CORAL_L1_RIGHT_LINEUP,
+                  CORAL_L1_RIGHT_RELEASE,
+                  CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF ->
               ReefPipeLevel.L1;
-          case CORAL_L2_LEFT_LINEUP,
-                  CORAL_L2_RIGHT_LINEUP,
+          case CORAL_L2_PREPARE_HANDOFF,
+                  CORAL_L2_RELEASE_HANDOFF,
+                  CORAL_L2_APPROACH,
+                  CORAL_L2_LEFT_LINEUP,
                   CORAL_L2_LEFT_RELEASE,
-                  CORAL_L2_RIGHT_RELEASE ->
+                  CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF,
+                  CORAL_L2_RIGHT_LINEUP,
+                  CORAL_L2_RIGHT_RELEASE,
+                  CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF ->
               ReefPipeLevel.L2;
-          case CORAL_L3_LEFT_LINEUP,
-                  CORAL_L3_RIGHT_LINEUP,
+          case CORAL_L3_PREPARE_HANDOFF,
+                  CORAL_L3_RELEASE_HANDOFF,
+                  CORAL_L3_APPROACH,
+                  CORAL_L3_LEFT_LINEUP,
                   CORAL_L3_LEFT_RELEASE,
-                  CORAL_L3_RIGHT_RELEASE ->
+                  CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF,
+                  CORAL_L3_RIGHT_LINEUP,
+                  CORAL_L3_RIGHT_RELEASE,
+                  CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF ->
               ReefPipeLevel.L3;
-          case CORAL_L4_LEFT_LINEUP,
-                  CORAL_L4_RIGHT_LINEUP,
+          case CORAL_L4_PREPARE_HANDOFF,
+                  CORAL_L4_RELEASE_HANDOFF,
+                  CORAL_L4_APPROACH,
+                  CORAL_L4_LEFT_LINEUP,
                   CORAL_L4_LEFT_RELEASE,
-                  CORAL_L4_RIGHT_RELEASE ->
+                  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF,
+                  CORAL_L4_RIGHT_LINEUP,
+                  CORAL_L4_RIGHT_RELEASE,
+                  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+                  CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+                  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+                  CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+                  CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF ->
               ReefPipeLevel.L4;
           default -> ReefPipeLevel.BASE;
         };
@@ -1162,18 +1261,24 @@ public class RobotManager extends StateMachine<RobotState> {
               ALGAE_INTAKE_L3_LEFT_DEPLOY_EMPTY,
               ALGAE_INTAKE_L3_RIGHT_DEPLOY_EMPTY ->
           setStateFromRequest(RobotState.CLAW_EMPTY_DEPLOY_EMPTY);
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+              CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF ->
+          setStateFromRequest(RobotState.MULTICORAL_OUTTAKE_PREPARE);
+      case MULTICORAL_OUTTAKE_PREPARE, MULTICORAL_OUTTAKE_RELEASE ->
+          setStateFromRequest(RobotState.CLAW_EMPTY_DEPLOY_EMPTY);
       default -> {
         if (claw.getHasGP()) {
           // Claw is maybe algae or coral
 
           if (intake.getHasGP()) {
             // Intake is holding coral
-            // Technically claw could be holding coral but that shouldn't happen
-            if (getState().clawGp == ClawGamePiece.CORAL || getState().clawGp == ClawGamePiece.EMPTY) {
-              setStateFromRequest(RobotState.MULTICORAL_OUTTAKE_PREPARE);
-            } else {
-              setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_CORAL);
-            }
+            setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_CORAL);
           } else {
             if (getState().clawGp == ClawGamePiece.ALGAE) {
               setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_EMPTY);
@@ -1351,41 +1456,86 @@ public class RobotManager extends StateMachine<RobotState> {
       case CLIMBING_1_LINEUP,
           CLIMBING_2_HANGING,
           CLIMBER_STOP,
+          CORAL_L1_DEPLOY_PREPARE_CLAW_ALGAE,
+          CORAL_L1_DEPLOY_PREPARE_CLAW_EMPTY,
+          CORAL_L1_DEPLOY_SCORE_CLAW_ALGAE,
+          CORAL_L1_DEPLOY_SCORE_CLAW_EMPTY,
           CORAL_L1_PREPARE_HANDOFF,
-          CORAL_L2_PREPARE_HANDOFF,
-          CORAL_L3_PREPARE_HANDOFF,
-          CORAL_L4_PREPARE_HANDOFF,
           CORAL_L1_RELEASE_HANDOFF,
-          CORAL_L2_RELEASE_HANDOFF,
-          CORAL_L3_RELEASE_HANDOFF,
-          CORAL_L4_RELEASE_HANDOFF,
           CORAL_L1_APPROACH,
-          CORAL_L2_APPROACH,
-          CORAL_L3_APPROACH,
-          CORAL_L4_APPROACH,
           CORAL_L1_LEFT_LINEUP,
-          CORAL_L1_LEFT_RELEASE,
-          CORAL_L2_LEFT_LINEUP,
-          CORAL_L2_LEFT_RELEASE,
-          CORAL_L3_LEFT_LINEUP,
-          CORAL_L3_LEFT_RELEASE,
-          CORAL_L4_LEFT_LINEUP,
-          CORAL_L4_LEFT_RELEASE,
+          CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF,
           CORAL_L1_RIGHT_LINEUP,
-          CORAL_L1_RIGHT_RELEASE,
+          CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+          CORAL_L2_PREPARE_HANDOFF,
+          CORAL_L2_RELEASE_HANDOFF,
+          CORAL_L2_APPROACH,
+          CORAL_L2_LEFT_LINEUP,
+          CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF,
           CORAL_L2_RIGHT_LINEUP,
-          CORAL_L2_RIGHT_RELEASE,
+          CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+          CORAL_L3_PREPARE_HANDOFF,
+          CORAL_L3_RELEASE_HANDOFF,
+          CORAL_L3_APPROACH,
+          CORAL_L3_LEFT_LINEUP,
+          CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF,
           CORAL_L3_RIGHT_LINEUP,
-          CORAL_L3_RIGHT_RELEASE,
+          CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF,
+          CORAL_L4_PREPARE_HANDOFF,
+          CORAL_L4_RELEASE_HANDOFF,
+          CORAL_L4_APPROACH,
+          CORAL_L4_LEFT_LINEUP,
+          CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF,
           CORAL_L4_RIGHT_LINEUP,
-          CORAL_L4_RIGHT_RELEASE -> {}
+          CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+          CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF,
+          CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF,
+          CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF,
+          CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF -> {}
+
+      case CORAL_L1_LEFT_RELEASE,
+              CORAL_L2_LEFT_RELEASE,
+              CORAL_L3_LEFT_RELEASE,
+              CORAL_L4_LEFT_RELEASE,
+              CORAL_L1_RIGHT_RELEASE,
+              CORAL_L2_RIGHT_RELEASE,
+              CORAL_L3_RIGHT_RELEASE,
+              CORAL_L4_RIGHT_RELEASE ->
+          setStateFromRequest(getState().getMultiscoreState());
 
       case CLAW_EMPTY_DEPLOY_CORAL, CLAW_ALGAE_DEPLOY_CORAL ->
           setStateFromRequest(getState().getDeployScoreState());
 
-      case CLAW_CORAL_DEPLOY_EMPTY, CLAW_EMPTY_DEPLOY_EMPTY, CLAW_ALGAE_DEPLOY_EMPTY -> {
-        setStateFromRequest(getState().getAlgaeOuttakeState());
-      }
+      case CLAW_CORAL_DEPLOY_EMPTY, CLAW_EMPTY_DEPLOY_EMPTY, CLAW_ALGAE_DEPLOY_EMPTY ->
+          setStateFromRequest(getState().getAlgaeOuttakeState());
       case ALGAE_PROCESSOR_WAITING_DEPLOY_EMPTY ->
           setStateFromRequest(RobotState.ALGAE_PROCESSOR_RELEASE_DEPLOY_EMPTY);
       case ALGAE_PROCESSOR_WAITING_DEPLOY_CORAL ->
