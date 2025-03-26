@@ -54,6 +54,21 @@ public enum RobotState {
   CORAL_L1_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
   CORAL_L1_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
+  /** Coral is currently being scored while we are intaking */
+  CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+  CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+
+  CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+  CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+
+  CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  /** Coral is being handed off to the claw, will go back to lineup */
+  CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+
   // L2 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
   CORAL_L2_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
@@ -66,6 +81,21 @@ public enum RobotState {
   CORAL_L2_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
   CORAL_L2_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
+  /** Coral is currently being scored while we are intaking */
+  CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+  CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+
+  CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+  CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+
+  CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  /** Coral is being handed off to the claw, will go back to lineup */
+  CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+
   // L3 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
   CORAL_L3_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
@@ -77,6 +107,21 @@ public enum RobotState {
   CORAL_L3_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
   CORAL_L3_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
 
+  /** Coral is currently being scored while we are intaking */
+  CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+  CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+
+  CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+  CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+
+  CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF(ClawGamePiece.CORAL, true, false),
+  /** Coral is being handed off to the claw, will go back to lineup */
+  CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+
   // L4 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */
   CORAL_L4_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
@@ -87,6 +132,21 @@ public enum RobotState {
   CORAL_L4_RIGHT_LINEUP(ClawGamePiece.CORAL, false, false),
   CORAL_L4_LEFT_RELEASE(ClawGamePiece.CORAL, false, false),
   CORAL_L4_RIGHT_RELEASE(ClawGamePiece.CORAL, false, false),
+
+  /** Coral is currently being scored while we are intaking */
+  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE(ClawGamePiece.CORAL, false, false),
+
+  CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+  CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF(ClawGamePiece.EMPTY, false, false),
+
+  CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_STOW(ClawGamePiece.CORAL, true, false),
+  CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_STOW(ClawGamePiece.CORAL, true, false),
+  /** Coral is being handed off to the claw, will go back to lineup */
+  CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
+  CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF(ClawGamePiece.EMPTY, true, false),
 
   // Algae scoring states
   ALGAE_NET_LEFT_WAITING_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
@@ -112,9 +172,12 @@ public enum RobotState {
   // Misc states
   ALGAE_OUTTAKE_DEPLOY_EMPTY(ClawGamePiece.ALGAE, false, false),
   ALGAE_OUTTAKE_DEPLOY_CORAL(ClawGamePiece.ALGAE, true, false),
-  UNJAM(ClawGamePiece.EMPTY, false, false),
   REHOME_DEPLOY(ClawGamePiece.EMPTY, false, true),
-  REHOME_ELEVATOR(ClawGamePiece.EMPTY, false, true);
+  REHOME_ELEVATOR(ClawGamePiece.EMPTY, false, true),
+
+  UNJAM(ClawGamePiece.EMPTY, false, false),
+  MULTICORAL_OUTTAKE_PREPARE(ClawGamePiece.CORAL, true, false),
+  MULTICORAL_OUTTAKE_RELEASE(ClawGamePiece.CORAL, true, false);
 
   public final ClawGamePiece clawGp;
   public final boolean deployHasCoral;
@@ -209,6 +272,13 @@ public enum RobotState {
           Map.entry(CLAW_ALGAE_DEPLOY_CORAL, ALGAE_OUTTAKE_DEPLOY_CORAL),
           Map.entry(CLAW_EMPTY_DEPLOY_CORAL, ALGAE_OUTTAKE_DEPLOY_CORAL));
 
+  private static final ImmutableMap<RobotState, RobotState> multiScoreLeft =
+      ImmutableMap.ofEntries(
+          Map.entry(CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE, ALGAE_OUTTAKE_DEPLOY_EMPTY));
+  private static final ImmutableMap<RobotState, RobotState> multiScoreRight =
+      ImmutableMap.ofEntries(
+          Map.entry(CLAW_CORAL_DEPLOY_EMPTY, ALGAE_OUTTAKE_DEPLOY_EMPTY));
+
   public RobotState getLineupToReleaseState() {
     return lineupToRelease.getOrDefault(this, this);
   }
@@ -242,6 +312,14 @@ public enum RobotState {
         scoringSide == RobotScoringSide.LEFT
             ? approachToLineupLeftStates
             : approachToLineupRightStates;
+    return map.getOrDefault(this, this);
+  }
+
+  public RobotState getNextMultiscoreState(RobotScoringSide scoringSide) {
+    var map =
+        scoringSide == RobotScoringSide.LEFT
+            ? multiScoreLeft
+            : multiScoreRight;
     return map.getOrDefault(this, this);
   }
 

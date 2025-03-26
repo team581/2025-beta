@@ -121,6 +121,9 @@ public class RobotManager extends StateMachine<RobotState> {
               ALGAE_OUTTAKE_DEPLOY_CORAL ->
           currentState;
 
+      case MULTICORAL_OUTTAKE_PREPARE -> elevator.atGoal() && arm.atGoal() ? RobotState.MULTICORAL_OUTTAKE_RELEASE : currentState;
+      case MULTICORAL_OUTTAKE_RELEASE -> !claw.getHasGP() ? RobotState.CLAW_EMPTY_DEPLOY_CORAL : currentState;
+
       case REHOME_ELEVATOR ->
           elevator.getState() == ElevatorState.STOWED
               ? RobotState.CLAW_EMPTY_DEPLOY_EMPTY
@@ -189,6 +192,21 @@ public class RobotManager extends StateMachine<RobotState> {
           }
         }
 
+        yield currentState;
+      }
+
+      // Multiscore states
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+      CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+      CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE,
+      CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE, CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        if (!claw.getHasGP() && !intake.getHasGP()) {
+          yield RobotState.CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF;
+        } else if (!claw.getHasGP() && intake.getHasGP()) {
+          yield RobotState.CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF;
+        } else if (claw.getHasGP() && intake.getHasGP()) {
+          yield RobotState.CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF;
+        }
         yield currentState;
       }
 
@@ -917,6 +935,26 @@ public class RobotManager extends StateMachine<RobotState> {
         lights.setState(LightsState.HOLDING_ALGAE);
         climber.setState(ClimberState.STOWED);
       }
+      case MULTICORAL_OUTTAKE_PREPARE -> {
+        claw.setState(ClawState.IDLE_W_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.STOWED);
+        moveSuperstructure(ElevatorState.MULTICORAL_OUTTAKE, ArmState.MULTICORAL_OUTTAKE);
+        swerve.normalDriveRequest();
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.HOLDING_CORAL);
+        climber.setState(ClimberState.STOWED);
+      }
+      case MULTICORAL_OUTTAKE_RELEASE -> {
+        claw.setState(ClawState.OUTTAKING);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.STOWED);
+        moveSuperstructure(ElevatorState.MULTICORAL_OUTTAKE, ArmState.MULTICORAL_OUTTAKE);
+        swerve.normalDriveRequest();
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.HOLDING_CORAL);
+        climber.setState(ClimberState.STOWED);
+      }
     }
   }
 
@@ -1131,7 +1169,11 @@ public class RobotManager extends StateMachine<RobotState> {
           if (intake.getHasGP()) {
             // Intake is holding coral
             // Technically claw could be holding coral but that shouldn't happen
-            setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_CORAL);
+            if (getState().clawGp == ClawGamePiece.CORAL || getState().clawGp == ClawGamePiece.EMPTY) {
+              setStateFromRequest(RobotState.MULTICORAL_OUTTAKE_PREPARE);
+            } else {
+              setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_CORAL);
+            }
           } else {
             if (getState().clawGp == ClawGamePiece.ALGAE) {
               setStateFromRequest(RobotState.CLAW_ALGAE_DEPLOY_EMPTY);
