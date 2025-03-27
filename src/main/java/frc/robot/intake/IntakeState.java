@@ -5,5 +5,5 @@ public enum IntakeState {
   IDLE_GP,
   INTAKING,
   SCORING,
-  CORAL_HANDOFF;
+  HANDOFF;
 }

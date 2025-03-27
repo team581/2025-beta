@@ -688,7 +688,7 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L3_RELEASE_HANDOFF,
           CORAL_L4_RELEASE_HANDOFF -> {
         claw.setState(ClawState.CORAL_HANDOFF);
-        intake.setState(IntakeState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
         deploy.setState(DeployState.HANDOFF);
         moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
         swerve.normalDriveRequest();
@@ -996,6 +996,411 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.HOLDING_CORAL);
+        climber.setState(ClimberState.STOWED);
+      }
+
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L1, ArmState.CORAL_SCORE_LEFT_RELEASE_L1);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L2, ArmState.CORAL_SCORE_LEFT_RELEASE_L2);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L3, ArmState.CORAL_SCORE_LEFT_RELEASE_L3);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L1, ArmState.CORAL_SCORE_RIGHT_RELEASE_L1);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_INTAKE -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L1, ArmState.CORAL_SCORE_LEFT_RELEASE_L1);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_LEFT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L2, ArmState.CORAL_SCORE_LEFT_RELEASE_L2);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_LEFT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L3, ArmState.CORAL_SCORE_LEFT_RELEASE_L3);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_LEFT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L1_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L1, ArmState.CORAL_SCORE_RIGHT_RELEASE_L1);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_RIGHT_MULTISCORE_RELEASE_AND_HANDOFF -> {
+        claw.setState(ClawState.SCORE_CORAL);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+
+      case CORAL_L1_LEFT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_LEFT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_LEFT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_LEFT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L1_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_RIGHT_MULTISCORE_INTAKE_AND_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.INTAKING);
+        deploy.setState(DeployState.FLOOR_INTAKE);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+
+      case CORAL_L1_LEFT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_LEFT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_LEFT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_LEFT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L1_RIGHT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_RIGHT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_RIGHT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_RIGHT_MULTISCORE_PREPARE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.IDLE_GP);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+
+      case CORAL_L1_LEFT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_LEFT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_LEFT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_LEFT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L1_RIGHT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L2_RIGHT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L3_RIGHT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
+        climber.setState(ClimberState.STOWED);
+      }
+      case CORAL_L4_RIGHT_MULTISCORE_RELEASE_HANDOFF -> {
+        claw.setState(ClawState.CORAL_HANDOFF);
+        intake.setState(IntakeState.HANDOFF);
+        deploy.setState(DeployState.HANDOFF);
+        moveSuperstructure(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+        swerve.setSnapToAngle(reefSnapAngle);
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.SCORING);
         climber.setState(ClimberState.STOWED);
       }
     }
