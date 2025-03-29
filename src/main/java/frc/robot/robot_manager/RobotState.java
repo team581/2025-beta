@@ -84,6 +84,8 @@ public enum RobotState {
   CLIMBER_STOP(ClawGamePiece.EMPTY, true),
 
   // Misc states
+  PREPARE_SPIN_TO_WIN(ClawGamePiece.EMPTY, false),
+  SPIN_TO_WIN(ClawGamePiece.EMPTY, false),
   ALGAE_OUTTAKE(ClawGamePiece.ALGAE, false),
   UNJAM(ClawGamePiece.EMPTY, false),
   REHOME_ELEVATOR(ClawGamePiece.EMPTY, true);

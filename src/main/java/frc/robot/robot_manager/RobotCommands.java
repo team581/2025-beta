@@ -103,4 +103,8 @@ public class RobotCommands {
     return Commands.runOnce(robot.groundManager::rehomeDeployRequest, gmRequirements)
         .withName("RehomeDeployCommand");
   }
+
+  public Command spinToWinCommand() {
+    return Commands.runOnce(robot::spinToWinRequest, rmRequirements).withName("SpinToWinCommand");
+  }
 }

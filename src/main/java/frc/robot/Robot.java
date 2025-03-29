@@ -246,5 +246,7 @@ public class Robot extends TimedRobot {
 
     hardware.operatorController.a().onTrue(robotCommands.rehomeElevatorCommand());
     hardware.operatorController.y().onTrue(robotCommands.rehomeDeployCommand());
+
+    hardware.operatorController.back().onTrue(robotCommands.spinToWinCommand());
   }
 }

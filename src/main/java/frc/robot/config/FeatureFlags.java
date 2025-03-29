@@ -33,5 +33,7 @@ public class FeatureFlags {
   public static final BooleanSupplier EXPLICIT_L4_LINEUP =
       FeatureFlag.of("Auto/ExplicitL4Lineup", true);
 
+  public static final BooleanSupplier SPIN_TO_WIN = FeatureFlag.of("Yapping/SpinToWin", false);
+
   private FeatureFlags() {}
 }
