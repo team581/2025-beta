@@ -690,7 +690,6 @@ public class RobotManager extends StateMachine<RobotState> {
     }
 
     // Multiscore
-
     switch (groundManager.getState()) {
       case HANDOFF_WAIT, HANDOFF_RELEASE, REHOME_DEPLOY -> {}
       default -> {
