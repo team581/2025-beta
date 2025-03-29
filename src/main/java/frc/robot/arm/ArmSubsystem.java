@@ -18,6 +18,7 @@ import frc.robot.util.state_machines.StateMachine;
 import frc.robot.util.tuning.TunablePid;
 
 public class ArmSubsystem extends StateMachine<ArmState> {
+  private static final int TOLERANCE = 2;
   private final TalonFX motor;
   private double rawMotorAngle;
   private double motorAngle;
@@ -74,7 +75,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   public boolean atGoal() {
     return switch (getState()) {
-      default -> MathUtil.isNear(getState().getAngle(), motorAngle, 2, -180, 180);
+      default -> MathUtil.isNear(getState().getAngle(), motorAngle, TOLERANCE, -180, 180);
       case PRE_MATCH_HOMING, COLLISION_AVOIDANCE -> false;
     };
   }
@@ -100,6 +101,9 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       }
       case PRE_MATCH_HOMING -> {
         motor.setControl(coastNeutralRequest);
+      }
+      case SPIN_TO_WIN -> {
+        motor.setControl(spinToWin);
       }
       default -> {
         motor.setControl(
@@ -144,9 +148,6 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       case COLLISION_AVOIDANCE -> {
         motor.setControl(
             motionMagicRequest.withPosition(Units.degreesToRotations(collisionAvoidanceGoal)));
-      }
-      case SPIN_TO_WIN -> {
-        motor.setControl(spinToWin);
       }
       default -> {}
     }

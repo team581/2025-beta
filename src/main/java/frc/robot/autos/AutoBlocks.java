@@ -175,7 +175,8 @@ public class AutoBlocks {
         .followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint),
+                new AutoPoint(
+                    approachPoint, Commands.runOnce(() -> autoCommands.lollipopApproachCommand())),
                 new AutoPoint(
                     () ->
                         robotManager.coralMap.getLollipopIntakePose().orElse(defaultIntakingPoint),
@@ -193,7 +194,7 @@ public class AutoBlocks {
                 new AutoPoint(approachPoint),
                 new AutoPoint(
                     () -> robotManager.coralMap.getBestCoral().orElse(defaultIntakingPose),
-                    Commands.runOnce(robotManager::intakeAssistFloorCoralHorizontalRequest))),
+                    Commands.runOnce(robotManager::lollipopIntakeApproachRequest))),
             false)
         .withDeadline(autoCommands.waitForGroundIntakeDone());
   }

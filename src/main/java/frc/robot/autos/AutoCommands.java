@@ -53,8 +53,12 @@ public class AutoCommands {
     return Commands.runOnce(robotManager.groundManager::intakeRequest);
   }
 
+  public Command lollipopApproachCommand() {
+    return Commands.runOnce(robotManager::lollipopIntakeApproachRequest);
+  }
+
   public Command intakeLollipopCommand() {
-    return Commands.runOnce(robotManager::intakeAssistFloorCoralHorizontalRequest);
+    return Commands.runOnce(robotManager::lollipopIntakeGrabRequest);
   }
 
   public Command waitForIntakeDone() {
@@ -67,7 +71,7 @@ public class AutoCommands {
 
   public Command waitForGroundIntakeDone() {
     return robotManager
-        .waitForState(RobotState.CORAL_INTAKE_LOLLIPOP)
+        .waitForState(RobotState.CORAL_INTAKE_LOLLIPOP_APPROACH)
         .andThen(robotManager.groundManager.waitForState(GroundState.INTAKING));
   }
 

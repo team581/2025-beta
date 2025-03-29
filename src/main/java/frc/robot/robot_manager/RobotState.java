@@ -15,13 +15,17 @@ public enum RobotState {
 
   // Intake states
   // In theory we could have intake upright while holding algae but nobody is going to use that
-  CORAL_INTAKE_LOLLIPOP(ClawGamePiece.EMPTY, false),
+  CORAL_INTAKE_LOLLIPOP_APPROACH(ClawGamePiece.EMPTY, false),
+  CORAL_INTAKE_LOLLIPOP_GRAB(ClawGamePiece.EMPTY, false),
+  CORAL_INTAKE_LOLLIPOP_TILT(ClawGamePiece.CORAL, false),
 
   ALGAE_INTAKE_FLOOR(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L2_LEFT(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L3_LEFT(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L2_RIGHT(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L3_RIGHT(ClawGamePiece.ALGAE, false),
+
+  PREPARE_HANDOFF_AFTER_INTAKE(ClawGamePiece.EMPTY, false),
 
   // L1 scoring using the claw
   /** Coral is in the ground intake, need to pass it to the claw. */

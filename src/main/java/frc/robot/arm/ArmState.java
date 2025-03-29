@@ -65,7 +65,9 @@ public enum ArmState {
   SPIN_TO_WIN(90),
 
   // For auto
-  LOLLIPOP_CORAL_INTAKE(UNTUNED);
+  LOLLIPOP_CORAL_INTAKE_APPROACH(20),
+  LOLLIPOP_CORAL_INTAKE_INTAKE(-8),
+  LOLLIPOP_CORAL_INTAKE_TILT(-15);
 
   private final double defaultAngle;
   private final DoubleSubscriber tunableAngle;

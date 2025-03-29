@@ -22,14 +22,12 @@ public record RobotConfig(
       String canBusName,
       int leftMotorId,
       int rightMotorId,
-      double drumDiameterInches,
       TalonFXConfiguration leftMotorConfig,
       TalonFXConfiguration rightMotorConfig,
       double homingEndHeight,
       double homingCurrentThreshold,
       double minHeight,
-      double maxHeight,
-      double tolerance) {}
+      double maxHeight) {}
 
   public record IntakeConfig(
       String canBusName,

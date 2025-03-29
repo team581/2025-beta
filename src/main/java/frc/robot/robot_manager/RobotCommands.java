@@ -34,7 +34,7 @@ public class RobotCommands {
   }
 
   public Command floorAssistIntakeCommand() {
-    return Commands.runOnce(robot::intakeAssistFloorCoralHorizontalRequest, rmRequirements)
+    return Commands.runOnce(robot::lollipopIntakeApproachRequest, rmRequirements)
         .withName("FloorIntakeCommand");
   }
 
@@ -44,11 +44,13 @@ public class RobotCommands {
   }
 
   public Command l3LineupCommand() {
-    return Commands.runOnce(robot::l3LineupRequest, bothRequirements).withName("L3LineupCommand");
+    return Commands.runOnce(robot::l3CoralApproachRequest, bothRequirements)
+        .withName("L3LineupCommand");
   }
 
   public Command l2LineupCommand() {
-    return Commands.runOnce(robot::l2LineupRequest, bothRequirements).withName("L2LineupCommand");
+    return Commands.runOnce(robot::l2CoralApproachRequest, bothRequirements)
+        .withName("L2LineupCommand");
   }
 
   public Command lowLineupCommand() {
@@ -106,5 +108,10 @@ public class RobotCommands {
 
   public Command spinToWinCommand() {
     return Commands.runOnce(robot::spinToWinRequest, rmRequirements).withName("SpinToWinCommand");
+  }
+
+  public Command testNextLollipopCommand() {
+    return Commands.runOnce(robot::testingNextLollipopRequest, rmRequirements)
+        .withName("TestNextLollipopCommand");
   }
 }

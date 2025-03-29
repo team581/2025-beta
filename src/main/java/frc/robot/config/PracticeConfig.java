@@ -45,8 +45,6 @@ class PracticeConfig {
               CANIVORE_NAME,
               15,
               16,
-              1.274,
-              // Sensor to mechanism ratio is the gear ratio multiplied by the sprocket circumfrence
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
@@ -59,9 +57,9 @@ class PracticeConfig {
                   .withSlot0(
                       new Slot0Configs()
                           .withKP(10.0)
-                          .withKD(0.5)
+                          .withKD(0.0)
                           .withKV(0)
-                          .withKG(0.3)
+                          .withKG(0.2)
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
@@ -69,7 +67,8 @@ class PracticeConfig {
                           .withMotionMagicCruiseVelocity(65.0))
                   .withFeedback(
                       new FeedbackConfigs()
-                          .withSensorToMechanismRatio(1.0 / ((8.0 / 40.0) * (2.0 / 1.0)))),
+                          .withSensorToMechanismRatio(
+                              1.0 / ((8.0 / 40.0) * (2.0 / 1.0) * (Math.PI * 1.274)))),
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
@@ -79,9 +78,9 @@ class PracticeConfig {
                   .withSlot0(
                       new Slot0Configs()
                           .withKP(10.0)
-                          .withKD(0.5)
+                          .withKD(0.0)
                           .withKV(0)
-                          .withKG(0.3)
+                          .withKG(0.2)
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
@@ -89,12 +88,12 @@ class PracticeConfig {
                           .withMotionMagicCruiseVelocity(65.0))
                   .withFeedback(
                       new FeedbackConfigs()
-                          .withSensorToMechanismRatio(1.0 / ((8.0 / 40.0) * (2.0 / 1.0)))),
+                          .withSensorToMechanismRatio(
+                              1.0 / ((8.0 / 40.0) * (2.0 / 1.0) * (Math.PI * 1.274)))),
               0,
               25,
               0,
-              61.5,
-              0.5),
+              61.5),
           new IntakeConfig(
               CANIVORE_NAME,
               25,
