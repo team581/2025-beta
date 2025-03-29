@@ -736,13 +736,13 @@ public class RobotManager extends StateMachine<RobotState> {
   public void stowRequest() {
     switch (getState()) {
       case ALGAE_INTAKE_FLOOR,
-              ALGAE_INTAKE_L2_LEFT,
-              ALGAE_INTAKE_L2_RIGHT,
-              ALGAE_INTAKE_L3_LEFT,
-              ALGAE_INTAKE_L3_RIGHT -> {
-                groundManager.idleRequest();
-                setStateFromRequest(RobotState.CLAW_EMPTY);
-              }
+          ALGAE_INTAKE_L2_LEFT,
+          ALGAE_INTAKE_L2_RIGHT,
+          ALGAE_INTAKE_L3_LEFT,
+          ALGAE_INTAKE_L3_RIGHT -> {
+        groundManager.idleRequest();
+        setStateFromRequest(RobotState.CLAW_EMPTY);
+      }
       default -> {
         groundManager.idleRequest();
         if (claw.getHasGP()) {

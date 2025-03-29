@@ -17,7 +17,14 @@ public class RobotCommands {
     rmRequirements = requirementsList.toArray(Subsystem[]::new);
     requirementsList = List.of(robot.groundManager.deploy, robot.groundManager.intake);
     gmRequirements = requirementsList.toArray(Subsystem[]::new);
-    requirementsList = List.of(robot.elevator, robot.arm, robot.claw, robot.climber, robot.groundManager.deploy, robot.groundManager.intake);
+    requirementsList =
+        List.of(
+            robot.elevator,
+            robot.arm,
+            robot.claw,
+            robot.climber,
+            robot.groundManager.deploy,
+            robot.groundManager.intake);
     bothRequirements = requirementsList.toArray(Subsystem[]::new);
   }
 
@@ -32,7 +39,8 @@ public class RobotCommands {
   }
 
   public Command highLineupCommand() {
-    return Commands.runOnce(robot::highLineupRequest, bothRequirements).withName("HighLineupCommand");
+    return Commands.runOnce(robot::highLineupRequest, bothRequirements)
+        .withName("HighLineupCommand");
   }
 
   public Command l3LineupCommand() {
@@ -59,7 +67,12 @@ public class RobotCommands {
 
   public Command stowCommand() {
     return Commands.runOnce(robot::stowRequest, bothRequirements)
-        .andThen(Commands.waitUntil(() -> robot.elevator.atGoal() && robot.arm.atGoal() && robot.groundManager.deploy.atGoal()))
+        .andThen(
+            Commands.waitUntil(
+                () ->
+                    robot.elevator.atGoal()
+                        && robot.arm.atGoal()
+                        && robot.groundManager.deploy.atGoal()))
         .withName("StowCommand");
   }
 
