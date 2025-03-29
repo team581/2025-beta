@@ -693,25 +693,26 @@ public class RobotManager extends StateMachine<RobotState> {
     if (groundManager.hasCoral()) {
       switch (getState()) {
         case CORAL_L1_APPROACH,
-            CORAL_L2_APPROACH,
-            CORAL_L3_APPROACH,
-            CORAL_L4_APPROACH,
-            CORAL_L1_LEFT_LINEUP,
-            CORAL_L1_LEFT_RELEASE,
-            CORAL_L2_LEFT_LINEUP,
-            CORAL_L2_LEFT_RELEASE,
-            CORAL_L3_LEFT_LINEUP,
-            CORAL_L3_LEFT_RELEASE,
-            CORAL_L4_LEFT_LINEUP,
-            CORAL_L4_LEFT_RELEASE,
-            CORAL_L1_RIGHT_LINEUP,
-            CORAL_L1_RIGHT_RELEASE,
-            CORAL_L2_RIGHT_LINEUP,
-            CORAL_L2_RIGHT_RELEASE,
-            CORAL_L3_RIGHT_LINEUP,
-            CORAL_L3_RIGHT_RELEASE,
-            CORAL_L4_RIGHT_LINEUP,
-            CORAL_L4_RIGHT_RELEASE -> groundManager.handoffWaitRequest();
+                CORAL_L2_APPROACH,
+                CORAL_L3_APPROACH,
+                CORAL_L4_APPROACH,
+                CORAL_L1_LEFT_LINEUP,
+                CORAL_L1_LEFT_RELEASE,
+                CORAL_L2_LEFT_LINEUP,
+                CORAL_L2_LEFT_RELEASE,
+                CORAL_L3_LEFT_LINEUP,
+                CORAL_L3_LEFT_RELEASE,
+                CORAL_L4_LEFT_LINEUP,
+                CORAL_L4_LEFT_RELEASE,
+                CORAL_L1_RIGHT_LINEUP,
+                CORAL_L1_RIGHT_RELEASE,
+                CORAL_L2_RIGHT_LINEUP,
+                CORAL_L2_RIGHT_RELEASE,
+                CORAL_L3_RIGHT_LINEUP,
+                CORAL_L3_RIGHT_RELEASE,
+                CORAL_L4_RIGHT_LINEUP,
+                CORAL_L4_RIGHT_RELEASE ->
+            groundManager.handoffWaitRequest();
         default -> {}
       }
     }
