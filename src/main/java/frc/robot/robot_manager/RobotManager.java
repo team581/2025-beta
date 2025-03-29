@@ -167,15 +167,15 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L2_RIGHT_RELEASE,
           CORAL_L3_RIGHT_RELEASE,
           CORAL_L4_RIGHT_RELEASE -> {
-        if (arm.atGoal() && elevator.atGoal()) {
-          if (DriverStation.isTeleop()) {
-            if (cameraOnlineAndFarEnoughFromReef()) {
-              rumbleController.rumbleRequest();
-              yield RobotState.CLAW_EMPTY;
-            }
-          } else if (!claw.getHasGP() || timeout(0.5)) {
+        if (DriverStation.isTeleop()) {
+          // In teleop, we go to CLAW_EMPTY when you drive away or if we know the score succeeded
+          if (cameraOnlineAndFarEnoughFromReef()
+              || (arm.atGoal() && elevator.atGoal() && !claw.getHasGP() && timeout(0.5))) {
             yield RobotState.CLAW_EMPTY;
           }
+        } else if (arm.atGoal() && elevator.atGoal() && (!claw.getHasGP() || timeout(0.5))) {
+          // In auto, check if the score succeeded with a timeout
+          yield RobotState.CLAW_EMPTY;
         }
 
         yield currentState;
