@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public enum Waypoint {
   ALGAE_INTAKE_RIGHT(new SuperstructurePosition(3.0, 0.0)),
   LOLLIPOP_INTAKE_RIGHT(new SuperstructurePosition(0.0, 0.0)),
-  STOWED(new SuperstructurePosition(55.0, -90.0)),
+  HANDOFF_INTERMEDIARY(new SuperstructurePosition(55.0, -90.0)),
   LEFT_SAFE_STOWED_UP(new SuperstructurePosition(10.0, 90.0)),
   STOWED_UP(new SuperstructurePosition(0.0, 90.0)),
   HANDOFF(new SuperstructurePosition(41.12, -90.0)),
@@ -61,7 +61,7 @@ public enum Waypoint {
    * @param position The position of the superstructure.
    */
   public static Waypoint getClosest(SuperstructurePosition position) {
-    Waypoint closestWaypoint = STOWED;
+    Waypoint closestWaypoint = STOWED_UP;
     double closestDistance = Double.MAX_VALUE;
     Translation2d point = position.getTranslation();
 

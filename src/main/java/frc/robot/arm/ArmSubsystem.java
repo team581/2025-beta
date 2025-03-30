@@ -24,7 +24,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   public static final double ARM_LENGTH_METERS = Units.inchesToMeters(37.416);
 
   private static final double TOLERANCE = 2.0;
-  private static final double NEAR_TOLERANCE = 15.0;
+  private static final double NEAR_TOLERANCE = 10.0;
+  private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
   private final TalonFX motor;
   private double rawMotorAngle;
   private double motorAngle;
@@ -79,8 +80,21 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     return motorAngle;
   }
 
-  public void setCollisionAvoidanceGoal(double angle) {
-    collisionAvoidanceGoal = angle;
+  public void setCollisionAvoidanceGoal(double angle, boolean climberRisky) {
+
+    int wrap = (int) rawMotorAngle / 360;
+    double forwardSolution = (wrap * 360) + angle;
+    double backwardSolution = (wrap * 360) - angle;
+
+    if (climberRisky) {
+      if (CLIMBER_UNSAFE_ANGLE > rawMotorAngle && CLIMBER_UNSAFE_ANGLE < forwardSolution) {
+        collisionAvoidanceGoal = backwardSolution;
+      }
+      collisionAvoidanceGoal = forwardSolution;
+    }
+    collisionAvoidanceGoal =
+        Math.min(
+            Math.abs(backwardSolution - rawMotorAngle), Math.abs(forwardSolution - rawMotorAngle));
     DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
   }
 

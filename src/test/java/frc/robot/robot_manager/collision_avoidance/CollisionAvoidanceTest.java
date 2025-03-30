@@ -40,7 +40,8 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(50, -90),
             ObstructionKind.NONE);
 
-    var expected = List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.L4_RIGHT, Waypoint.STOWED);
+    var expected =
+        List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.L4_RIGHT, Waypoint.HANDOFF_INTERMEDIARY);
 
     assertEquals(expected, new ArrayList<>(result.orElseThrow()));
   }

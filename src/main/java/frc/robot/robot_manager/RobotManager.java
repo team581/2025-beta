@@ -1222,7 +1222,9 @@ public class RobotManager extends StateMachine<RobotState> {
       elevator.setCollisionAvoidanceGoal(collisionAvoidanceResult.position.elevatorHeight());
       elevator.setState(ElevatorState.COLLISION_AVOIDANCE);
 
-      arm.setCollisionAvoidanceGoal(collisionAvoidanceResult.position.armAngle());
+      arm.setCollisionAvoidanceGoal(
+          collisionAvoidanceResult.position.armAngle(),
+          CollisionAvoidance.isClimberAtRisk(currentPosition, goal));
       arm.setState(ArmState.COLLISION_AVOIDANCE);
     }
   }

@@ -214,7 +214,7 @@ class PracticeConfig {
                       new CurrentLimitsConfigs()
                           .withSupplyCurrentLimit(60.0)
                           .withStatorCurrentLimit(60.0))
-                  .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true)),
+                  .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(false)),
               -13.532,
               6.615),
           new DeployConfig(

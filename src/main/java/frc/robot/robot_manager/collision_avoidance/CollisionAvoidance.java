@@ -28,7 +28,7 @@ public class CollisionAvoidance {
       new HashMap<>();
 
   private static CollisionAvoidanceQuery lastQuery =
-      new CollisionAvoidanceQuery(Waypoint.STOWED, Waypoint.STOWED, ObstructionKind.NONE);
+      new CollisionAvoidanceQuery(Waypoint.STOWED_UP, Waypoint.STOWED_UP, ObstructionKind.NONE);
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
   private static boolean hasGeneratedPath = false;
@@ -104,6 +104,21 @@ public class CollisionAvoidance {
     return Optional.of(currentWaypoint);
   }
 
+  public static boolean isClimberAtRisk(
+      SuperstructurePosition current, SuperstructurePosition goal) {
+    Waypoint currentwWaypoint = Waypoint.getClosest(current);
+    Waypoint goalWaypoint = Waypoint.getClosest(goal);
+
+    var edge = graph.edgeValue(currentwWaypoint, goalWaypoint);
+    if (edge.isEmpty()) {
+      return true;
+    }
+    if (edge.get().climberAtRisk()) {
+      return true;
+    }
+    return false;
+  }
+
   private static Optional<ImmutableList<Waypoint>> cachedAStar(CollisionAvoidanceQuery query) {
     DogLog.log("CollisionAvoidance/AStarCacheSize", aStarCache.size());
 
@@ -124,12 +139,9 @@ public class CollisionAvoidance {
         ValueGraphBuilder.undirected().incidentEdgeOrder(ElementOrder.stable()).build();
 
     // Middle
-    Waypoint.STOWED.canMoveToAlways(Waypoint.HANDOFF, graph);
+    Waypoint.HANDOFF_INTERMEDIARY.canMoveToAlways(Waypoint.HANDOFF, graph);
 
-    Waypoint.STOWED.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
-    Waypoint.STOWED.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
-    Waypoint.STOWED.canMoveToWhenRightSafe(Waypoint.ALGAE_RIGHT, graph);
-    Waypoint.STOWED.canMoveToWhenLeftSafe(Waypoint.ALGAE_LEFT, graph);
+    Waypoint.HANDOFF_INTERMEDIARY.canMoveToAlways(Waypoint.STOWED_UP, graph);
 
     Waypoint.STOWED_UP.canMoveToAlways(Waypoint.LEFT_SAFE_STOWED_UP, graph);
 
@@ -139,6 +151,7 @@ public class CollisionAvoidance {
     Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.L3_LEFT, graph);
     Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
     Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_LEFT, graph);
+
     Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L1_RIGHT, graph);
     Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L2_RIGHT, graph);
     Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L3_RIGHT, graph);
@@ -248,7 +261,7 @@ public class CollisionAvoidance {
     }
 
     gscore.put(startWaypoint, 0.0);
-    Waypoint current = Waypoint.STOWED;
+    Waypoint current = Waypoint.STOWED_UP;
     while (!openSet.isEmpty()) {
       // current is equal to the waypoint in openset that has the smallest gscore
       var maybeCurrent =
