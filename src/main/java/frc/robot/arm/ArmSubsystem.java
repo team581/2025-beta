@@ -87,7 +87,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     double backwardSolution = (wrap * 360) - angle;
 
     if (climberRisky) {
-      if (CLIMBER_UNSAFE_ANGLE > rawMotorAngle && CLIMBER_UNSAFE_ANGLE < forwardSolution) {
+      if (rawMotorAngle < CLIMBER_UNSAFE_ANGLE && forwardSolution > CLIMBER_UNSAFE_ANGLE) {
         collisionAvoidanceGoal = backwardSolution;
       }
       collisionAvoidanceGoal = forwardSolution;
