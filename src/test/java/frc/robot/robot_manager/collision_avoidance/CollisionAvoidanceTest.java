@@ -18,6 +18,16 @@ public class CollisionAvoidanceTest {
 
     assertEquals(Optional.empty(), result);
   }
+  @Test
+  public void rightObstructedL4toL1() {
+    var result =
+        CollisionAvoidance.aStar(
+            Waypoint.L4_RIGHT.position,
+            Waypoint.L1_RIGHT.position,
+            ObstructionKind.RIGHT_OBSTRUCTED);
+var expected = List.of(Waypoint.L4_RIGHT, Waypoint.L4_LEFT, Waypoint.LEFT_SAFE_STOWED_UP, Waypoint.STOWED_UP, Waypoint.L1_RIGHT);
+    assertEquals(expected, result.get());
+  }
 
   @Test
   public void stowedUpToUpRightAstarTest() {

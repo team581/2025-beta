@@ -44,6 +44,27 @@ public enum Waypoint {
   L4_LEFT(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_LINEUP_L4, ArmState.CORAL_SCORE_LEFT_LINEUP_L4)),
+          L1_RIGHT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L1, ArmState.CORAL_SCORE_RIGHT_RELEASE_L1)),
+        L2_RIGHT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2)),
+        L3_RIGHT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3)),
+        L4_RIGHT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4)),
+        L2_LEFT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2)),
+        L3_LEFT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3)),
+        L4_LEFT_RELEASE(
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4)),
   ALGAE_RIGHT(new SuperstructurePosition(ElevatorState.ALGAE_NET_RIGHT, ArmState.ALGAE_NET_RIGHT)),
   ALGAE_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET_LEFT, ArmState.ALGAE_NET_LEFT)),
   ALGAE_L2_RIGHT(
