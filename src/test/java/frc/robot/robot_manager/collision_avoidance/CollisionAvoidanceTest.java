@@ -9,28 +9,27 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-  // @Test
-  // public void routeStowedUpToUpRightAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.route(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 0),
-  //           ObstructionKind.NONE);
-  //   var expected = Waypoint.STOWED_UP;
+  @Test
+  public void alreadyThereAstar() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(0, 90),
+            new SuperstructurePosition(0, 90),
+            ObstructionKind.NONE);
 
-  //   assertEquals(expected, result);
-  // }
-  // @Test
-  // public void stowedUpToUpRightAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.aStar(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 0),
-  //           ObstructionKind.NONE);
-  //   var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT);
+    assertEquals(Optional.empty(), result);
+  }
+  @Test
+  public void stowedUpToUpRightAstarTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(0, 90),
+            new SuperstructurePosition(50, 0),
+            ObstructionKind.NONE);
+    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L3_RIGHT);
 
-  //   assertEquals(expected, new ArrayList<>(result.orElseThrow()));
-  // }
+    assertEquals(expected, result.get());
+  }
 
   @Test
   public void lowRightToStowedAstarTest() {
@@ -42,7 +41,7 @@ public class CollisionAvoidanceTest {
 
     var expected = List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.L4_RIGHT, Waypoint.STOWED);
 
-    assertEquals(expected, new ArrayList<>(result.orElseThrow()));
+    assertEquals(expected, result.get());
   }
 
   @Test
@@ -52,8 +51,9 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 180),
             ObstructionKind.LEFT_OBSTRUCTED);
+    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L3_RIGHT, Waypoint.L3_LEFT);
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(expected, result.get());
   }
 
   @Test
@@ -63,8 +63,58 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 0),
             ObstructionKind.RIGHT_OBSTRUCTED);
+    var expected =
+        List.of(
+            Waypoint.STOWED_UP, Waypoint.LEFT_SAFE_STOWED_UP, Waypoint.L3_LEFT, Waypoint.L3_RIGHT);
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(expected, result.get());
+  }
+
+  @Test
+  public void leftObstructedAlgaeRightAstarTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(0, 90),
+            new SuperstructurePosition(60, 45),
+            ObstructionKind.LEFT_OBSTRUCTED);
+    var expected = List.of(Waypoint.STOWED_UP, Waypoint.ALGAE_RIGHT);
+
+    assertEquals(expected, result.get());
+  }
+
+  @Test
+  public void rightObstructedAlgaeLeftAstarTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(0, 90),
+            new SuperstructurePosition(60, 45),
+            ObstructionKind.RIGHT_OBSTRUCTED);
+    var expected =
+        List.of(
+            Waypoint.STOWED_UP,
+            Waypoint.LEFT_SAFE_STOWED_UP,
+            Waypoint.ALGAE_LEFT,
+            Waypoint.ALGAE_RIGHT);
+
+    assertEquals(expected, result.get());
+  }
+
+  @Test
+  public void rightObstructedHandoffToL4RightAstarTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(40, -90),
+            new SuperstructurePosition(50, 0),
+            ObstructionKind.RIGHT_OBSTRUCTED);
+    var expected =
+        List.of(
+            Waypoint.HANDOFF,
+            Waypoint.STOWED,
+            Waypoint.L4_LEFT,
+            Waypoint.L3_LEFT,
+            Waypoint.L3_RIGHT);
+
+    assertEquals(expected, result.get());
   }
 
   @Test
