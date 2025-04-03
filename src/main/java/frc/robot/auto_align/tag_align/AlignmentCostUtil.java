@@ -120,6 +120,6 @@ public class AlignmentCostUtil {
                     pipe.getPose(level, side).getTranslation(),
                     localization.getPose().getTranslation(),
                     swerve.getTeleopSpeeds())
-                + (reefState.isScored(pipe, level) ? 0.25 : 0));
+                + (reefState.isScored(pipe, level) ? 0.4 : 0));
   }
 }

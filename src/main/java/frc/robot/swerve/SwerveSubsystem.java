@@ -156,8 +156,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     // Ensure that we are in an auto state during auto, and a teleop state during teleop
     return switch (currentState) {
       case AUTO, TELEOP -> DriverStation.isAutonomous() ? SwerveState.AUTO : SwerveState.TELEOP;
-      case INTAKE_ASSIST_ALGAE_TELEOP, INTAKE_ASSIST_CORAL_TELEOP ->
-          DriverStation.isAutonomous() ? SwerveState.AUTO : currentState;
       case REEF_ALIGN_TELEOP ->
           DriverStation.isAutonomous() ? SwerveState.AUTO : SwerveState.REEF_ALIGN_TELEOP;
       case AUTO_SNAPS, TELEOP_SNAPS ->
@@ -258,18 +256,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
                   .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
         }
       }
-      case INTAKE_ASSIST_CORAL_TELEOP -> {
-        drivetrain.setControl(
-            drive
-                .withVelocityX(
-                    teleopSpeeds.vxMetersPerSecond + coralAssistSpeedsOffset.vxMetersPerSecond)
-                .withVelocityY(
-                    teleopSpeeds.vyMetersPerSecond + coralAssistSpeedsOffset.vyMetersPerSecond)
-                .withRotationalRate(
-                    teleopSpeeds.omegaRadiansPerSecond
-                        + coralAssistSpeedsOffset.omegaRadiansPerSecond)
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-      }
       case REEF_ALIGN_TELEOP -> {
         if (teleopSpeeds.omegaRadiansPerSecond == 0) {
           drivetrain.setControl(
@@ -365,27 +351,12 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     snapsDriveRequest(snapAngle, false);
   }
 
-  public void coralAlignmentDriveRequest() {
-
-    if (DriverStation.isAutonomous()) {
-      setStateFromRequest(SwerveState.AUTO);
-    } else {
-      setStateFromRequest(SwerveState.INTAKE_ASSIST_CORAL_TELEOP);
-    }
-  }
-
   public void scoringAlignmentRequest(double snapAngle) {
     if (DriverStation.isAutonomous()) {
       normalDriveRequest();
     } else {
       setSnapToAngle(snapAngle);
       setStateFromRequest(SwerveState.REEF_ALIGN_TELEOP);
-    }
-  }
-
-  public void intakeAssistAlgaeTeleopRequest() {
-    if (DriverStation.isTeleop()) {
-      setStateFromRequest(SwerveState.INTAKE_ASSIST_ALGAE_TELEOP);
     }
   }
 

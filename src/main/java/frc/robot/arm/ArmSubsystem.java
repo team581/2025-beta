@@ -238,6 +238,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     DogLog.log("Arm/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
     DogLog.log("Arm/Angle", motorAngle);
     DogLog.log("Arm/AtGoal", atGoal());
+    DogLog.log("Arm/MotorTemp", motor.getDeviceTemp().getValueAsDouble());
 
     if (FeatureFlags.VISION_HANDOFF_ADJUSTMENT.getAsBoolean()) {
       switch (getState()) {
@@ -270,6 +271,12 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       DogLog.clearFault("Arm not seen range of motion");
     } else if (RobotConfig.IS_PRACTICE_BOT) {
       DogLog.logFault("Arm not seen range of motion", AlertType.kWarning);
+    }
+
+    if (motor.getDeviceTemp().getValueAsDouble() > 40) {
+      DogLog.logFault("Arm above 40°C", AlertType.kWarning);
+    } else {
+      DogLog.clearFault("Arm above 40°C");
     }
 
     switch (getState()) {

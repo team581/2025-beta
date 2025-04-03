@@ -133,12 +133,6 @@ public class VisionSubsystem extends StateMachine<VisionState> {
         rightLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
         gamePieceDetectionLimelight.setState(LimelightState.CORAL);
       }
-      case STATION_TAGS -> {
-        leftBackLimelight.setState(LimelightState.STATION_TAGS);
-        leftFrontLimelight.setState(LimelightState.STATION_TAGS);
-        rightLimelight.setState(LimelightState.STATION_TAGS);
-        gamePieceDetectionLimelight.setState(LimelightState.CORAL);
-      }
       case CORAL_DETECTION -> {
         leftBackLimelight.setState(LimelightState.TAGS);
         leftFrontLimelight.setState(LimelightState.TAGS);

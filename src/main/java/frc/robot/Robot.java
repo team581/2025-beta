@@ -34,7 +34,6 @@ import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.ground_manager.GroundManager;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.ElasticLayoutUtil;
-import frc.robot.util.Stopwatch;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
 import frc.robot.vision.VisionSubsystem;
 import frc.robot.vision.game_piece_detection.CoralMap;
@@ -154,9 +153,9 @@ public class Robot extends TimedRobot {
     DogLog.timeEnd("Scheduler/TimeSinceLastLoop");
     DogLog.time("Scheduler/TimeSinceLastLoop");
 
-    Stopwatch.start("Scheduler/CommandSchedulerPeriodic");
+    DogLog.time("Scheduler/CommandSchedulerPeriodic");
     CommandScheduler.getInstance().run();
-    Stopwatch.stop("Scheduler/CommandSchedulerPeriodic");
+    DogLog.timeEnd("Scheduler/CommandSchedulerPeriodic");
     LifecycleSubsystemManager.log();
 
     if (RobotController.getBatteryVoltage() < 12.5) {
