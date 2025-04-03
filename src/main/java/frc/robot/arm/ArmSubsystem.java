@@ -96,7 +96,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     }
 
     double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
-    double climberUnsafeAngle2 = (wrap * 360) +  CLIMBER_UNSAFE_ANGLE;
+    double climberUnsafeAngle2 = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
 
     System.out.println("climberUnsafeAngle1 = " + climberUnsafeAngle1);
     System.out.println("climberUnsafeAngle2 = " + climberUnsafeAngle2);
