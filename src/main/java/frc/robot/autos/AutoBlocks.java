@@ -9,7 +9,6 @@ import frc.robot.auto_align.ReefPipe;
 import frc.robot.auto_align.ReefPipeLevel;
 import frc.robot.auto_align.RobotScoringSide;
 import frc.robot.autos.constraints.AutoConstraintOptions;
-import frc.robot.intake_assist.IntakeAssistUtil;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.util.PoseErrorTolerance;
 
@@ -36,8 +35,7 @@ public class AutoBlocks {
   private static final Transform2d INTAKE_CORAL_GROUND_APPROACH_OFFSET =
       new Transform2d(-0.6, 0, Rotation2d.kZero);
 
-  public static final Transform2d LOLLIPOP_OFFSET =
-      new Transform2d(-0.6615, 0, Rotation2d.fromDegrees(90));
+  public static final Transform2d LOLLIPOP_OFFSET = new Transform2d(-0.6615, 0, Rotation2d.kZero);
 
   public static final AutoConstraintOptions BASE_CONSTRAINTS =
       new AutoConstraintOptions(4.7, 57, 4, 30);
@@ -175,9 +173,6 @@ public class AutoBlocks {
   }
 
   public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
-    double getLollipopAngle =
-        IntakeAssistUtil.getIntakeAssistAngle(
-            defaultIntakingPoint.getTranslation(), robotManager.localization.getPose());
     return trailblazer
         .followSegment(
             new AutoSegment(

@@ -31,9 +31,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   private static final double maxAngularRate = Units.rotationsToRadians(4);
   private static final Rotation2d TELEOP_MAX_ANGULAR_RATE = Rotation2d.fromRotations(2);
 
-  /** Ratio from joystick percentage to scoring pose offset in meters. */
-  private static final double FINE_ADJUST_CONTROLLER_SCALAR = 0.3;
-
   private static final double LEFT_X_DEADBAND = 0.05;
   private static final double LEFT_Y_DEADBAND = 0.05;
   private static final double RIGHT_X_DEADBAND = 0.15;
@@ -44,7 +41,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
       RobotConfig.get().swerve().snapController();
 
   private static final InterpolatingDoubleTreeMap ELEVATOR_HEIGHT_TO_SLOW_MODE =
-      InterpolatingDoubleTreeMap.ofEntries(Map.entry(40.0, 1.0), Map.entry(40.1, 0.4));
+      InterpolatingDoubleTreeMap.ofEntries(Map.entry(0.0, 1.0));
 
   public final TunerSwerveDrivetrain drivetrain =
       RobotConfig.IS_PRACTICE_BOT
@@ -95,7 +92,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   private ChassisSpeeds coralAssistSpeedsOffset = new ChassisSpeeds();
 
   private ChassisSpeeds autoAlignSpeeds = new ChassisSpeeds();
-  private ChassisSpeeds autoAlignAutoSpeeds = new ChassisSpeeds();
 
   private final ChassisSpeeds previousSpeeds = new ChassisSpeeds();
   private static final double PREVIOUS_TIMESTAMP = 0.0;
@@ -150,11 +146,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     coralAssistSpeedsOffset = speeds;
   }
 
-  public void setAutoAlignAutoSpeeds(ChassisSpeeds speeds) {
-    autoAlignAutoSpeeds = speeds;
-    sendSwerveRequest();
-  }
-
   public void setAutoAlignSpeeds(ChassisSpeeds speeds) {
     autoAlignSpeeds = speeds;
     sendSwerveRequest();
@@ -169,10 +160,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
           DriverStation.isAutonomous() ? SwerveState.AUTO : currentState;
       case REEF_ALIGN_TELEOP ->
           DriverStation.isAutonomous() ? SwerveState.AUTO : SwerveState.REEF_ALIGN_TELEOP;
-      case REEF_ALIGN_TELEOP_FINE_ADJUST ->
-          DriverStation.isAutonomous()
-              ? SwerveState.AUTO
-              : SwerveState.REEF_ALIGN_TELEOP_FINE_ADJUST;
       case AUTO_SNAPS, TELEOP_SNAPS ->
           DriverStation.isAutonomous() ? SwerveState.AUTO_SNAPS : SwerveState.TELEOP_SNAPS;
       case CLIMBING -> DriverStation.isAutonomous() ? SwerveState.AUTO : SwerveState.CLIMBING;
@@ -302,25 +289,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
                   .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
         }
       }
-      case REEF_ALIGN_TELEOP_FINE_ADJUST -> {
-        if (teleopSpeeds.omegaRadiansPerSecond == 0) {
-          drivetrain.setControl(
-              driveToAngle
-                  .withVelocityX(autoAlignSpeeds.vxMetersPerSecond)
-                  .withVelocityY(autoAlignSpeeds.vyMetersPerSecond)
-                  .withTargetDirection(Rotation2d.fromDegrees(goalSnapAngle))
-                  .withMaxAbsRotationalRate(
-                      TELEOP_MAX_ANGULAR_RATE.getRadians() * teleopSlowModePercent)
-                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-        } else {
-          drivetrain.setControl(
-              drive
-                  .withVelocityX(autoAlignSpeeds.vxMetersPerSecond)
-                  .withVelocityY(autoAlignSpeeds.vyMetersPerSecond)
-                  .withRotationalRate(autoAlignSpeeds.omegaRadiansPerSecond)
-                  .withDriveRequestType(DriveRequestType.OpenLoopVoltage));
-        }
-      }
       case AUTO ->
           drivetrain.setControl(
               drive
@@ -367,6 +335,18 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     }
   }
 
+  public Translation2d getControllerValues() {
+    if (getState() != SwerveState.REEF_ALIGN_TELEOP) {
+      return Translation2d.kZero;
+    }
+    var mappedValues =
+        ControllerHelpers.fromCircularDiscCoordinates(rawControllerXValue, rawControllerYValue);
+    var deadbandX = ControllerHelpers.deadbandJoystickValue(mappedValues.getX(), LEFT_X_DEADBAND);
+    var deadbandY = ControllerHelpers.deadbandJoystickValue(mappedValues.getY(), LEFT_Y_DEADBAND);
+
+    return new Translation2d(deadbandX, deadbandY);
+  }
+
   public void snapsDriveRequest(double snapAngle, boolean teleopOnly) {
     setSnapToAngle(snapAngle);
 
@@ -403,12 +383,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     }
   }
 
-  public void reefAlignTeleopFineAdjustRequest() {
-    if (DriverStation.isTeleop()) {
-      setStateFromRequest(SwerveState.REEF_ALIGN_TELEOP_FINE_ADJUST);
-    }
-  }
-
   public void intakeAssistAlgaeTeleopRequest() {
     if (DriverStation.isTeleop()) {
       setStateFromRequest(SwerveState.INTAKE_ASSIST_ALGAE_TELEOP);
@@ -418,21 +392,6 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
   public void climbRequest() {
     setSnapToAngle(SnapUtil.getCageAngle());
     setStateFromRequest(SwerveState.CLIMBING);
-  }
-
-  public Translation2d getPoseOffset() {
-    if (getState() != SwerveState.REEF_ALIGN_TELEOP_FINE_ADJUST) {
-      return Translation2d.kZero;
-    }
-
-    var mappedValues =
-        ControllerHelpers.fromCircularDiscCoordinates(rawControllerXValue, rawControllerYValue);
-    var deadbandX = ControllerHelpers.deadbandJoystickValue(mappedValues.getX(), LEFT_X_DEADBAND);
-    var deadbandY = ControllerHelpers.deadbandJoystickValue(mappedValues.getY(), LEFT_Y_DEADBAND);
-    var scaledX = deadbandX * FINE_ADJUST_CONTROLLER_SCALAR;
-    var scaledY = deadbandY * FINE_ADJUST_CONTROLLER_SCALAR;
-
-    return new Translation2d(scaledY, scaledX);
   }
 
   @Override

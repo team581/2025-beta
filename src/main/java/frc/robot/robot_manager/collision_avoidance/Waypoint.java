@@ -3,7 +3,11 @@ package frc.robot.robot_manager.collision_avoidance;
 import com.google.common.graph.MutableValueGraph;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.arm.ArmState;
+import frc.robot.elevator.ElevatorState;
 import frc.robot.robot_manager.SuperstructurePosition;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -12,25 +16,71 @@ import java.util.stream.Stream;
  * avoidance uses these as nodes within a graph to route from a current position to a goal position.
  */
 public enum Waypoint {
-  ALGAE_INTAKE_RIGHT(new SuperstructurePosition(3.0, 0.0)),
-  LOLLIPOP_INTAKE_RIGHT(new SuperstructurePosition(0.0, 0.0)),
-  HANDOFF_INTERMEDIARY(new SuperstructurePosition(55.0, -90.0)),
-  LEFT_SAFE_STOWED_UP(new SuperstructurePosition(10.0, 90.0)),
-  STOWED_UP(new SuperstructurePosition(0.0, 90.0)),
-  HANDOFF(new SuperstructurePosition(41.12, -90.0)),
-  L1_RIGHT(new SuperstructurePosition(0.0, 35.0)),
-  L2_RIGHT(new SuperstructurePosition(17.0, 25.0)),
-  L3_RIGHT(new SuperstructurePosition(33.0, 25.0)),
-  L4_RIGHT(new SuperstructurePosition(53.0, 32.0)),
-  L2_LEFT(new SuperstructurePosition(17.0, 180.0 - 25.0)),
-  L3_LEFT(new SuperstructurePosition(33.0, 180.0 - 25.0)),
-  L4_LEFT(new SuperstructurePosition(53.0, 180.0 - 32.0)),
-  ALGAE_RIGHT(new SuperstructurePosition(50, 75)),
-  ALGAE_LEFT(new SuperstructurePosition(50, 180 - 75)),
-  ALGAE_L2_RIGHT(new SuperstructurePosition(24.0, 0.0)),
-  ALGAE_L2_LEFT(new SuperstructurePosition(39.0, 180.0)),
-  ALGAE_L3_RIGHT(new SuperstructurePosition(24.0, 0.0)),
-  ALGAE_L3_LEFT(new SuperstructurePosition(39.0, 180.0));
+  ALGAE_INTAKE_RIGHT(
+      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_GROUND, ArmState.ALGAE_INTAKE_FLOOR)),
+  LOLLIPOP_INTAKE_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
+  STOWED(new SuperstructurePosition(55.0, ArmState.CORAL_HANDOFF)),
+  LEFT_SAFE_STOWED_UP(new SuperstructurePosition(10.0, ArmState.HOLDING_UPRIGHT)),
+  STOWED_UP(new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT)),
+  HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
+  L1_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L1, ArmState.CORAL_SCORE_RIGHT_LINEUP_L1)),
+  L2_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L2, ArmState.CORAL_SCORE_RIGHT_LINEUP_L2)),
+  L2_RIGHT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2)),
+  L3_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L3, ArmState.CORAL_SCORE_RIGHT_LINEUP_L3)),
+  L3_RIGHT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3)),
+  L4_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4)),
+  L4_RIGHT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4)),
+  L2_LEFT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_LINEUP_L2, ArmState.CORAL_SCORE_LEFT_LINEUP_L2)),
+  L2_LEFT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L2, ArmState.CORAL_SCORE_LEFT_RELEASE_L2)),
+  L3_LEFT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_LINEUP_L3, ArmState.CORAL_SCORE_LEFT_LINEUP_L3)),
+  L3_LEFT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L3, ArmState.CORAL_SCORE_LEFT_RELEASE_L3)),
+  L4_LEFT(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_LINEUP_L4, ArmState.CORAL_SCORE_LEFT_LINEUP_L4)),
+  L4_LEFT_PLACE(
+      new SuperstructurePosition(
+          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4)),
+  ALGAE_NET_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
+  ALGAE_OUT_RIGHT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
+  ALGAE_OUT_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
+  ALGAE_L2_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.ALGAE_INTAKE_L2_RIGHT, ArmState.ALGAE_INTAKE_RIGHT_L2)),
+  ALGAE_L2_LEFT(
+      new SuperstructurePosition(
+          ElevatorState.ALGAE_INTAKE_L2_LEFT, ArmState.ALGAE_INTAKE_LEFT_L2)),
+  ALGAE_L3_RIGHT(
+      new SuperstructurePosition(
+          ElevatorState.ALGAE_INTAKE_L3_RIGHT, ArmState.ALGAE_INTAKE_RIGHT_L3)),
+  ALGAE_L3_LEFT(
+      new SuperstructurePosition(
+          ElevatorState.ALGAE_INTAKE_L3_LEFT, ArmState.ALGAE_INTAKE_LEFT_L3));
+
+  private static final List<Waypoint> ALL_WAYPOINTS = List.of(values());
 
   public final SuperstructurePosition position;
 
@@ -61,25 +111,9 @@ public enum Waypoint {
    * @param position The position of the superstructure.
    */
   public static Waypoint getClosest(SuperstructurePosition position) {
-    Waypoint closestWaypoint = STOWED_UP;
-    double closestDistance = Double.MAX_VALUE;
-    Translation2d point = position.getTranslation();
-
-    for (int i = 0; Waypoint.values().length > i; i++) {
-
-      Translation2d nodePoint = Waypoint.values()[i].position.getTranslation();
-
-      double distanceFromNodeToPoint =
-          Math.hypot(
-              Math.pow(nodePoint.getX() - point.getX(), 2),
-              Math.pow(nodePoint.getY() - point.getY(), 2));
-
-      if (distanceFromNodeToPoint < closestDistance) {
-        closestDistance = distanceFromNodeToPoint;
-        closestWaypoint = Waypoint.values()[i];
-      }
-    }
-    return closestWaypoint;
+    return ALL_WAYPOINTS.stream()
+        .min(Comparator.comparingDouble(waypoint -> position.costFor(waypoint.position)))
+        .orElseThrow();
   }
 
   public void canMoveToAlways(Waypoint other, MutableValueGraph<Waypoint, WaypointEdge> graph) {

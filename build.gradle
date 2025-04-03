@@ -150,7 +150,6 @@ gversion {
 	indent       = "  "
 }
 
-apply plugin: 'groovy'
 spotless {
 	enforceCheck false
 
@@ -158,21 +157,10 @@ spotless {
 	lineEndings 'UNIX'
 
 	java {
-		toggleOffOn()
-		importOrder()
-		removeUnusedImports()
 		googleJavaFormat()
-		trimTrailingWhitespace()
-		endWithNewline()
 		licenseHeader ''
 
 		targetExclude('src/main/java/frc/robot/generated/BuildConstants.java')
-	}
-
-	groovy {
-		importOrder()
-		excludeJava()
-		greclipse()
 	}
 
 	groovyGradle {
@@ -184,12 +172,5 @@ spotless {
 		simple().indentWithSpaces(2)
 
 		targetExclude('.pathplanner/**')
-	}
-
-	format 'misc', {
-		target '.gitignore'
-
-		trimTrailingWhitespace()
-		endWithNewline()
 	}
 }

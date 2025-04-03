@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.config.FeatureFlags;
 import frc.robot.config.RobotConfig;
@@ -17,6 +18,7 @@ import frc.robot.vision.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.vision.results.GamePieceResult;
 import frc.robot.vision.results.TagResult;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 public class Limelight extends StateMachine<LimelightState> {
   private static final int[] VALID_APRILTAGS =
@@ -85,8 +87,9 @@ public class Limelight extends StateMachine<LimelightState> {
       return Optional.empty();
     }
 
-    PoseEstimate estimatePose = new PoseEstimate();
-    if (DriverStation.isDisabled() || getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP) {
+    PoseEstimate estimatePose;
+    if (FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()
+        && (DriverStation.isDisabled() || getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)) {
       estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightTableName);
     } else {
       estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightTableName);
@@ -146,6 +149,30 @@ public class Limelight extends StateMachine<LimelightState> {
     return Optional.of(new GamePieceResult(coralTx, coralTy, timestamp));
   }
 
+  public OptionalDouble handoffTx() {
+    if (getState() != LimelightState.HELD_CORAL) {
+      return OptionalDouble.empty();
+    }
+
+    var t2d = LimelightHelpers.getT2DArray(limelightTableName);
+
+    if (t2d.length != 17) {
+      return OptionalDouble.empty();
+    }
+    var tv = t2d[0];
+
+    if (tv == 0) {
+      return OptionalDouble.empty();
+    }
+
+    var tx = t2d[4];
+    if (tx == 0.0) {
+      return OptionalDouble.empty();
+    }
+
+    return OptionalDouble.empty();
+  }
+
   private Optional<GamePieceResult> getRawAlgaeResult() {
     if (getState() != LimelightState.ALGAE) {
       return Optional.empty();
@@ -193,11 +220,8 @@ public class Limelight extends StateMachine<LimelightState> {
       }
       case CORAL -> updateHealth(coralResult);
       case ALGAE -> updateHealth(algaeResult);
-      case CLOSEST_REEF_TAG -> {
-        LimelightHelpers.SetFiducialIDFiltersOverride(limelightTableName, closestScoringReefTag);
-        updateHealth(tagResult);
-      }
-      case CLOSEST_REEF_TAG_CLOSEUP -> {
+      case HELD_CORAL -> updateHealth(coralResult);
+      case CLOSEST_REEF_TAG, CLOSEST_REEF_TAG_CLOSEUP -> {
         LimelightHelpers.SetFiducialIDFiltersOverride(limelightTableName, closestScoringReefTag);
         updateHealth(tagResult);
       }
@@ -231,7 +255,7 @@ public class Limelight extends StateMachine<LimelightState> {
     }
     limelightHeartbeat = newHeartbeat;
 
-    if (limelightTimer.hasElapsed(IS_OFFLINE_TIMEOUT)) {
+    if (limelightTimer.hasElapsed(IS_OFFLINE_TIMEOUT) && RobotBase.isReal()) {
       cameraHealth = CameraHealth.OFFLINE;
       DogLog.logFault(limelightTableName + " is offline", AlertType.kError);
       return;
@@ -276,6 +300,14 @@ public class Limelight extends StateMachine<LimelightState> {
     DogLog.log(
         "CameraPositionCalibration/" + name + "/LL Yaw",
         Units.radiansToDegrees(cameraRobotRelativePose.getRotation().getZ()));
+  }
+
+  public boolean isOnlineForTags() {
+    return switch (getState()) {
+      case TAGS, CLOSEST_REEF_TAG, CLOSEST_REEF_TAG_CLOSEUP, STATION_TAGS ->
+          getCameraHealth() != CameraHealth.OFFLINE;
+      default -> false;
+    };
   }
 
   private static Pose3d getRobotRelativeCameraPosition(

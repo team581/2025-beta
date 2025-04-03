@@ -4,7 +4,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.arm.ArmState;
 import frc.robot.arm.ArmSubsystem;
+import frc.robot.elevator.ElevatorState;
 import frc.robot.util.MathHelpers;
 import java.util.Objects;
 
@@ -17,6 +19,18 @@ public record SuperstructurePosition(double elevatorHeight, double armAngle) {
       1.0 / 270.0; // TODO: Get more legit ratios for these
   private static final double ELEVATOR_INCHES_PER_SECOND = 1.0 / 20.0;
   private static final double STATIC_COST = 1.0; // UNTUNNED
+
+  public SuperstructurePosition(ElevatorState elevatorState, double armAngle) {
+    this(elevatorState.getHeight(), armAngle);
+  }
+
+  public SuperstructurePosition(double elevatorHeight, ArmState armState) {
+    this(elevatorHeight, armState.getAngle());
+  }
+
+  public SuperstructurePosition(ElevatorState elevatorState, ArmState armState) {
+    this(elevatorState.getHeight(), armState.getAngle());
+  }
 
   @Override
   public final int hashCode() {

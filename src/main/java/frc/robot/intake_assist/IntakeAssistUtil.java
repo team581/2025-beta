@@ -15,19 +15,21 @@ public final class IntakeAssistUtil {
   private static final double CORAL_ASSIST_KP = 3.0;
   private static final double INTAKE_OFFSET = Units.inchesToMeters(18);
 
-  public static ChassisSpeeds getAssistSpeedsFromPose(Pose2d target, Pose2d robotPose) {
+  public static ChassisSpeeds getAssistSpeedsFromPose(
+      Pose2d target, Pose2d robotPose, ChassisSpeeds teleopSpeeds) {
     var robotRelativePose =
         target
             .getTranslation()
             .minus(robotPose.getTranslation())
             .rotateBy(Rotation2d.fromDegrees(360 - robotPose.getRotation().getDegrees()));
-    var sidewaysError = robotRelativePose.getY();
-    var robotRelativeError = new Translation2d(0.0, sidewaysError);
+    var sidewaysSpeed = robotRelativePose.getY();
+    var forwardError = Math.hypot(teleopSpeeds.vxMetersPerSecond, teleopSpeeds.vyMetersPerSecond);
+    var robotRelativeError = new Translation2d(forwardError, sidewaysSpeed * CORAL_ASSIST_KP);
     var fieldRelativeError = robotRelativeError.rotateBy(robotPose.getRotation());
-    return new ChassisSpeeds(
-        fieldRelativeError.getX() * CORAL_ASSIST_KP,
-        fieldRelativeError.getY() * CORAL_ASSIST_KP,
-        0.0);
+    var assistSpeeds =
+        new ChassisSpeeds(fieldRelativeError.getX(), fieldRelativeError.getY(), 0.0).times(0.8);
+    var scaledTeleopSpeeds = teleopSpeeds.times(0.2);
+    return assistSpeeds.plus(scaledTeleopSpeeds);
   }
 
   public static double getIntakeAssistAngle(Translation2d target, Pose2d robotPose) {

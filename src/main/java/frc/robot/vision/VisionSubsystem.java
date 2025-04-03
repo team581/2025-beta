@@ -1,6 +1,8 @@
 package frc.robot.vision;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.robot.auto_align.ReefPipe;
 import frc.robot.config.FeatureFlags;
 import frc.robot.imu.ImuSubsystem;
@@ -10,20 +12,22 @@ import frc.robot.vision.limelight.Limelight;
 import frc.robot.vision.limelight.LimelightState;
 import frc.robot.vision.results.GamePieceResult;
 import frc.robot.vision.results.TagResult;
-import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Optional;
-import java.util.Queue;
+import java.util.OptionalDouble;
 
 public class VisionSubsystem extends StateMachine<VisionState> {
   private static final double REEF_CLOSEUP_DISTANCE = 0.7;
+  private final Debouncer hasSeenTagDisabledDebouncer = new Debouncer(0.5, DebounceType.kFalling);
   private final ImuSubsystem imu;
   private final Limelight leftBackLimelight;
   private final Limelight leftFrontLimelight;
   private final Limelight rightLimelight;
   private final Limelight gamePieceDetectionLimelight;
 
-  private final Queue<TagResult> tagResult = new ArrayDeque<>(4);
+  private Optional<TagResult> leftBackTagResult = Optional.empty();
+  private Optional<TagResult> leftFrontTagResult = Optional.empty();
+  private Optional<TagResult> rightTagResult = Optional.empty();
+
   private double robotHeading;
   private double pitch;
   private double angularVelocity;
@@ -60,49 +64,44 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     if (getState() == VisionState.CLOSEST_REEF_TAG_CLOSEUP) {
       switch (reefPipe) {
         case PIPE_A, PIPE_C, PIPE_E, PIPE_G, PIPE_I, PIPE_K -> {
-          if (leftFrontLimelight.getCameraHealth() != CameraHealth.OFFLINE) {
+          if (leftBackLimelight.getCameraHealth() != CameraHealth.OFFLINE) {
+            leftFrontLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
             leftFrontLimelight.setState(LimelightState.OFF);
-            leftBackLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
           }
         }
         case PIPE_B, PIPE_D, PIPE_F, PIPE_H, PIPE_J, PIPE_L -> {
-          if (leftBackLimelight.getCameraHealth() != CameraHealth.OFFLINE) {
-            leftBackLimelight.setState(LimelightState.OFF);
+          if (leftFrontLimelight.getCameraHealth() != CameraHealth.OFFLINE) {
             leftFrontLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
+            leftBackLimelight.setState(LimelightState.OFF);
           }
         }
       }
     }
 
-    tagResult.clear();
-    var maybeLeftBackResult = leftBackLimelight.getTagResult();
-    var maybeleftFrontResult = leftFrontLimelight.getTagResult();
-    var maybeFrontResult = rightLimelight.getTagResult();
-    var maybeGamePieceResult = gamePieceDetectionLimelight.getTagResult();
+    leftBackTagResult = leftBackLimelight.getTagResult();
+    leftFrontTagResult = leftFrontLimelight.getTagResult();
+    rightTagResult = rightLimelight.getTagResult();
 
-    if (maybeLeftBackResult.isPresent()) {
-      tagResult.add(maybeLeftBackResult.orElseThrow());
-    }
-
-    if (maybeleftFrontResult.isPresent()) {
-      tagResult.add(maybeleftFrontResult.orElseThrow());
-    }
-
-    if (maybeFrontResult.isPresent()) {
-      tagResult.add(maybeFrontResult.orElseThrow());
-    }
-
-    if (maybeGamePieceResult.isPresent()) {
-      tagResult.add(maybeGamePieceResult.get());
-    }
-
-    if (!hasSeenTag) {
-      hasSeenTag = !tagResult.isEmpty();
-    }
+    hasSeenTag =
+        leftBackTagResult.isPresent()
+            || leftFrontTagResult.isPresent()
+            || rightTagResult.isPresent();
   }
 
-  public Collection<TagResult> getTagResult() {
-    return tagResult;
+  public Optional<TagResult> getLeftBackTagResult() {
+    return leftBackTagResult;
+  }
+
+  public Optional<TagResult> getLeftFrontTagResult() {
+    return leftFrontTagResult;
+  }
+
+  public Optional<TagResult> getRightTagResult() {
+    return rightTagResult;
+  }
+
+  public boolean hasSeenTagRecentlyDisabled() {
+    return hasSeenTagDisabledDebouncer.calculate(hasSeenTag);
   }
 
   public boolean hasSeenTag() {
@@ -146,6 +145,12 @@ public class VisionSubsystem extends StateMachine<VisionState> {
         rightLimelight.setState(LimelightState.TAGS);
         gamePieceDetectionLimelight.setState(LimelightState.CORAL);
       }
+      case HANDOFF -> {
+        leftBackLimelight.setState(LimelightState.TAGS);
+        leftFrontLimelight.setState(LimelightState.TAGS);
+        rightLimelight.setState(LimelightState.TAGS);
+        gamePieceDetectionLimelight.setState(LimelightState.HELD_CORAL);
+      }
       case ALGAE_DETECTION -> {
         leftBackLimelight.setState(LimelightState.TAGS);
         leftFrontLimelight.setState(LimelightState.TAGS);
@@ -159,6 +164,10 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     return rightLimelight.getAlgaeResult();
   }
 
+  public OptionalDouble getHandoffOffsetTx() {
+    return gamePieceDetectionLimelight.handoffTx();
+  }
+
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
@@ -166,8 +175,7 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     leftBackLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
     leftFrontLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
     rightLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
-    gamePieceDetectionLimelight.sendImuData(
-        robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
+
     if (FeatureFlags.CAMERA_POSITION_CALIBRATION.getAsBoolean()) {
       setStateFromRequest(VisionState.TAGS);
       leftBackLimelight.logCameraPositionCalibrationValues();
@@ -182,7 +190,6 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     leftFrontLimelight.setClosestScoringReefTag(tagID);
     rightLimelight.setClosestScoringReefTag(tagID);
     leftBackLimelight.setClosestScoringReefTag(tagID);
-    gamePieceDetectionLimelight.setClosestScoringReefTag(tagID);
   }
 
   public boolean isAnyCameraOffline() {
@@ -194,59 +201,17 @@ public class VisionSubsystem extends StateMachine<VisionState> {
   }
 
   public boolean isAnyLeftScoringTagLimelightOnline() {
-    if ((leftBackLimelight.getState() == LimelightState.TAGS
-            || leftBackLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || leftBackLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (leftBackLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || leftBackLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-    if ((leftFrontLimelight.getState() == LimelightState.TAGS
-            || leftFrontLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || leftFrontLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (leftFrontLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || leftFrontLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-
-    return false;
+    return leftBackLimelight.isOnlineForTags() || leftFrontLimelight.isOnlineForTags();
   }
 
   public boolean isAnyRightScoringTagLimelightOnline() {
-    if ((rightLimelight.getState() == LimelightState.TAGS
-            || rightLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || rightLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (rightLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || rightLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-    return false;
+    return rightLimelight.isOnlineForTags();
   }
 
   public boolean isAnyTagLimelightOnline() {
-    if ((leftBackLimelight.getState() == LimelightState.TAGS
-            || leftBackLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || leftBackLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (leftBackLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || leftBackLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-    if ((rightLimelight.getState() == LimelightState.TAGS
-            || rightLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || rightLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (rightLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || rightLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-    if ((leftFrontLimelight.getState() == LimelightState.TAGS
-            || leftFrontLimelight.getState() == LimelightState.CLOSEST_REEF_TAG
-            || leftFrontLimelight.getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)
-        && (leftFrontLimelight.getCameraHealth() == CameraHealth.NO_TARGETS
-            || leftFrontLimelight.getCameraHealth() == CameraHealth.GOOD)) {
-      return true;
-    }
-
-    return false;
+    return leftBackLimelight.isOnlineForTags()
+        || leftFrontLimelight.isOnlineForTags()
+        || rightLimelight.isOnlineForTags();
   }
 
   public void updateDistanceFromReef(double distanceFromReef) {

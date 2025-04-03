@@ -1,44 +1,29 @@
 package frc.robot.swerve;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.auto_align.RobotScoringSide;
 import frc.robot.fms.FmsSubsystem;
 
 public class SnapUtil {
 
   public static double getProcessorAngle() {
-    return FmsSubsystem.isRedAlliance() ? 100 : 280;
+    return FmsSubsystem.isRedAlliance() ? 190 : 370;
   }
 
   public static double getCageAngle() {
-    return FmsSubsystem.isRedAlliance() ? 0 : 180;
+    return FmsSubsystem.isRedAlliance() ? 90 : 270;
   }
 
-  public static double getLeftNetDirection(Pose2d robotPose) {
-    var robotX = robotPose.getX();
+  public static double getNetScoringAngle(RobotScoringSide scoringSide, Pose2d robotPose) {
+    double robotX = robotPose.getX();
     // entire field length is 17.55m
     double halfFieldLength = 17.55 / 2.0;
 
-    // Robot is on blue side
     if (robotX < halfFieldLength) {
-      return 0.0;
+
+      return scoringSide.equals(RobotScoringSide.RIGHT) ? 90 : -90;
     }
-
-    // Robot is on red side
-    return 180;
-  }
-
-  public static double getRightNetDirection(Pose2d robotPose) {
-    var robotX = robotPose.getX();
-    // entire field length is 17.55m
-    double halfFieldLength = 17.55 / 2.0;
-
-    // Robot is on blue side
-    if (robotX < halfFieldLength) {
-      return 180.0;
-    }
-
-    // Robot is on red side
-    return 0.0;
+    return scoringSide.equals(RobotScoringSide.RIGHT) ? -90 : 90;
   }
 
   public static double getCoralStationAngle(Pose2d robotPose) {

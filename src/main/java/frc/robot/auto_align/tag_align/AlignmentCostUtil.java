@@ -73,7 +73,7 @@ public class AlignmentCostUtil {
   private final LocalizationSubsystem localization;
   private final SwerveSubsystem swerve;
   private final ReefState reefState;
-  private final RobotScoringSide side;
+  private RobotScoringSide side;
 
   private final Comparator<ReefPipe> pipeL4Comparator = createReefPipeComparator(ReefPipeLevel.L4);
   private final Comparator<ReefPipe> pipeL3Comparator = createReefPipeComparator(ReefPipeLevel.L3);
@@ -106,6 +106,10 @@ public class AlignmentCostUtil {
       // Shouldn't ever happen
       default -> pipeL2Comparator;
     };
+  }
+
+  public void setSide(RobotScoringSide side) {
+    this.side = side;
   }
 
   /** Helper function to create a singleton comparator for each level. */
