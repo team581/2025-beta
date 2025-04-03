@@ -2,6 +2,7 @@ package frc.robot.robot_manager.collision_avoidance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,42 +10,80 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-  // @Test
-  // public void routeStowedUpToUpRightAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.route(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 0),
-  //           ObstructionKind.NONE);
-  //   var expected = Waypoint.STOWED_UP;
-
-  //   assertEquals(expected, result);
-  // }
-  // @Test
-  // public void stowedUpToUpRightAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.aStar(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 0),
-  //           ObstructionKind.NONE);
-  //   var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT);
-
-  //   assertEquals(expected, new ArrayList<>(result.orElseThrow()));
-  // }
 
   @Test
-  public void lowRightToStowedAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 0),
-            new SuperstructurePosition(50, -90),
-            ObstructionKind.NONE);
+  public void armSetCollisionAvoidanceGoalTest() {
+    double goalAngle = 25.0;
+    boolean climberRisky = true;
+    double currentAngle = 0.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
 
-    var expected =
-        List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.L4_RIGHT, Waypoint.HANDOFF_INTERMEDIARY);
+    double expected = 25.0;
 
-    assertEquals(expected, new ArrayList<>(result.orElseThrow()));
+    assertEquals(expected, result);
   }
+  @Test
+  public void armSetCollisionAvoidanceGoalBackwardTest() {
+    double goalAngle = -25.0;
+    boolean climberRisky = true;
+    double currentAngle = 0.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = -25.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalGoLongWayTest() {
+    double goalAngle = 200.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = 560.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalGoLongWayNegativeTest() {
+    double goalAngle = -200.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = -200.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalNegativeTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = -180.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalPositiveTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    double result =
+        ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = 540.0;
+
+    assertEquals(expected, result);
+  }
+
 
   @Test
   public void leftObstructedAstarTest() {
