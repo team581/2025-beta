@@ -138,7 +138,6 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   public void setCollisionAvoidanceGoal(double angle, boolean climberRisky) {
 
-    double finalPathDecision;
     double solution1;
     double solution2;
 
@@ -160,20 +159,20 @@ public class ArmSubsystem extends StateMachine<ArmState> {
           || (Math.max(rawMotorAngle, solution1) > climberUnsafeAngle2
               && Math.min(rawMotorAngle, solution1)
                   < climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
-        finalPathDecision = solution2;
+        collisionAvoidanceGoal = solution2;
       } else if ((Math.max(rawMotorAngle, solution2) > climberUnsafeAngle1
               && Math.min(rawMotorAngle, solution2) < climberUnsafeAngle1)
           || (Math.max(rawMotorAngle, solution2) > climberUnsafeAngle2
               && Math.min(rawMotorAngle, solution2)
                   < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
-        finalPathDecision = solution1;
+        collisionAvoidanceGoal = solution1;
       } else {
-        finalPathDecision = rawMotorAngle; // Something very bad has happened
+        collisionAvoidanceGoal = rawMotorAngle; // Something very bad has happened
       }
 
     } else {
 
-      finalPathDecision =
+      collisionAvoidanceGoal =
           Math.min(Math.abs(solution2 - rawMotorAngle), Math.abs(solution1 - rawMotorAngle));
     }
     DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
