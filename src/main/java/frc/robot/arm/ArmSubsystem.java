@@ -1,7 +1,5 @@
 package frc.robot.arm;
 
-import org.opencv.core.Mat;
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -81,75 +79,80 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   public double getAngle() {
     return motorAngle;
   }
-public static double getCollisionAvoidanceGoal(double angle, boolean climberRisky, double currentRawMotorAngle){
-  double finalPathDecision;
-  double solution1;
-  double solution2;
 
-  int wrap = (int) currentRawMotorAngle / 360;
-if(angle<0){
-  solution1 = (wrap * 360) -Math.abs(angle);
-  solution2 = (wrap * 360) + (360-Math.abs(angle));
-}else{
-    solution1 = (wrap * 360) + angle;
-    solution2 = (wrap * 360) - (360-angle);
-}
+  public static double getCollisionAvoidanceGoal(
+      double angle, boolean climberRisky, double currentRawMotorAngle) {
+    double finalPathDecision;
+    double solution1;
+    double solution2;
 
+    int wrap = (int) currentRawMotorAngle / 360;
+    if (angle < 0) {
+      solution1 = (wrap * 360) - Math.abs(angle);
+      solution2 = (wrap * 360) + (360 - Math.abs(angle));
+    } else {
+      solution1 = (wrap * 360) + angle;
+      solution2 = (wrap * 360) - (360 - angle);
+    }
 
-    double climberUnsafeAngle1 = (wrap*360)-(360-CLIMBER_UNSAFE_ANGLE);
-    double climberUnsafeAngle2 = (wrap*360)+(CLIMBER_UNSAFE_ANGLE);
+    double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
+    double climberUnsafeAngle2 = (wrap * 360) +  CLIMBER_UNSAFE_ANGLE;
 
-System.out.println("climberUnsafeAngle1 = "+climberUnsafeAngle1);
-System.out.println("climberUnsafeAngle2 = "+climberUnsafeAngle2);
+    System.out.println("climberUnsafeAngle1 = " + climberUnsafeAngle1);
+    System.out.println("climberUnsafeAngle2 = " + climberUnsafeAngle2);
 
-System.out.println("solution1 = "+solution1);
-System.out.println("solution2 = "+solution2);
+    System.out.println("solution1 = " + solution1);
+    System.out.println("solution2 = " + solution2);
 
     if (climberRisky) {
-      if ((Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle1 && Math.min(currentRawMotorAngle, solution1) < climberUnsafeAngle1)||(Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle2 && Math.min(currentRawMotorAngle, solution1) < climberUnsafeAngle2)) {//bad spot is in between the solution 1 path
+      if ((Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle1
+              && Math.min(currentRawMotorAngle, solution1) < climberUnsafeAngle1)
+          || (Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle2
+              && Math.min(currentRawMotorAngle, solution1)
+                  < climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
         finalPathDecision = solution2;
         System.out.println("solution2");
-      }
-      else if((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1 && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle1)||(Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle2 && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle2)){//bad spot is in between the solution 2 path
+      } else if ((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1
+              && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle1)
+          || (Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle2
+              && Math.min(currentRawMotorAngle, solution2)
+                  < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
         finalPathDecision = solution1;
-      System.out.println("solution1");
-      }
-      else{
+        System.out.println("solution1");
+      } else {
         System.out.println("BADDDDDDDDDDDDDDd");
         finalPathDecision = 5.81;
       }
 
-
-    }
-    else{
+    } else {
       System.out.println("darn just pick the closest one");
 
       finalPathDecision =
-      Math.min(
-          Math.abs(solution2 - currentRawMotorAngle), Math.abs(solution1 - currentRawMotorAngle));
+          Math.min(
+              Math.abs(solution2 - currentRawMotorAngle),
+              Math.abs(solution1 - currentRawMotorAngle));
     }
     return finalPathDecision;
-}
+  }
+
   public void setCollisionAvoidanceGoal(double angle, boolean climberRisky) {
 
     int wrap = (int) rawMotorAngle / 360;
     double forwardSolution = (wrap * 360) + angle;
-    double backwardSolution = (wrap * 360) - (360-angle);
-    double climberUnsafeAngle = (wrap*360)+CLIMBER_UNSAFE_ANGLE;
+    double backwardSolution = (wrap * 360) - (360 - angle);
+    double climberUnsafeAngle = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
 
     if (climberRisky) {
       if (rawMotorAngle < climberUnsafeAngle && forwardSolution > climberUnsafeAngle) {
         collisionAvoidanceGoal = backwardSolution;
+      } else {
+        collisionAvoidanceGoal = forwardSolution;
       }
-      else{
-              collisionAvoidanceGoal = forwardSolution;
-
-      }
-    }
-    else{
+    } else {
       collisionAvoidanceGoal =
-      Math.min(
-          Math.abs(backwardSolution - rawMotorAngle), Math.abs(forwardSolution - rawMotorAngle));
+          Math.min(
+              Math.abs(backwardSolution - rawMotorAngle),
+              Math.abs(forwardSolution - rawMotorAngle));
     }
 
     DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
