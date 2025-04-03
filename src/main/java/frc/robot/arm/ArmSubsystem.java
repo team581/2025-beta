@@ -123,7 +123,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
                   < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
         finalPathDecision = solution1;
       } else {
-        finalPathDecision = currentRawMotorAngle;//Something very bad has happened
+        finalPathDecision = currentRawMotorAngle; // Something very bad has happened
       }
 
     } else {
@@ -168,15 +168,13 @@ public class ArmSubsystem extends StateMachine<ArmState> {
                   < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
         finalPathDecision = solution1;
       } else {
-        finalPathDecision = rawMotorAngle;//Something very bad has happened
+        finalPathDecision = rawMotorAngle; // Something very bad has happened
       }
 
     } else {
 
       finalPathDecision =
-          Math.min(
-              Math.abs(solution2 - rawMotorAngle),
-              Math.abs(solution1 - rawMotorAngle));
+          Math.min(Math.abs(solution2 - rawMotorAngle), Math.abs(solution1 - rawMotorAngle));
     }
     DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
   }
