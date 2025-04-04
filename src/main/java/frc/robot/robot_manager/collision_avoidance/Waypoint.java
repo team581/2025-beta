@@ -64,9 +64,12 @@ public enum Waypoint {
   L4_LEFT_PLACE(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4)),
-  ALGAE_NET_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
-  ALGAE_OUT_RIGHT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
-  ALGAE_OUT_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
+  ALGAE_NET_LEFT_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
+  ALGAE_NET_LEFT_OUT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
+  ALGAE_NET_RIGHT_SWING_1(new SuperstructurePosition(ElevatorState.ALGAE_NET, 230.0)),
+  ALGAE_NET_RIGHT_SWING_2(new SuperstructurePosition(ElevatorState.ALGAE_NET, 180.0)),
+  ALGAE_NET_RIGHT_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
+  ALGAE_NET_RIGHT_OUT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
   ALGAE_L2_RIGHT(
       new SuperstructurePosition(
           ElevatorState.ALGAE_INTAKE_L2_RIGHT, ArmState.ALGAE_INTAKE_RIGHT_L2)),
