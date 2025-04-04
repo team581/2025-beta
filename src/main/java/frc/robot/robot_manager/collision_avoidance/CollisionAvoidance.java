@@ -44,7 +44,7 @@ public class CollisionAvoidance {
    * @param desiredPosition The desired position of the superstructure.
    * @param obstructionKind Additional constraints based on robot position.
    */
-  public static Optional<SuperstructurePosition> avoidingPosition(SuperstructurePosition currentPosition,
+  public static Optional<SuperstructurePosition> routePosition(SuperstructurePosition currentPosition,
   SuperstructurePosition desiredPosition,
   ObstructionKind obstructionKind,
   double rawArmAngle){
