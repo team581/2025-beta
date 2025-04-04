@@ -2,56 +2,85 @@ package frc.robot.robot_manager.collision_avoidance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
+
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-  @Test
-  public void alreadyThereAstar() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 90),
-            new SuperstructurePosition(0, 90),
-            ObstructionKind.NONE);
 
-    assertEquals(Optional.empty(), result);
-  }
   @Test
-  public void rightObstructedL4toL1() {
-    var result =
-        CollisionAvoidance.aStar(
-            Waypoint.L4_RIGHT.position,
-            Waypoint.L1_RIGHT.position,
-            ObstructionKind.RIGHT_OBSTRUCTED);
-var expected = List.of(Waypoint.L4_RIGHT, Waypoint.L4_LEFT, Waypoint.LEFT_SAFE_STOWED_UP, Waypoint.STOWED_UP, Waypoint.L1_RIGHT);
-    assertEquals(expected, result.get());
+  public void armSetCollisionAvoidanceGoalTest() {
+    double goalAngle = 25.0;
+    boolean climberRisky = true;
+    double currentAngle = 0.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = 25.0;
+
+    assertEquals(expected, result);
   }
 
   @Test
-  public void stowedUpToUpRightAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 90),
-            new SuperstructurePosition(50, 0),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L3_RIGHT);
+  public void armSetCollisionAvoidanceGoalBackwardTest() {
+    double goalAngle = -25.0;
+    boolean climberRisky = true;
+    double currentAngle = 0.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
 
-    assertEquals(expected, result.get());
+    double expected = -25.0;
+
+    assertEquals(expected, result);
   }
 
   @Test
-  public void lowRightToStowedAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 0),
-            new SuperstructurePosition(50, -90),
-            ObstructionKind.NONE);
+  public void armSetCollisionAvoidanceGoalGoLongWayTest() {
+    double goalAngle = 200.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
 
-    var expected = List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.L4_RIGHT, Waypoint.STOWED);
+    double expected = 560.0;
 
-    assertEquals(expected, result.get());
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalGoLongWayNegativeTest() {
+    double goalAngle = -200.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = -200.0;
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalNegativeTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = -180.0;
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalPositiveTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+
+    double expected = 540.0;
+
+    assertEquals(expected, result);
   }
 
   @Test
@@ -80,34 +109,7 @@ var expected = List.of(Waypoint.L4_RIGHT, Waypoint.L4_LEFT, Waypoint.LEFT_SAFE_S
     assertEquals(expected, result.get());
   }
 
-  @Test
-  public void leftObstructedAlgaeRightAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 90),
-            new SuperstructurePosition(60, 45),
-            ObstructionKind.LEFT_OBSTRUCTED);
-    var expected = List.of(Waypoint.STOWED_UP, Waypoint.ALGAE_RIGHT);
 
-    assertEquals(expected, result.get());
-  }
-
-  @Test
-  public void rightObstructedAlgaeLeftAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 90),
-            new SuperstructurePosition(60, 45),
-            ObstructionKind.RIGHT_OBSTRUCTED);
-    var expected =
-        List.of(
-            Waypoint.STOWED_UP,
-            Waypoint.LEFT_SAFE_STOWED_UP,
-            Waypoint.ALGAE_LEFT,
-            Waypoint.ALGAE_RIGHT);
-
-    assertEquals(expected, result.get());
-  }
 
   @Test
   public void rightObstructedHandoffToL4RightAstarTest() {

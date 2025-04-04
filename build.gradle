@@ -173,11 +173,4 @@ spotless {
 
 		targetExclude('.pathplanner/**')
 	}
-
-	format 'misc', {
-		target '.gitignore'
-
-		trimTrailingWhitespace()
-		endWithNewline()
-	}
 }

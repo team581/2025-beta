@@ -1,9 +1,9 @@
 package frc.robot.util.scheduling;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.util.Stopwatch;
 
 /**
  * Extends {@link SubsystemBase} by adding in lifecycle methods for robotInit, teleopPeriodic, etc.,
@@ -55,7 +55,7 @@ public class LifecycleSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Stopwatch.start(loggerName);
+    DogLog.time(loggerName);
 
     LifecycleStage stage = LifecycleSubsystemManager.getStage();
 
@@ -94,7 +94,7 @@ public class LifecycleSubsystem extends SubsystemBase {
       }
     }
 
-    Stopwatch.stop(loggerName);
+    DogLog.timeEnd(loggerName);
 
     previousStage = stage;
   }

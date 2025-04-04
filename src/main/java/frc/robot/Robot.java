@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -33,7 +34,6 @@ import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.ground_manager.GroundManager;
 import frc.robot.swerve.SwerveSubsystem;
 import frc.robot.util.ElasticLayoutUtil;
-import frc.robot.util.Stopwatch;
 import frc.robot.util.scheduling.LifecycleSubsystemManager;
 import frc.robot.vision.VisionSubsystem;
 import frc.robot.vision.game_piece_detection.CoralMap;
@@ -112,6 +112,9 @@ public class Robot extends TimedRobot {
 
     DriverStation.silenceJoystickConnectionWarning(RobotBase.isSimulation());
 
+    SignalLogger.start();
+    SignalLogger.setPath("/media/sda1/hoot/");
+
     DogLog.setOptions(
         new DogLogOptions()
             .withCaptureDs(true)
@@ -147,9 +150,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    Stopwatch.start("Scheduler/CommandSchedulerPeriodic");
+    DogLog.timeEnd("Scheduler/TimeSinceLastLoop");
+    DogLog.time("Scheduler/TimeSinceLastLoop");
+
+    DogLog.time("Scheduler/CommandSchedulerPeriodic");
     CommandScheduler.getInstance().run();
-    Stopwatch.stop("Scheduler/CommandSchedulerPeriodic");
+    DogLog.timeEnd("Scheduler/CommandSchedulerPeriodic");
     LifecycleSubsystemManager.log();
 
     if (RobotController.getBatteryVoltage() < 12.5) {
@@ -232,14 +238,34 @@ public class Robot extends TimedRobot {
     hardware.driverController.leftTrigger().onTrue(robotCommands.floorIntakeCommand());
     hardware.driverController.leftBumper().onTrue(robotCommands.algaeIntakeGroundCommand());
     hardware.driverController.rightBumper().onTrue(robotCommands.stowCommand());
-    hardware.driverController.y().onTrue(robotCommands.highLineupCommand());
-    hardware.driverController.x().onTrue(robotCommands.l3LineupCommand());
-    hardware.driverController.b().onTrue(robotCommands.l2LineupCommand());
-    hardware.driverController.a().onTrue(robotCommands.lowLineupCommand());
+    hardware
+        .driverController
+        .y()
+        .onTrue(robotCommands.highLineupCommand())
+        .onFalse(robotCommands.scoringAlignOffCommand());
+    hardware
+        .driverController
+        .x()
+        .onTrue(robotCommands.l3LineupCommand())
+        .onFalse(robotCommands.scoringAlignOffCommand());
+    hardware
+        .driverController
+        .b()
+        .onTrue(robotCommands.l2LineupCommand())
+        .onFalse(robotCommands.scoringAlignOffCommand());
+    hardware
+        .driverController
+        .a()
+        .onTrue(robotCommands.lowLineupCommand())
+        .onFalse(robotCommands.scoringAlignOffCommand());
 
     hardware.driverController.povUp().onTrue(robotCommands.climbUpCommand());
     hardware.driverController.povDown().onTrue(robotCommands.climbStopCommand());
-    hardware.driverController.povRight().onTrue(robotCommands.algaeReefIntakeCommand());
+    hardware
+        .driverController
+        .povRight()
+        .onTrue(robotCommands.algaeReefIntakeCommand())
+        .onFalse(robotCommands.scoringAlignOffCommand());
 
     hardware.driverController.start().onTrue(robotCommands.unjamCommand());
     hardware.driverController.back().onTrue(localization.getZeroCommand());

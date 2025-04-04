@@ -23,8 +23,8 @@ public class TagAlign {
   private static final ImmutableList<ReefPipe> ALL_REEF_PIPES =
       ImmutableList.copyOf(ReefPipe.values());
 
-  private static final PIDController TAG_SIDEWAYS_PID = new PIDController(7.0, 0.0, 0.0);
-  private static final PIDController TAG_FORWARD_PID = new PIDController(6.0, 0.0, 0.0);
+  private static final PIDController TAG_SIDEWAYS_PID = new PIDController(5.0, 0.0, 0.0);
+  private static final PIDController TAG_FORWARD_PID = new PIDController(4.5, 0.0, 0.0);
   private static final DoubleSubscriber TRANSLATION_GOOD_THRESHOLD =
       DogLog.tunable("AutoAlign/IsAlignedTranslation", 0.05);
   private static final DoubleSubscriber ROTATION_GOOD_THRESHOLD =
@@ -55,10 +55,9 @@ public class TagAlign {
   }
 
   public void setLevel(ReefPipeLevel level, RobotScoringSide side) {
-    if (!pipeSwitchActive) {
-      this.level = level;
-    }
     this.robotScoringSide = side;
+    alignmentCostUtil.setSide(robotScoringSide);
+    this.level = level;
   }
 
   public void setPipeOveride(ReefPipe pipe) {
@@ -68,23 +67,21 @@ public class TagAlign {
   public void setControllerValues(double controllerXValue, double controllerYValue) {
     rawControllerXValue = controllerXValue;
     rawControllerYValue = controllerYValue;
+    checkControllerForSwitch();
   }
 
-  private Translation2d getPoseOffset() {
-    var scaledX = rawControllerXValue * FINE_ADJUST_CONTROLLER_SCALAR;
-    var scaledY = rawControllerYValue * FINE_ADJUST_CONTROLLER_SCALAR;
+  private void checkControllerForSwitch() {
     if (pipeSwitchActive
         && (Timer.getFPGATimestamp() > LAST_PIPE_SWITCH_TIMESTAMP + PIPE_SWITCH_TIMEOUT)
         && rawControllerXValue == 0.0) {
       pipeSwitchActive = false;
     }
     if (pipeSwitchActive) {
-      return Translation2d.kZero;
+      return;
     }
     if ((rawControllerXValue < -0.98 || rawControllerXValue > 0.98)) {
       var storedPipe = getBestPipe();
       pipeSwitchActive = true;
-      this.level = ReefPipeLevel.RAISING;
       ReefPipe leftPipe =
           switch (storedPipe) {
             case PIPE_A -> ReefPipe.PIPE_L;
@@ -121,9 +118,7 @@ public class TagAlign {
       } else if (rawControllerXValue > 0.98) {
         setPipeOveride(rightPipe);
       }
-      return Translation2d.kZero;
     }
-    return new Translation2d(scaledY, scaledX);
   }
 
   public boolean isAligned(ReefPipe pipe) {
@@ -158,9 +153,7 @@ public class TagAlign {
 
     if (DriverStation.isTeleop()) {
       var offsetPose =
-          new Pose2d(
-              theoreticalScoringPose.getTranslation().plus(getPoseOffset()),
-              theoreticalScoringPose.getRotation());
+          new Pose2d(theoreticalScoringPose.getTranslation(), theoreticalScoringPose.getRotation());
       return offsetPose;
     }
 
@@ -176,27 +169,6 @@ public class TagAlign {
     return ALL_REEF_PIPES.stream()
         .min(alignmentCostUtil.getReefPipeComparator(level))
         .orElseThrow();
-  }
-
-  public ChassisSpeeds getAlgaeAlignmentSpeeds(Pose2d usedScoringPose, ChassisSpeeds teleopSpeeds) {
-    var robotPose = localization.getPose();
-    DogLog.log("AutoAlign/UsedAlgaePose", usedScoringPose);
-    var scoringTranslationRobotRelative =
-        usedScoringPose
-            .getTranslation()
-            .minus(robotPose.getTranslation())
-            .rotateBy(Rotation2d.fromDegrees(360 - usedScoringPose.getRotation().getDegrees()));
-    var forwardsSpeeds = Math.hypot(teleopSpeeds.vxMetersPerSecond, teleopSpeeds.vyMetersPerSecond);
-    var goalTranslationWithP =
-        new Translation2d(
-            TAG_SIDEWAYS_PID.calculate(scoringTranslationRobotRelative.getX()), forwardsSpeeds);
-    var goalTranslation = goalTranslationWithP.rotateBy(usedScoringPose.getRotation());
-
-    var goalAlignSpeeds =
-        new ChassisSpeeds(-goalTranslation.getX(), -goalTranslation.getY(), 0.0).times(0.7);
-    var scaledTeleopSpeeds = teleopSpeeds.times(0.3);
-    DogLog.log("AutoAlign/GoalAlgaeSpeeds", goalAlignSpeeds);
-    return goalAlignSpeeds.plus(scaledTeleopSpeeds);
   }
 
   public ChassisSpeeds getPoseAlignmentChassisSpeeds(Pose2d usedScoringPose) {

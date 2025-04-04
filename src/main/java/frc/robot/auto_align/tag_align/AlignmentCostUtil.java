@@ -73,7 +73,7 @@ public class AlignmentCostUtil {
   private final LocalizationSubsystem localization;
   private final SwerveSubsystem swerve;
   private final ReefState reefState;
-  private final RobotScoringSide side;
+  private RobotScoringSide side;
 
   private final Comparator<ReefPipe> pipeL4Comparator = createReefPipeComparator(ReefPipeLevel.L4);
   private final Comparator<ReefPipe> pipeL3Comparator = createReefPipeComparator(ReefPipeLevel.L3);
@@ -108,6 +108,10 @@ public class AlignmentCostUtil {
     };
   }
 
+  public void setSide(RobotScoringSide side) {
+    this.side = side;
+  }
+
   /** Helper function to create a singleton comparator for each level. */
   private Comparator<ReefPipe> createReefPipeComparator(ReefPipeLevel level) {
     return Comparator.comparingDouble(
@@ -116,6 +120,6 @@ public class AlignmentCostUtil {
                     pipe.getPose(level, side).getTranslation(),
                     localization.getPose().getTranslation(),
                     swerve.getTeleopSpeeds())
-                + (reefState.isScored(pipe, level) ? 0.25 : 0));
+                + (reefState.isScored(pipe, level) ? 0.4 : 0));
   }
 }

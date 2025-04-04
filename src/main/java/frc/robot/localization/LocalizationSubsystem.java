@@ -22,8 +22,6 @@ import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 import frc.robot.vision.VisionSubsystem;
 import frc.robot.vision.results.TagResult;
-import java.util.Collection;
-import java.util.List;
 
 public class LocalizationSubsystem extends StateMachine<LocalizationState> {
   private static final Vector<N3> VISION_STD_DEVS =
@@ -34,7 +32,6 @@ public class LocalizationSubsystem extends StateMachine<LocalizationState> {
   private final ImuSubsystem imu;
   private final VisionSubsystem vision;
   private final SwerveSubsystem swerve;
-  private Collection<TagResult> latestResult = List.of();
 
   public LocalizationSubsystem(ImuSubsystem imu, VisionSubsystem vision, SwerveSubsystem swerve) {
     super(SubsystemPriority.LOCALIZATION, LocalizationState.DEFAULT_STATE);
@@ -50,11 +47,6 @@ public class LocalizationSubsystem extends StateMachine<LocalizationState> {
           "Debug/ResetGyroTo0",
           Commands.runOnce(() -> resetGyro(Rotation2d.fromDegrees(0))).ignoringDisable(true));
     }
-  }
-
-  @Override
-  protected void collectInputs() {
-    latestResult = vision.getTagResult();
   }
 
   public Pose2d getPose() {
@@ -73,17 +65,22 @@ public class LocalizationSubsystem extends StateMachine<LocalizationState> {
   @Override
   public void robotPeriodic() {
     super.robotPeriodic();
-    for (var results : latestResult) {
-      Pose2d visionPose = results.pose();
 
-      double visionTimestamp = Utils.fpgaToCurrentTime(results.timestamp());
-      if (DriverStation.isDisabled() && FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()) {
-        resetPose(visionPose);
-      }
-      swerve.drivetrain.addVisionMeasurement(visionPose, visionTimestamp, VISION_STD_DEVS);
-    }
+    vision.getLeftBackTagResult().ifPresent(this::ingestTagResult);
+    vision.getLeftFrontTagResult().ifPresent(this::ingestTagResult);
+    vision.getRightTagResult().ifPresent(this::ingestTagResult);
 
     DogLog.log("Localization/EstimatedPose", getPose());
+  }
+
+  private void ingestTagResult(TagResult result) {
+    var visionPose = result.pose();
+
+    if (DriverStation.isDisabled() && FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()) {
+      resetPose(visionPose);
+    }
+    swerve.drivetrain.addVisionMeasurement(
+        visionPose, Utils.fpgaToCurrentTime(result.timestamp()), VISION_STD_DEVS);
   }
 
   private void resetGyro(Rotation2d gyroAngle) {

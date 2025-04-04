@@ -1,9 +1,12 @@
 package frc.robot.climber;
 
 public enum ClimberState {
-  STOWED(98.0, -0.0),
-  LINEUP(15.0, -0.0),
-  HANGING(99.0, -0.0);
+  STOPPED(98.0, 0.0),
+
+  // TODO: Bump up to 12V once verified it works
+  LINEUP_FORWARD(-100, 2.0),
+  LINEUP_BACKWARD(5, 2.0),
+  HANGING(99.0, 12.0);
 
   public final double angle;
   public final double forwardsVoltage;

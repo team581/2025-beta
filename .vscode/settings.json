@@ -1,6 +1,7 @@
 {
   "[gradle]": {"editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"},
   "java.debug.settings.onBuildFailureProceed": true,
+  "java.format.settings.google.extra": "--skip-reflowing-long-strings",
   "wpilib.skipSelectSimulateExtension": true,
   "java.test.config": [{
     "workingDirectory": "${workspaceFolder}/build/jni/release",
@@ -13,15 +14,10 @@
   }],
   "java.server.launchMode": "Standard",
   "wpilib.autoStartRioLog": false,
-  "[java]": {"editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"},
+  "[java]": {"editor.defaultFormatter": "josevseb.google-java-format-for-vs-code"},
   "[json]": {"editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"},
-  "[ignore]": {"editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"},
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnType": true
-  },
   "files.exclude": {
     "**/CVS": true,
     "**/*~": true,
