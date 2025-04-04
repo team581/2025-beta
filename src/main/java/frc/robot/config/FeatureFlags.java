@@ -24,7 +24,7 @@ public class FeatureFlags {
   public static final BooleanSupplier FIELD_CALIBRATION = FeatureFlag.of("FieldCalibration", false);
 
   public static final BooleanSupplier COLLISION_AVOIDANCE_OBSTRUCTION =
-      FeatureFlag.of("CollisionAvoidance/Obstruction", false);
+      FeatureFlag.of("CollisionAvoidance/Obstruction", true);
 
   public static final BooleanSupplier VISION_HANDOFF_ADJUSTMENT =
       FeatureFlag.of("Vision/HandoffAdjustment", true);
