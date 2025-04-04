@@ -7,7 +7,6 @@ import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -44,20 +43,27 @@ public class CollisionAvoidance {
    * @param desiredPosition The desired position of the superstructure.
    * @param obstructionKind Additional constraints based on robot position.
    */
-  public static Optional<SuperstructurePosition> routePosition(SuperstructurePosition currentPosition,
-  SuperstructurePosition desiredPosition,
-  ObstructionKind obstructionKind,
-  double rawArmAngle){
+  public static Optional<SuperstructurePosition> routePosition(
+      SuperstructurePosition currentPosition,
+      SuperstructurePosition desiredPosition,
+      ObstructionKind obstructionKind,
+      double rawArmAngle) {
     var maybeWaypoint = route(currentPosition, desiredPosition, obstructionKind);
-    if(maybeWaypoint.isEmpty()){
+    if (maybeWaypoint.isEmpty()) {
       return Optional.empty();
     }
-      Waypoint waypoint = maybeWaypoint.get();
-      return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(),getCollisionAvoidanceAngleGoal(waypoint.position.armAngle(), isClimberAtRisk(currentPosition, desiredPosition), obstructionKind, getObstruction(currentPosition, desiredPosition), rawArmAngle))
-);
-
-
+    Waypoint waypoint = maybeWaypoint.get();
+    return Optional.of(
+        new SuperstructurePosition(
+            waypoint.position.elevatorHeight(),
+            getCollisionAvoidanceAngleGoal(
+                waypoint.position.armAngle(),
+                isClimberAtRisk(currentPosition, desiredPosition),
+                obstructionKind,
+                getObstruction(currentPosition, desiredPosition),
+                rawArmAngle)));
   }
+
   public static Optional<Waypoint> route(
       SuperstructurePosition currentPosition,
       SuperstructurePosition desiredPosition,
@@ -385,6 +391,5 @@ public class CollisionAvoidance {
     return graph;
   }
 
-  public CollisionAvoidance() {
-  }
+  public CollisionAvoidance() {}
 }

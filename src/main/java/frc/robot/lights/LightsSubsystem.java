@@ -49,7 +49,7 @@ public class LightsSubsystem extends StateMachine<LightsState> {
     var color8Bit = new Color8Bit(usedState.color);
     if (usedState.pattern == BlinkPattern.SOLID) {
       candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
-    } else  if (usedState.pattern == BlinkPattern.OFF) {
+    } else if (usedState.pattern == BlinkPattern.OFF) {
       candle.setLEDs(0, 0, 0);
     } else {
       double time = blinkTimer.get();

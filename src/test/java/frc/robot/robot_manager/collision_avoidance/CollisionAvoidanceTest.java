@@ -2,13 +2,12 @@ package frc.robot.robot_manager.collision_avoidance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-//TODO: add good tests
+  // TODO: add good tests
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
     double goalAngle = 0.0;
