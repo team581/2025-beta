@@ -13,7 +13,7 @@ public class LightsSubsystem extends StateMachine<LightsState> {
 
   private final Timer blinkTimer = new Timer();
   private LightsState storedState = LightsState.IDLE_EMPTY;
-  private LightsState disabledState = LightsState.HEALTHY;
+  private LightsState disabledState = LightsState.HOMED_SEES_TAGS;
 
   public LightsSubsystem(CANdle candle) {
     super(SubsystemPriority.LIGHTS, LightsState.IDLE_EMPTY);
@@ -49,8 +49,6 @@ public class LightsSubsystem extends StateMachine<LightsState> {
     var color8Bit = new Color8Bit(usedState.color);
     if (usedState.pattern == BlinkPattern.SOLID) {
       candle.setLEDs(color8Bit.red, color8Bit.green, color8Bit.blue);
-    } else if (usedState.pattern == BlinkPattern.OFF) {
-      candle.setLEDs(0, 0, 0);
     } else {
       double time = blinkTimer.get();
       double onDuration = 0;

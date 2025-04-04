@@ -5,17 +5,20 @@ import edu.wpi.first.wpilibj.util.Color;
 public enum LightsState {
   ERROR(Color.kRed, BlinkPattern.BLINK_FAST),
   UNHOMED(Color.kYellow, BlinkPattern.BLINK_SLOW),
-  HEALTHY(Color.kGreen, BlinkPattern.SOLID),
+  HOMED_NO_TAGS(Color.kYellow, BlinkPattern.BLINK_FAST),
+  HOMED_SEES_TAGS(Color.kGreen, BlinkPattern.SOLID),
 
   BLINK(Color.kWhite, BlinkPattern.BLINK_FAST),
-
-  IDLE_EMPTY(Color.kGray, BlinkPattern.OFF),
 
   INTAKING_CORAL(Color.kWhite, BlinkPattern.BLINK_SLOW),
   INTAKING_ALGAE(Color.kTeal, BlinkPattern.BLINK_SLOW),
 
+  IDLE_EMPTY(Color.kBlack, BlinkPattern.SOLID),
   HOLDING_CORAL(Color.kWhite, BlinkPattern.SOLID),
   HOLDING_ALGAE(Color.kTeal, BlinkPattern.SOLID),
+
+  LOLLIPOP_SEES_ALGAE(Color.kTeal, BlinkPattern.BLINK_FAST),
+  LOLLIPOP_NO_ALGAE(Color.kBlack, BlinkPattern.SOLID),
 
   CORAL_HANDOFF(Color.kWhite, BlinkPattern.BLINK_FAST),
 
@@ -23,10 +26,13 @@ public enum LightsState {
   CLIMB_HANG(Color.kGreen, BlinkPattern.SOLID),
   CLIMB_STOP(Color.kGreen, BlinkPattern.BLINK_SLOW),
 
+  SCORE_NO_ALIGN_NO_TAGS(Color.kYellow, BlinkPattern.BLINK_SLOW),
+  SCORE_NO_ALIGN_TAGS(Color.kGreen, BlinkPattern.BLINK_SLOW),
   SCORE_ALIGN_NO_TAGS(Color.kYellow, BlinkPattern.BLINK_FAST),
   SCORE_ALIGN_TAGS(Color.kGreen, BlinkPattern.BLINK_FAST),
 
-  SCORING(Color.kGreen, BlinkPattern.BLINK_FAST),
+  SCORING_ALGAE(Color.kTeal, BlinkPattern.BLINK_FAST),
+  SCORING_CORAL(Color.kWhite, BlinkPattern.BLINK_FAST),
 
   OTHER(Color.kPurple, BlinkPattern.BLINK_SLOW),
 
