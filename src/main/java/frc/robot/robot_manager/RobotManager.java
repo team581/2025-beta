@@ -1383,7 +1383,7 @@ public class RobotManager extends StateMachine<RobotState> {
             ? shouldLoopAroundToScoreObstruction
             : ObstructionKind.NONE;
     var maybeCollisionAvoidanceResult =
-        CollisionAvoidance.route(currentPosition, goal, obstructionKind);
+        CollisionAvoidance.avoidingPosition(currentPosition, goal, obstructionKind, arm.getRawAngle());
 
     if (unsafe || maybeCollisionAvoidanceResult.isEmpty()) {
       elevator.setState(elevatorGoal);
@@ -1391,12 +1391,11 @@ public class RobotManager extends StateMachine<RobotState> {
     } else {
       var collisionAvoidanceResult = maybeCollisionAvoidanceResult.orElseThrow();
 
-      elevator.setCollisionAvoidanceGoal(collisionAvoidanceResult.position.elevatorHeight());
+      elevator.setCollisionAvoidanceGoal(collisionAvoidanceResult.elevatorHeight());
       elevator.setState(ElevatorState.COLLISION_AVOIDANCE);
 
       arm.setCollisionAvoidanceGoal(
-          collisionAvoidanceResult.position.armAngle(),
-          CollisionAvoidance.isClimberAtRisk(currentPosition, goal));
+          collisionAvoidanceResult.armAngle());
       arm.setState(ArmState.COLLISION_AVOIDANCE);
     }
   }

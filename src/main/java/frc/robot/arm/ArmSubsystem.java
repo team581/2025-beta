@@ -28,7 +28,6 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   private static final double TOLERANCE = 2.0;
   private static final double NEAR_TOLERANCE = 10.0;
-  private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
   private final TalonFX motor;
   private double rawMotorAngle;
   private double motorAngle;
@@ -91,90 +90,12 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     return motorAngle;
   }
 
-  public static double getCollisionAvoidanceGoal(
-      double angle, boolean climberRisky, double currentRawMotorAngle) {
-    double finalPathDecision;
-    double solution1;
-    double solution2;
-
-    int wrap = (int) currentRawMotorAngle / 360;
-    if (angle < 0) {
-      solution1 = (wrap * 360) - Math.abs(angle);
-      solution2 = (wrap * 360) + (360 - Math.abs(angle));
-    } else {
-      solution1 = (wrap * 360) + angle;
-      solution2 = (wrap * 360) - (360 - angle);
-    }
-
-    double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
-    double climberUnsafeAngle2 = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
-
-    if (climberRisky) {
-      if ((Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle1
-              && Math.min(currentRawMotorAngle, solution1) < climberUnsafeAngle1)
-          || (Math.max(currentRawMotorAngle, solution1) > climberUnsafeAngle2
-              && Math.min(currentRawMotorAngle, solution1)
-                  < climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
-        finalPathDecision = solution2;
-      } else if ((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1
-              && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle1)
-          || (Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle2
-              && Math.min(currentRawMotorAngle, solution2)
-                  < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
-        finalPathDecision = solution1;
-      } else {
-        finalPathDecision = currentRawMotorAngle; // Something very bad has happened
-      }
-
-    } else {
-
-      finalPathDecision =
-          Math.min(
-              Math.abs(solution2 - currentRawMotorAngle),
-              Math.abs(solution1 - currentRawMotorAngle));
-    }
-    return finalPathDecision;
+  public double getRawAngle() {
+    return rawMotorAngle;
   }
 
-  public void setCollisionAvoidanceGoal(double angle, boolean climberRisky) {
-
-    double solution1;
-    double solution2;
-
-    int wrap = (int) rawMotorAngle / 360;
-    if (angle < 0) {
-      solution1 = (wrap * 360) - Math.abs(angle);
-      solution2 = (wrap * 360) + (360 - Math.abs(angle));
-    } else {
-      solution1 = (wrap * 360) + angle;
-      solution2 = (wrap * 360) - (360 - angle);
-    }
-
-    double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
-    double climberUnsafeAngle2 = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
-
-    if (climberRisky) {
-      if ((Math.max(rawMotorAngle, solution1) > climberUnsafeAngle1
-              && Math.min(rawMotorAngle, solution1) < climberUnsafeAngle1)
-          || (Math.max(rawMotorAngle, solution1) > climberUnsafeAngle2
-              && Math.min(rawMotorAngle, solution1)
-                  < climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
-        collisionAvoidanceGoal = solution2;
-      } else if ((Math.max(rawMotorAngle, solution2) > climberUnsafeAngle1
-              && Math.min(rawMotorAngle, solution2) < climberUnsafeAngle1)
-          || (Math.max(rawMotorAngle, solution2) > climberUnsafeAngle2
-              && Math.min(rawMotorAngle, solution2)
-                  < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
-        collisionAvoidanceGoal = solution1;
-      } else {
-        collisionAvoidanceGoal = rawMotorAngle; // Something very bad has happened
-      }
-
-    } else {
-
-      collisionAvoidanceGoal =
-          Math.min(Math.abs(solution2 - rawMotorAngle), Math.abs(solution1 - rawMotorAngle));
-    }
+  public void setCollisionAvoidanceGoal(double angle) {
+    collisionAvoidanceGoal = angle;
     DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
   }
 

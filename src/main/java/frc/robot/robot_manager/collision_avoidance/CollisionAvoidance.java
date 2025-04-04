@@ -7,6 +7,7 @@ import com.google.common.graph.MutableValueGraph;
 import com.google.common.graph.ValueGraphBuilder;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.ArrayDeque;
 import java.util.Comparator;
@@ -21,6 +22,7 @@ import java.util.Set;
 public class CollisionAvoidance {
   private static final double ELEVATOR_TOLERANCE = 25.0;
   private static final double ARM_TOLERANCE = 40.0;
+  private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
 
   private static final ImmutableValueGraph<Waypoint, WaypointEdge> graph = createGraph();
 
@@ -42,6 +44,20 @@ public class CollisionAvoidance {
    * @param desiredPosition The desired position of the superstructure.
    * @param obstructionKind Additional constraints based on robot position.
    */
+  public static Optional<SuperstructurePosition> avoidingPosition(SuperstructurePosition currentPosition,
+  SuperstructurePosition desiredPosition,
+  ObstructionKind obstructionKind,
+  double rawArmAngle){
+    var maybeWaypoint = route(currentPosition, desiredPosition, obstructionKind);
+    if(maybeWaypoint.isEmpty()){
+      return Optional.empty();
+    }
+      Waypoint waypoint = maybeWaypoint.get();
+      return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(),getCollisionAvoidanceAngleGoal(waypoint.position.armAngle(), isClimberAtRisk(currentPosition, desiredPosition), obstructionKind, getObstruction(currentPosition, desiredPosition), rawArmAngle))
+);
+
+
+  }
   public static Optional<Waypoint> route(
       SuperstructurePosition currentPosition,
       SuperstructurePosition desiredPosition,
@@ -104,6 +120,68 @@ public class CollisionAvoidance {
     return Optional.of(currentWaypoint);
   }
 
+  public static double getCollisionAvoidanceAngleGoal(
+      double angle,
+      boolean climberRisky,
+      ObstructionKind obstructionKind,
+      ObstructionKind edgeObstructionKind,
+      double currentRawMotorAngle) {
+
+    double solution1;
+    double solution2;
+    double collisionAvoidanceGoal;
+
+    int wrap = (int) currentRawMotorAngle / 360;
+    if (angle < 0) {
+      solution1 = (wrap * 360) - Math.abs(angle);
+      solution2 = (wrap * 360) + (360 - Math.abs(angle));
+    } else {
+      solution1 = (wrap * 360) + angle;
+      solution2 = (wrap * 360) - (360 - angle);
+    }
+
+    double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
+    double climberUnsafeAngle2 = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
+
+    if (climberRisky) {
+      if ((Math.max(currentRawMotorAngle, solution1) >= climberUnsafeAngle1
+              && Math.min(currentRawMotorAngle, solution1) <= climberUnsafeAngle1)
+          || (Math.max(currentRawMotorAngle, solution1) >= climberUnsafeAngle2
+              && Math.min(currentRawMotorAngle, solution1)
+                  <= climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
+        collisionAvoidanceGoal = solution2;
+      } else if ((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1
+              && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle1)
+          || (Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle2
+              && Math.min(currentRawMotorAngle, solution2)
+                  < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
+        collisionAvoidanceGoal = solution1;
+      } else {
+        collisionAvoidanceGoal = currentRawMotorAngle; // Something very bad has happened
+      }
+
+    } else {
+
+      if (obstructionKind.equals(edgeObstructionKind)) {
+        if (Math.abs(solution2 - currentRawMotorAngle)
+            > Math.abs(solution1 - currentRawMotorAngle)) {
+          collisionAvoidanceGoal = solution2;
+        } else {
+          collisionAvoidanceGoal = solution1;
+        }
+
+      } else {
+        if (Math.abs(solution2 - currentRawMotorAngle)
+            > Math.abs(solution1 - currentRawMotorAngle)) {
+          collisionAvoidanceGoal = solution1;
+        } else {
+          collisionAvoidanceGoal = solution2;
+        }
+      }
+    }
+    return collisionAvoidanceGoal;
+  }
+
   public static boolean isClimberAtRisk(
       SuperstructurePosition current, SuperstructurePosition goal) {
     Waypoint currentwWaypoint = Waypoint.getClosest(current);
@@ -117,6 +195,22 @@ public class CollisionAvoidance {
       return true;
     }
     return false;
+  }
+
+  public static ObstructionKind getObstruction(
+      SuperstructurePosition current, SuperstructurePosition goal) {
+    Waypoint currentwWaypoint = Waypoint.getClosest(current);
+    Waypoint goalWaypoint = Waypoint.getClosest(goal);
+
+    var edge = graph.edgeValue(currentwWaypoint, goalWaypoint);
+
+    if (edge.get().safeWhenLeftBlocked()) {
+      return ObstructionKind.RIGHT_OBSTRUCTED;
+    }
+    if (edge.get().safeWhenRightBlocked()) {
+      return ObstructionKind.LEFT_OBSTRUCTED;
+    }
+    return ObstructionKind.NONE;
   }
 
   private static Optional<ImmutableList<Waypoint>> cachedAStar(CollisionAvoidanceQuery query) {
@@ -291,5 +385,6 @@ public class CollisionAvoidance {
     return graph;
   }
 
-  private CollisionAvoidance() {}
+  public CollisionAvoidance() {
+  }
 }

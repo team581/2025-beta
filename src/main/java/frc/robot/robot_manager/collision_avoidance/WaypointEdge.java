@@ -81,10 +81,6 @@ public record WaypointEdge(
   }
 
   public double getCost(ObstructionKind obstruction) {
-    return switch (obstruction) {
-      case LEFT_OBSTRUCTED -> safeWhenLeftBlocked ? cost : Double.MAX_VALUE;
-      case RIGHT_OBSTRUCTED -> safeWhenRightBlocked ? cost : Double.MAX_VALUE;
-      case NONE -> cost;
-    };
+    return cost;
   }
 }

@@ -8,15 +8,51 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-
+//TODO: add good tests
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
-    double goalAngle = 25.0;
-    boolean climberRisky = true;
-    double currentAngle = 0.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    double goalAngle = 0.0;
+    boolean climberRisky = false;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
-    double expected = 25.0;
+    double expected = -360.0;
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalTest2() {
+    double goalAngle = 180.0;
+    boolean climberRisky = false;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+
+    double expected = -180.0;
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalTest3() {
+    double goalAngle = 180.0;
+    boolean climberRisky = false;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+
+    double expected = 180.0;
 
     assertEquals(expected, result);
   }
@@ -26,7 +62,11 @@ public class CollisionAvoidanceTest {
     double goalAngle = -25.0;
     boolean climberRisky = true;
     double currentAngle = 0.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
     double expected = -25.0;
 
@@ -38,7 +78,11 @@ public class CollisionAvoidanceTest {
     double goalAngle = 200.0;
     boolean climberRisky = true;
     double currentAngle = 360.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
     double expected = 560.0;
 
@@ -50,7 +94,11 @@ public class CollisionAvoidanceTest {
     double goalAngle = -200.0;
     boolean climberRisky = true;
     double currentAngle = -360.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
     double expected = -200.0;
 
@@ -62,7 +110,11 @@ public class CollisionAvoidanceTest {
     double goalAngle = 180.0;
     boolean climberRisky = true;
     double currentAngle = -360.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
     double expected = -180.0;
 
@@ -74,7 +126,11 @@ public class CollisionAvoidanceTest {
     double goalAngle = 180.0;
     boolean climberRisky = true;
     double currentAngle = 360.0;
-    double result = ArmSubsystem.getCollisionAvoidanceGoal(goalAngle, climberRisky, currentAngle);
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
 
     double expected = 540.0;
 
