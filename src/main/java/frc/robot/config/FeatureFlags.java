@@ -32,13 +32,6 @@ public class FeatureFlags {
   public static final BooleanSupplier AUTO_ALIGN_AUTO_SCORE =
       FeatureFlag.of("AutoAlign/AutoScore", false);
 
-  /**
-   * Whether L4 approach state should automatically transition to L4 lineup when close enough to the
-   * reef during autonomous. Doesn't alter teleop behavior.
-   */
-  public static final BooleanSupplier EXPLICIT_L4_LINEUP =
-      FeatureFlag.of("Auto/ExplicitL4Lineup", true);
-
   public static final BooleanSupplier SPIN_TO_WIN = FeatureFlag.of("Yapping/SpinToWin", false);
 
   private FeatureFlags() {}

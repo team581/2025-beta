@@ -7,6 +7,21 @@ public class RobotTest {
   void instantiateRobotTest() {
     var robot = new Robot();
 
+    robot.robotInit();
+    robot.robotPeriodic();
+
+    robot.disabledInit();
+    robot.disabledPeriodic();
+
+    robot.autonomousInit();
+    robot.autonomousPeriodic();
+
+    robot.disabledInit();
+    robot.disabledPeriodic();
+
+    robot.teleopInit();
+    robot.teleopPeriodic();
+
     robot.close();
   }
 }
