@@ -228,6 +228,7 @@ class CompConfig {
                           .withStatorCurrentLimit(60.0))
                   .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(true)),
               0.0,
+              0.0,
               6.615),
           new DeployConfig(
               CANIVORE_NAME,

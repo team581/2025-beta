@@ -112,6 +112,10 @@ public class RobotCommands {
         .withName("RehomeDeployCommand");
   }
 
+  public Command rehomeArmCommand() {
+    return Commands.runOnce(robot::rehomeArmRequest, rmRequirements).withName("RehomeArmCommand");
+  }
+
   public Command spinToWinCommand() {
     return Commands.runOnce(robot::spinToWinRequest, rmRequirements).withName("SpinToWinCommand");
   }

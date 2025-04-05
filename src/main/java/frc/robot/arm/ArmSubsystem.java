@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -38,6 +39,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   private double handoffOffset = 0;
   private double collisionAvoidanceGoal;
   private static final double MINIMUM_EXPECTED_HOMING_ANGLE_CHANGE = 90.0;
+  private double averageMotorCurrent;
+  private final LinearFilter linearFilter = LinearFilter.movingAverage(5);
   private final StaticBrake brakeNeutralRequest = new StaticBrake();
   private final CoastOut coastNeutralRequest = new CoastOut();
   private final VelocityVoltage spinToWin = new VelocityVoltage(0.6);
@@ -80,7 +83,12 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   public void setState(ArmState newState) {
     switch (getState()) {
-      case PRE_MATCH_HOMING -> {}
+      case PRE_MATCH_HOMING -> {
+        if (newState == ArmState.MID_MATCH_HOMING) {
+          setStateFromRequest(newState);
+        }
+      }
+      case MID_MATCH_HOMING -> {}
       default -> {
         setStateFromRequest(newState);
       }
@@ -205,11 +213,15 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     }
 
     motorCurrent = motor.getStatorCurrent().getValueAsDouble();
+    averageMotorCurrent = linearFilter.calculate(motorCurrent);
   }
 
   @Override
   protected void afterTransition(ArmState newState) {
     switch (newState) {
+      case MID_MATCH_HOMING -> {
+        motor.setVoltage(-0.5);
+      }
       case COLLISION_AVOIDANCE -> {
         motor.setControl(
             motionMagicRequest.withPosition(Units.degreesToRotations(collisionAvoidanceGoal)));
@@ -236,6 +248,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     DogLog.log("Arm/StatorCurrent", motorCurrent);
     DogLog.log("Arm/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
     DogLog.log("Arm/Angle", motorAngle);
+    DogLog.log("Arm/AverageStatorCurrent", averageMotorCurrent);
     DogLog.log("Arm/AtGoal", atGoal());
     DogLog.log("Arm/MotorTemp", motor.getDeviceTemp().getValueAsDouble());
 
@@ -285,6 +298,18 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       }
       default -> {}
     }
+  }
+
+  @Override
+  protected ArmState getNextState(ArmState currentState) {
+    if (currentState == ArmState.MID_MATCH_HOMING
+        && averageMotorCurrent > RobotConfig.get().arm().homingCurrentThreshold()) {
+      motor.setPosition(Units.degreesToRotations(RobotConfig.get().arm().homingPosition()));
+      return ArmState.HOLDING_UPRIGHT;
+    }
+
+    // Don't do anything
+    return currentState;
   }
 
   public boolean rangeOfMotionGood() {

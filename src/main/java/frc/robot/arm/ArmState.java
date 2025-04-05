@@ -11,6 +11,7 @@ public enum ArmState {
   UNTUNED(90),
 
   PRE_MATCH_HOMING(0),
+  MID_MATCH_HOMING(0),
 
   UNJAM(UNTUNED),
   // Idle positions
