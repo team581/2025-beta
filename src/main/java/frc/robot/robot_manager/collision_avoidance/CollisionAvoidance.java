@@ -30,7 +30,8 @@ public class CollisionAvoidance {
       new HashMap<>();
 
   private static CollisionAvoidanceQuery lastQuery =
-      new CollisionAvoidanceQuery(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.ELEVATOR_0_ARM_UP, ObstructionKind.NONE);
+      new CollisionAvoidanceQuery(
+          Waypoint.ELEVATOR_0_ARM_UP, Waypoint.ELEVATOR_0_ARM_UP, ObstructionKind.NONE);
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
   private static boolean hasGeneratedPath = false;
@@ -64,10 +65,7 @@ public class CollisionAvoidance {
 
     var armGoal = waypoint.position.armAngle();
 
-    return Optional.of(
-        new SuperstructurePosition(
-            waypoint.position.elevatorHeight(),
-            armGoal));
+    return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(), armGoal));
   }
 
   public static Optional<Waypoint> route(
@@ -187,7 +185,7 @@ public class CollisionAvoidance {
           collisionAvoidanceGoal = solution1;
         }
 
-        } else {
+      } else {
         if (Math.abs(solution2 - currentRawMotorAngle)
             > Math.abs(solution1 - currentRawMotorAngle)) {
           collisionAvoidanceGoal = solution1;
@@ -197,7 +195,7 @@ public class CollisionAvoidance {
       }
     }
     return collisionAvoidanceGoal;
-}
+  }
 
   public static boolean isClimberAtRisk(Waypoint current, Waypoint previous) {
 

@@ -17,7 +17,8 @@ public class CollisionAvoidanceTest {
     ObstructionKind obstructionKind = ObstructionKind.NONE;
     var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
 
-    var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT, Waypoint.HANDOFF_BUT_HIGHER);
+    var expected =
+        List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT, Waypoint.HANDOFF_BUT_HIGHER);
 
     assertEquals(expected, result.get());
   }
