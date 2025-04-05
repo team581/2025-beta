@@ -64,6 +64,7 @@ public record RobotConfig(
       int motorId,
       TalonFXConfiguration motorConfig,
       double homingPosition,
+      double homingCurrentThreshold,
       double inchesFromCenter) {}
 
   public record ClimberConfig(
