@@ -1,9 +1,7 @@
 package frc.robot.vision;
 
-import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import frc.robot.auto_align.ReefPipe;
 import frc.robot.config.FeatureFlags;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
@@ -17,7 +15,7 @@ import java.util.OptionalDouble;
 
 public class VisionSubsystem extends StateMachine<VisionState> {
   private static final double REEF_CLOSEUP_DISTANCE = 0.7;
-  private final Debouncer hasSeenTagDisabledDebouncer = new Debouncer(0.5, DebounceType.kFalling);
+  private final Debouncer hasSeenTagDisabledDebouncer = new Debouncer(1.0, DebounceType.kFalling);
   private final ImuSubsystem imu;
   private final Limelight leftBackLimelight;
   private final Limelight leftFrontLimelight;
@@ -34,7 +32,6 @@ public class VisionSubsystem extends StateMachine<VisionState> {
   private double pitchRate;
   private double roll;
   private double rollRate;
-  private ReefPipe reefPipe;
 
   private boolean hasSeenTag = false;
   private boolean seeingTag = false;
@@ -115,12 +112,6 @@ public class VisionSubsystem extends StateMachine<VisionState> {
         rightLimelight.setState(LimelightState.CLOSEST_REEF_TAG);
         gamePieceDetectionLimelight.setState(LimelightState.CORAL);
       }
-      case CLOSEST_REEF_TAG_CLOSEUP -> {
-        leftBackLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
-        leftFrontLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
-        rightLimelight.setState(LimelightState.CLOSEST_REEF_TAG_CLOSEUP);
-        gamePieceDetectionLimelight.setState(LimelightState.CORAL);
-      }
       case CORAL_DETECTION -> {
         leftBackLimelight.setState(LimelightState.TAGS);
         leftFrontLimelight.setState(LimelightState.TAGS);
@@ -167,8 +158,7 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     }
   }
 
-  public void setClosestScoringReefAndPipe(int tagID, ReefPipe currentScoringPipe) {
-    reefPipe = currentScoringPipe;
+  public void setClosestScoringReefAndPipe(int tagID) {
     leftFrontLimelight.setClosestScoringReefTag(tagID);
     rightLimelight.setClosestScoringReefTag(tagID);
     leftBackLimelight.setClosestScoringReefTag(tagID);
@@ -177,9 +167,8 @@ public class VisionSubsystem extends StateMachine<VisionState> {
   public boolean isAnyCameraOffline() {
     return leftBackLimelight.getCameraHealth() == CameraHealth.OFFLINE
         || leftFrontLimelight.getCameraHealth() == CameraHealth.OFFLINE
-        || rightLimelight.getCameraHealth() == CameraHealth.OFFLINE;
-    // || gamePieceDetectionLimelight.getCameraHealth() == CameraHealth.OFFLINE;
-
+        || rightLimelight.getCameraHealth() == CameraHealth.OFFLINE
+        || gamePieceDetectionLimelight.getCameraHealth() == CameraHealth.OFFLINE;
   }
 
   public boolean isAnyLeftScoringTagLimelightOnline() {
@@ -194,14 +183,5 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     return leftBackLimelight.isOnlineForTags()
         || leftFrontLimelight.isOnlineForTags()
         || rightLimelight.isOnlineForTags();
-  }
-
-  public void updateDistanceFromReef(double distanceFromReef) {
-    DogLog.log("Vision/DistanceFromReef", distanceFromReef);
-    if (getState() == VisionState.CLOSEST_REEF_TAG) {
-      if (distanceFromReef < REEF_CLOSEUP_DISTANCE) {
-        setState(VisionState.CLOSEST_REEF_TAG_CLOSEUP);
-      }
-    }
   }
 }

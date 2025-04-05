@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.util.MathHelpers;
 import org.junit.jupiter.api.Test;
 
 public class ReefPipeTest {
@@ -13,11 +12,6 @@ public class ReefPipeTest {
       new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.501));
   private static final Translation2d RED_REEF_CENTER =
       new Translation2d(Units.inchesToMeters(514.13), Units.inchesToMeters(158.499));
-
-  private static double round(double value) {
-    // Round to centimeter precision
-    return MathHelpers.roundTo(value, 2);
-  }
 
   @Test
   void checkBlueReefPipeDistancesToCenter() {

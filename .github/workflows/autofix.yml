@@ -34,15 +34,11 @@ jobs:
         run: ./gradlew spotlessApply
         continue-on-error: true
 
-      - name: Fix Error Prone issues
-        run: ./gradlew assemble
+      - name: Fix Error Prone issues and regenerate collision avoidance graph
+        run: ./gradlew build
         continue-on-error: true
         env:
             ERRORPRONE_AUTOFIX: 1
-
-      - name: Regenerate collision avoidance graph
-        run: ./gradlew test
-        continue-on-error: true
 
       - name: Run autofix.ci
         uses: autofix-ci/action@551dded8c6cc8a1054039c8bc0b8b48c51dfc6ef

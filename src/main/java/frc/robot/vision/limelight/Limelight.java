@@ -78,15 +78,13 @@ public class Limelight extends StateMachine<LimelightState> {
   }
 
   public Optional<TagResult> getTagResult() {
-    if (getState() != LimelightState.TAGS
-        && getState() != LimelightState.CLOSEST_REEF_TAG
-        && getState() != LimelightState.CLOSEST_REEF_TAG_CLOSEUP) {
+    if (getState() != LimelightState.TAGS && getState() != LimelightState.CLOSEST_REEF_TAG) {
       return Optional.empty();
     }
 
     PoseEstimate estimatePose;
     if (FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()
-        && (DriverStation.isDisabled() || getState() == LimelightState.CLOSEST_REEF_TAG_CLOSEUP)) {
+        && (DriverStation.isDisabled() || getState() == LimelightState.CLOSEST_REEF_TAG)) {
       estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightTableName);
     } else {
       estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightTableName);
@@ -218,7 +216,7 @@ public class Limelight extends StateMachine<LimelightState> {
       case CORAL -> updateHealth(coralResult);
       case ALGAE -> updateHealth(algaeResult);
       case HELD_CORAL -> updateHealth(coralResult);
-      case CLOSEST_REEF_TAG, CLOSEST_REEF_TAG_CLOSEUP -> {
+      case CLOSEST_REEF_TAG -> {
         LimelightHelpers.SetFiducialIDFiltersOverride(limelightTableName, closestScoringReefTag);
         updateHealth(tagResult);
       }
@@ -297,8 +295,7 @@ public class Limelight extends StateMachine<LimelightState> {
 
   public boolean isOnlineForTags() {
     return switch (getState()) {
-      case TAGS, CLOSEST_REEF_TAG, CLOSEST_REEF_TAG_CLOSEUP ->
-          getCameraHealth() != CameraHealth.OFFLINE;
+      case TAGS, CLOSEST_REEF_TAG -> getCameraHealth() != CameraHealth.OFFLINE;
       default -> false;
     };
   }

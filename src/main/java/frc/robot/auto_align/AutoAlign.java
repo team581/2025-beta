@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.auto_align.tag_align.TagAlign;
 import frc.robot.fms.FmsSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
@@ -179,9 +180,10 @@ public class AutoAlign extends StateMachine<AutoAlignState> {
     tagAlign.markScored(bestReefPipe);
   }
 
-  public void setScoringLevel(ReefPipeLevel level, RobotScoringSide side) {
+  public void setScoringLevel(
+      ReefPipeLevel level, ReefPipeLevel preferredLevel, RobotScoringSide side) {
     robotScoringSide = side;
-    tagAlign.setLevel(level, side);
+    tagAlign.setLevel(level, preferredLevel, side);
   }
 
   public void setAlgaeIntakingOffset(ReefSideOffset offset) {
@@ -205,8 +207,12 @@ public class AutoAlign extends StateMachine<AutoAlignState> {
   }
 
   public Pose2d getUsedScoringPose(ReefPipe pipe, ReefPipeLevel level, RobotScoringSide side) {
-    setScoringLevel(level, side);
-    return getUsedScoringPose(pipe);
+    if (DriverStation.isAutonomous()) {
+
+      setScoringLevel(level, level, side);
+      return getUsedScoringPose(pipe);
+    }
+    return usedScoringPose;
   }
 
   public ReefAlignState getReefAlignState() {

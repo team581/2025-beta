@@ -151,13 +151,13 @@ gversion {
 }
 
 spotless {
-	enforceCheck false
+	enforceCheck = false
 
-	encoding 'UTF-8'
-	lineEndings 'UNIX'
+	encoding = 'UTF-8'
+	lineEndings = 'UNIX'
 
 	java {
-		googleJavaFormat()
+		googleJavaFormat('1.26.0')
 		licenseHeader ''
 
 		targetExclude('src/main/java/frc/robot/generated/BuildConstants.java')

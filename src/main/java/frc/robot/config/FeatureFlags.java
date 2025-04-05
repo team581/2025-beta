@@ -19,7 +19,7 @@ public class FeatureFlags {
       FeatureFlag.of("Vision/StaleDataRejection", true);
 
   public static final BooleanSupplier CONTEXT_BASED_MEGATAG_1 =
-      FeatureFlag.of("Vision/ContextBasedMegatag1", false);
+      FeatureFlag.of("Vision/ContextBasedMegatag1", true);
 
   public static final BooleanSupplier FIELD_CALIBRATION = FeatureFlag.of("FieldCalibration", false);
 

@@ -9,7 +9,7 @@ public class ControllerHelpersTest {
   @Test
   void circularDiscCoordinateTest() {
     var result = ControllerHelpers.fromCircularDiscCoordinates(-0.68, -0.58);
-    Translation2d expected = new Translation2d(-0.78, -0.7);
+    var expected = new Translation2d(-0.78, -0.7);
 
     assertEquals(expected, MathHelpers.roundTo(result, 2));
   }

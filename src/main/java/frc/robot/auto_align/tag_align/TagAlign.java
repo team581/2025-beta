@@ -39,7 +39,8 @@ public class TagAlign {
   private final LocalizationSubsystem localization;
   private static final double LAST_PIPE_SWITCH_TIMESTAMP = 0.0;
 
-  private ReefPipeLevel level = ReefPipeLevel.BASE;
+  private ReefPipeLevel pipeLevel = ReefPipeLevel.RAISING;
+  private static final ReefPipeLevel PREFERRED_SCORING_LEVEL = ReefPipeLevel.L4;
   private RobotScoringSide robotScoringSide = RobotScoringSide.RIGHT;
   private Optional<ReefPipe> reefPipeOverride = Optional.empty();
   private double rawControllerXValue = 0.0;
@@ -54,10 +55,10 @@ public class TagAlign {
     alignmentCostUtil = new AlignmentCostUtil(localization, swerve, reefState, robotScoringSide);
   }
 
-  public void setLevel(ReefPipeLevel level, RobotScoringSide side) {
+  public void setLevel(ReefPipeLevel level, ReefPipeLevel preferredLevel, RobotScoringSide side) {
     this.robotScoringSide = side;
     alignmentCostUtil.setSide(robotScoringSide);
-    this.level = level;
+    this.pipeLevel = level;
   }
 
   public void setPipeOveride(ReefPipe pipe) {
@@ -122,7 +123,7 @@ public class TagAlign {
   }
 
   public boolean isAligned(ReefPipe pipe) {
-    if (level.equals(ReefPipeLevel.RAISING)) {
+    if (pipeLevel.equals(ReefPipeLevel.RAISING) || pipeLevel.equals(ReefPipeLevel.BACK_AWAY)) {
       return false;
     }
     var robotPose = localization.getPose();
@@ -141,7 +142,7 @@ public class TagAlign {
   }
 
   public void markScored(ReefPipe pipe) {
-    reefState.markScored(pipe, level);
+    reefState.markScored(pipe, PREFERRED_SCORING_LEVEL);
   }
 
   public void clearReefState() {
@@ -149,7 +150,7 @@ public class TagAlign {
   }
 
   public Pose2d getUsedScoringPose(ReefPipe pipe) {
-    var theoreticalScoringPose = pipe.getPose(level, robotScoringSide);
+    var theoreticalScoringPose = pipe.getPose(pipeLevel, robotScoringSide);
 
     if (DriverStation.isTeleop()) {
       var offsetPose =
@@ -165,7 +166,10 @@ public class TagAlign {
     if ((DriverStation.isAutonomous() || pipeSwitchActive) && reefPipeOverride.isPresent()) {
       return reefPipeOverride.orElseThrow();
     }
-
+    var level = pipeLevel;
+    if (pipeLevel.equals(ReefPipeLevel.RAISING)) {
+      level = PREFERRED_SCORING_LEVEL;
+    }
     return ALL_REEF_PIPES.stream()
         .min(alignmentCostUtil.getReefPipeComparator(level))
         .orElseThrow();
