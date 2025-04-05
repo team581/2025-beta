@@ -34,6 +34,7 @@ public class CollisionAvoidance {
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
   private static boolean hasGeneratedPath = false;
+  private static Waypoint previousWaypoint;
 
   /**
    * Returns an {@link Optional} containing the next {@link Waypoint} in the graph to go to. Returns
@@ -59,9 +60,9 @@ public class CollisionAvoidance {
             waypoint.position.elevatorHeight(),
             getCollisionAvoidanceAngleGoal(
                 waypoint.position.armAngle(),
-                isClimberAtRisk(currentPosition, desiredPosition),
+                isClimberAtRisk(waypoint, previousWaypoint),
                 obstructionKind,
-                getObstruction(currentPosition, desiredPosition),
+                getObstruction(waypoint, previousWaypoint),
                 rawArmAngle)));
   }
 
@@ -97,7 +98,6 @@ public class CollisionAvoidance {
     }
 
     var currentWaypoint = lastPath.getFirst();
-
     DogLog.log(
         "CollisionAvoidance/CurrentWaypoint/ElevatorHeight",
         currentWaypoint.position.elevatorHeight());
@@ -121,6 +121,8 @@ public class CollisionAvoidance {
       if (lastPath.isEmpty()) {
         return Optional.empty();
       }
+      previousWaypoint = currentWaypoint;
+
       return Optional.of(lastPath.pop());
     }
     // If it's not close, return the same waypoint
@@ -168,6 +170,7 @@ public class CollisionAvoidance {
       }
 
     } else {
+//NEED TO DO SOME WITH THE OPTIONAL EDGE OBSTRUCTION
 
       if (obstructionKind.equals(edgeObstructionKind)) {
         if (Math.abs(solution2 - currentRawMotorAngle)
@@ -190,11 +193,10 @@ public class CollisionAvoidance {
   }
 
   public static boolean isClimberAtRisk(
-      SuperstructurePosition current, SuperstructurePosition goal) {
-    Waypoint currentwWaypoint = Waypoint.getClosest(current);
-    Waypoint goalWaypoint = Waypoint.getClosest(goal);
+      Waypoint current, Waypoint previous) {
 
-    var edge = graph.edgeValue(currentwWaypoint, goalWaypoint);
+
+    var edge = graph.edgeValue(current, previous);
     if (edge.isEmpty()) {
       return true;
     }
@@ -205,12 +207,12 @@ public class CollisionAvoidance {
   }
 
   public static ObstructionKind getObstruction(
-      SuperstructurePosition current, SuperstructurePosition goal) {
-    Waypoint currentwWaypoint = Waypoint.getClosest(current);
-    Waypoint goalWaypoint = Waypoint.getClosest(goal);
+      Waypoint current, Waypoint previous) {
 
-    var edge = graph.edgeValue(currentwWaypoint, goalWaypoint);
-
+    var edge = graph.edgeValue(current, previous);
+if (edge.isEmpty()) {
+  return ObstructionKind.NONE;
+}
     if (edge.get().safeWhenLeftBlocked()) {
       return ObstructionKind.RIGHT_OBSTRUCTED;
     }

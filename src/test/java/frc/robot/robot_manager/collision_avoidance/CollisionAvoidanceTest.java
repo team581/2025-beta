@@ -3,11 +3,28 @@ package frc.robot.robot_manager.collision_avoidance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import frc.robot.robot_manager.SuperstructurePosition;
+
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
   // TODO: add good tests
+
+  @Test
+  public void aStarTest() {
+    SuperstructurePosition current = new SuperstructurePosition(0, 90);
+    SuperstructurePosition goal = new SuperstructurePosition(50, -90);
+
+    ObstructionKind obstructionKind = ObstructionKind.NONE;
+    var result =
+        CollisionAvoidance.aStar(
+            current, goal, obstructionKind);
+
+    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT, Waypoint.STOWED);
+
+    assertEquals(expected, result.get());
+  }
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
     double goalAngle = 0.0;
@@ -143,8 +160,8 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 180),
             ObstructionKind.LEFT_OBSTRUCTED);
-
-    assertEquals(Optional.empty(), result);
+var expected = List.of(Waypoint.STOWED_UP, Waypoint.LEFT_SAFE_STOWED_UP, Waypoint.L4_LEFT, Waypoint.L4_LEFT_PLACE);
+    assertEquals(expected, result.get());
   }
 
   @Test
@@ -154,8 +171,9 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 0),
             ObstructionKind.RIGHT_OBSTRUCTED);
+            var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT, Waypoint.L4_RIGHT_PLACE);
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(expected, result.get());
   }
 
   @Test
