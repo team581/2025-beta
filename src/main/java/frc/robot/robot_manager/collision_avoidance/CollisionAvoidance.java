@@ -58,14 +58,19 @@ public class CollisionAvoidance {
       return Optional.empty();
     }
     Waypoint waypoint = maybeWaypoint.get();
-    // var armGoal = getCollisionAvoidanceAngleGoal(
-    //   waypoint.position.armAngle(),
-    //   isClimberAtRisk(waypoint, previousWaypoint),
-    //   obstructionKind,
-    //   getObstruction(waypoint, previousWaypoint),
-    //   rawArmAngle);
-
-    var armGoal = waypoint.position.armAngle();
+    var maybeEdge = graph.edgeValue(previousWaypoint, waypoint);
+    if (maybeEdge.isEmpty()) {
+      return Optional.empty();
+    }
+    var edge = maybeEdge;
+    var armGoal =
+        getCollisionAvoidanceAngleGoal(
+            waypoint.position.armAngle(),
+            edge.get().hitsClimber(),
+            obstructionKind,
+            edge.get().leftSideStrategy(),
+            edge.get().rightSideStrategy(),
+            rawArmAngle);
 
     return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(), armGoal));
   }
@@ -139,12 +144,15 @@ public class CollisionAvoidance {
   public static double getCollisionAvoidanceAngleGoal(
       double angle,
       boolean climberRisky,
-      ObstructionKind obstructionKind,
-      ObstructionKind edgeObstructionKind,
+      ObstructionKind currentObstructionKind,
+      ObstructionStrategy leftObstructionStrategy,
+      ObstructionStrategy rightObstructionStrategy,
       double currentRawMotorAngle) {
 
     double solution1;
     double solution2;
+    double shortSolution;
+    double longSolution;
     double collisionAvoidanceGoal;
 
     int wrap = (int) currentRawMotorAngle / 360;
@@ -177,53 +185,52 @@ public class CollisionAvoidance {
       }
 
     } else {
-      // NEED TO DO SOME WITH THE OPTIONAL EDGE OBSTRUCTION
 
-      if (obstructionKind.equals(edgeObstructionKind)) {
-        if (Math.abs(solution2 - currentRawMotorAngle)
-            > Math.abs(solution1 - currentRawMotorAngle)) {
-          collisionAvoidanceGoal = solution2;
-        } else {
-          collisionAvoidanceGoal = solution1;
-        }
-
+      if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
+        shortSolution = solution1;
+        longSolution = solution2;
       } else {
-        if (Math.abs(solution2 - currentRawMotorAngle)
-            > Math.abs(solution1 - currentRawMotorAngle)) {
-          collisionAvoidanceGoal = solution1;
-        } else {
-          collisionAvoidanceGoal = solution2;
-        }
+        shortSolution = solution2;
+        longSolution = solution1;
       }
+
+      if (currentObstructionKind.equals(ObstructionKind.LEFT_OBSTRUCTED)) {
+        collisionAvoidanceGoal =
+            switch (leftObstructionStrategy) {
+              case IGNORE_BLOCKED -> shortSolution;
+              case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+              case LONG_WAY_IF_BLOCKED -> longSolution;
+            };
+
+      } else if (currentObstructionKind.equals(ObstructionKind.RIGHT_OBSTRUCTED)) {
+        collisionAvoidanceGoal =
+        switch (rightObstructionStrategy) {
+          case IGNORE_BLOCKED -> shortSolution;
+          case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+          case LONG_WAY_IF_BLOCKED -> longSolution;
+        };
+      }
+      else {
+        collisionAvoidanceGoal = shortSolution;
+      }
+
+      //   if (Math.abs(solution2 - currentRawMotorAngle)
+      //       > Math.abs(solution1 - currentRawMotorAngle)) {
+      //     collisionAvoidanceGoal = solution2;
+      //   } else {
+      //     collisionAvoidanceGoal = solution1;
+      //   }
+
+      // } else {
+      //   if (Math.abs(solution2 - currentRawMotorAngle)
+      //       > Math.abs(solution1 - currentRawMotorAngle)) {
+      //     collisionAvoidanceGoal = solution1;
+      //   } else {
+      //     collisionAvoidanceGoal = solution2;
+      //   }
+      // }
     }
     return collisionAvoidanceGoal;
-  }
-
-  public static boolean isClimberAtRisk(Waypoint current, Waypoint previous) {
-
-    var edge = graph.edgeValue(current, previous);
-    if (edge.isEmpty()) {
-      return true;
-    }
-    if (edge.get().climberAtRisk()) {
-      return true;
-    }
-    return false;
-  }
-
-  public static ObstructionKind getObstruction(Waypoint current, Waypoint previous) {
-
-    var edge = graph.edgeValue(current, previous);
-    if (edge.isEmpty()) {
-      return ObstructionKind.NONE;
-    }
-    if (edge.get().leftSideStrategy()) {
-      return ObstructionKind.RIGHT_OBSTRUCTED;
-    }
-    if (edge.get().rightSideStrategy()) {
-      return ObstructionKind.LEFT_OBSTRUCTED;
-    }
-    return ObstructionKind.NONE;
   }
 
   private static Optional<ImmutableList<Waypoint>> cachedAStar(CollisionAvoidanceQuery query) {
@@ -282,7 +289,7 @@ public class CollisionAvoidance {
     }
 
     // TODO: Need to see if it's actually safe to do this all in one move
-    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
+    Waypoint.HANDOFF.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
 
     /* Arm up to left/right is always safe */
     Waypoint.L2_UPRIGHT.alwaysSafe(graph, Waypoint.L2_LEFT_LINEUP, Waypoint.L2_RIGHT_LINEUP);
@@ -337,24 +344,30 @@ public class CollisionAvoidance {
 
     /* Lineup to place states can always happen since the arm is already out */
     Waypoint.L2_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L2_LEFT_PLACE);
+    Waypoint.L3_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L3_LEFT_PLACE);
+    Waypoint.L4_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L4_LEFT_PLACE);
+
+    Waypoint.L2_RIGHT_LINEUP.alwaysSafe(graph, Waypoint.L2_RIGHT_PLACE);
+    Waypoint.L3_RIGHT_LINEUP.alwaysSafe(graph, Waypoint.L3_RIGHT_PLACE);
+    Waypoint.L4_RIGHT_LINEUP.alwaysSafe(graph, Waypoint.L4_RIGHT_PLACE);
 
     /* Scoring coral directly from handoff, depends a lot on obstructions */
     // TODO: Make sure the elevator doesn't go down before the arm can get safe
     // TODO: Make sure the HANDOFF_BUT_HIGHER is safe to go to left side scoring states and avoid
     // climber
-    Waypoint.HANDOFF.rightSideSpecial(
+    Waypoint.HANDOFF.avoidClimberRightSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L2_RIGHT_LINEUP,
         Waypoint.L3_RIGHT_LINEUP,
         Waypoint.L4_RIGHT_LINEUP);
-    Waypoint.HANDOFF_CLEARS_CLIMBER.leftSideSpecial(
+    Waypoint.HANDOFF.avoidClimberLeftSideSpecial(
         graph,
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_LEFT_LINEUP,
         Waypoint.L3_LEFT_LINEUP,
         Waypoint.L4_LEFT_LINEUP);
-    Waypoint.HANDOFF_CLEARS_CLIMBER.rightSideSpecial(
+    Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberRightSideSpecial(
         graph,
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_RIGHT_LINEUP,
@@ -363,17 +376,20 @@ public class CollisionAvoidance {
 
     /* Finish score, go back to handoff, depends a lot on obstructions */
     // TODO: Make sure we can stow to HANDOFF_CLEARS_CLIMBER from each place position
-    Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
+    Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(
         graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
-    Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
+    Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(
         graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_RIGHT_PLACE);
-    //Place to reef algae intake
-    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(graph, Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE);
-    Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(graph, Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE);
+    // Place to reef algae intake
+    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(
+        graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
+    Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(
+        graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
 
-    Waypoint.REEF_ALGAE_L2_RIGHT.alwaysSafe(graph, Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_LEFT_PLACE);
-    Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(graph, Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_LEFT_PLACE);
-
+    Waypoint.REEF_ALGAE_L2_RIGHT.alwaysSafe(
+        graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
+    Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(
+        graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
 
     // Create an immutable copy of the graph now that we've added all the nodes
     var immutableGraph = ImmutableValueGraph.copyOf(graph);

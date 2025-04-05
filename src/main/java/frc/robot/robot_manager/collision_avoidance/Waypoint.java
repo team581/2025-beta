@@ -23,6 +23,8 @@ public enum Waypoint {
           ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
   ELEVATOR_0_ARM_UP(new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT)),
   HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
+  HANDOFF_CLEARS_CLIMBER(new SuperstructurePosition(60, ArmState.CORAL_HANDOFF)),
+
 
   L2_UPRIGHT(
       new SuperstructurePosition(
