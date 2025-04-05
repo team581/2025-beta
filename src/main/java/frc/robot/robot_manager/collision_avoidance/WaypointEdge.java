@@ -1,7 +1,5 @@
 package frc.robot.robot_manager.collision_avoidance;
 
-import java.util.Optional;
-
 public record WaypointEdge(
     /** The cost associated with the motion connecting the nodes on this edge. */
     double cost,
@@ -25,9 +23,11 @@ public record WaypointEdge(
   public double getCost(ObstructionKind obstruction) {
     return switch (obstruction) {
       // TODO: The cost of the long way != the short way, need to account for that
-      case LEFT_OBSTRUCTED -> leftSideStrategy == ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED ? Double.MAX_VALUE : cost;
+      case LEFT_OBSTRUCTED ->
+          leftSideStrategy == ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED ? Double.MAX_VALUE : cost;
       // TODO: The cost of the long way != the short way, need to account for that
-      case RIGHT_OBSTRUCTED -> rightSideStrategy == ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED ? Double.MAX_VALUE : cost;
+      case RIGHT_OBSTRUCTED ->
+          rightSideStrategy == ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED ? Double.MAX_VALUE : cost;
       case NONE -> cost;
     };
   }
