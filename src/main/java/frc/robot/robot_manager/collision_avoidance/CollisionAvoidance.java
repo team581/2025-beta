@@ -205,22 +205,21 @@ public class CollisionAvoidance {
     if (edge.isEmpty()) {
       return true;
     }
-    if (edge.get().climberAtRisk()) {
+    if (edge.get().hitsClimber()) {
       return true;
     }
     return false;
   }
 
   public static ObstructionKind getObstruction(Waypoint current, Waypoint previous) {
-
     var edge = graph.edgeValue(current, previous);
     if (edge.isEmpty()) {
       return ObstructionKind.NONE;
     }
-    if (edge.get().leftSideStrategy()) {
+    if (edge.get().leftSideStrategy() != ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED) {
       return ObstructionKind.RIGHT_OBSTRUCTED;
     }
-    if (edge.get().rightSideStrategy()) {
+    if (edge.get().rightSideStrategy() != ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED) {
       return ObstructionKind.LEFT_OBSTRUCTED;
     }
     return ObstructionKind.NONE;
