@@ -165,7 +165,7 @@ public class Limelight extends StateMachine<LimelightState> {
       return OptionalDouble.empty();
     }
 
-    return OptionalDouble.empty();
+    return OptionalDouble.of(tx);
   }
 
   private Optional<GamePieceResult> getRawAlgaeResult() {

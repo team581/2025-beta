@@ -71,7 +71,7 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
       new SwerveRequest.FieldCentricFacingAngle()
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
           .withDeadband(MaxSpeed * 0.01)
-          .withRotationalDeadband(maxAngularRate * 0.015)
+          .withRotationalDeadband(maxAngularRate * 0.005)
           .withHeadingPID(
               ORIGINAL_HEADING_PID.getP(), ORIGINAL_HEADING_PID.getI(), ORIGINAL_HEADING_PID.getD())
           .withMaxAbsRotationalRate(maxAngularRate);
@@ -130,6 +130,8 @@ public class SwerveSubsystem extends StateMachine<SwerveState> {
     if (Utils.isSimulation()) {
       startSimThread();
     }
+
+    driveToAngle.HeadingController.setTolerance(0.01);
   }
 
   public void setFieldRelativeAutoSpeeds(ChassisSpeeds speeds) {
