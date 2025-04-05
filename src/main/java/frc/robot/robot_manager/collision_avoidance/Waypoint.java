@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  * avoidance uses these as nodes within a graph to route from a current position to a goal position.
  */
 public enum Waypoint {
-  ALGAE_INTAKE_RIGHT(
+  GROUND_ALGAE_INTAKE(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_GROUND, ArmState.ALGAE_INTAKE_FLOOR)),
   LOLLIPOP_INTAKE_RIGHT(
       new SuperstructurePosition(

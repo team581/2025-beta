@@ -285,9 +285,35 @@ public class CollisionAvoidance {
     Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
 
     /* Arm up to left/right is always safe */
-    Waypoint.L2_UPRIGHT.alwaysSafe(graph, Waypoint.L2_LEFT_LINEUP, Waypoint.L2_RIGHT_LINEUP);
-    Waypoint.L3_UPRIGHT.alwaysSafe(graph, Waypoint.L3_LEFT_LINEUP, Waypoint.L3_RIGHT_LINEUP);
-    Waypoint.L4_UPRIGHT.alwaysSafe(graph, Waypoint.L4_LEFT_LINEUP, Waypoint.L4_RIGHT_LINEUP);
+    Waypoint.L2_UPRIGHT.alwaysSafe(
+        graph,
+        Waypoint.L2_LEFT_LINEUP,
+        Waypoint.L2_RIGHT_LINEUP,
+        Waypoint.GROUND_ALGAE_INTAKE,
+        Waypoint.REEF_ALGAE_L2_LEFT,
+        Waypoint.REEF_ALGAE_L3_LEFT,
+        Waypoint.REEF_ALGAE_L2_RIGHT,
+        Waypoint.REEF_ALGAE_L3_RIGHT);
+    Waypoint.L3_UPRIGHT.alwaysSafe(
+        graph,
+        Waypoint.L3_LEFT_LINEUP,
+        Waypoint.L3_RIGHT_LINEUP,
+        Waypoint.GROUND_ALGAE_INTAKE,
+        Waypoint.REEF_ALGAE_L2_LEFT,
+        Waypoint.REEF_ALGAE_L3_LEFT,
+        Waypoint.REEF_ALGAE_L2_RIGHT,
+        Waypoint.REEF_ALGAE_L3_RIGHT);
+    Waypoint.L4_UPRIGHT.alwaysSafe(
+        graph,
+        Waypoint.L4_LEFT_LINEUP,
+        Waypoint.L4_RIGHT_LINEUP,
+        Waypoint.GROUND_ALGAE_INTAKE,
+        Waypoint.REEF_ALGAE_L2_LEFT,
+        Waypoint.REEF_ALGAE_L3_LEFT,
+        Waypoint.REEF_ALGAE_L2_RIGHT,
+        Waypoint.REEF_ALGAE_L3_RIGHT);
+    Waypoint.ALGAE_NET_UP.alwaysSafe(
+        graph, Waypoint.ALGAE_NET_OUT_LEFT, Waypoint.ALGAE_NET_OUT_RIGHT);
 
     // If you aren't going to hit reef poles, you can skip the in between upright waypoints
     Waypoint.L2_UPRIGHT.leftSideSpecial(
@@ -367,7 +393,8 @@ public class CollisionAvoidance {
         graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
     Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
         graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_RIGHT_PLACE);
-    // Place to reef algae intake
+
+    /* Place to reef algae intake */
     Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(
         graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
     Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(
