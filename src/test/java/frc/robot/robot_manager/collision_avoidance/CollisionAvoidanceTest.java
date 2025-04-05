@@ -11,8 +11,8 @@ public class CollisionAvoidanceTest {
 
   @Test
   public void aStarTest() {
-    SuperstructurePosition current = new SuperstructurePosition(0, 90);
-    SuperstructurePosition goal = new SuperstructurePosition(50, -90);
+    var current = new SuperstructurePosition(0, 90);
+    var goal = new SuperstructurePosition(50, -90);
 
     ObstructionKind obstructionKind = ObstructionKind.NONE;
     var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
