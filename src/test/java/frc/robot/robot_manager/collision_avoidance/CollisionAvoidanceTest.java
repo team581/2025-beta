@@ -17,7 +17,7 @@ public class CollisionAvoidanceTest {
     ObstructionKind obstructionKind = ObstructionKind.NONE;
     var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
 
-    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT, Waypoint.STOWED);
+    var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT, Waypoint.HANDOFF_BUT_HIGHER);
 
     assertEquals(expected, result.get());
   }
@@ -159,8 +159,8 @@ public class CollisionAvoidanceTest {
             ObstructionKind.LEFT_OBSTRUCTED);
     var expected =
         List.of(
-            Waypoint.STOWED_UP,
-            Waypoint.LEFT_SAFE_STOWED_UP,
+            Waypoint.ELEVATOR_0_ARM_UP,
+            Waypoint.CLIMBER_SAFE_ARM_UP,
             Waypoint.L4_LEFT,
             Waypoint.L4_LEFT_PLACE);
     assertEquals(expected, result.get());
@@ -173,7 +173,7 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 0),
             ObstructionKind.RIGHT_OBSTRUCTED);
-    var expected = List.of(Waypoint.STOWED_UP, Waypoint.L4_RIGHT, Waypoint.L4_RIGHT_PLACE);
+    var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT, Waypoint.L4_RIGHT_PLACE);
 
     assertEquals(expected, result.get());
   }

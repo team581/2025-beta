@@ -30,7 +30,7 @@ public class CollisionAvoidance {
       new HashMap<>();
 
   private static CollisionAvoidanceQuery lastQuery =
-      new CollisionAvoidanceQuery(Waypoint.STOWED_UP, Waypoint.STOWED_UP, ObstructionKind.NONE);
+      new CollisionAvoidanceQuery(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.ELEVATOR_0_ARM_UP, ObstructionKind.NONE);
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
   private static boolean hasGeneratedPath = false;
@@ -55,15 +55,19 @@ public class CollisionAvoidance {
       return Optional.empty();
     }
     Waypoint waypoint = maybeWaypoint.get();
+    // var armGoal = getCollisionAvoidanceAngleGoal(
+    //   waypoint.position.armAngle(),
+    //   isClimberAtRisk(waypoint, previousWaypoint),
+    //   obstructionKind,
+    //   getObstruction(waypoint, previousWaypoint),
+    //   rawArmAngle);
+
+    var armGoal = waypoint.position.armAngle();
+
     return Optional.of(
         new SuperstructurePosition(
             waypoint.position.elevatorHeight(),
-            getCollisionAvoidanceAngleGoal(
-                waypoint.position.armAngle(),
-                isClimberAtRisk(waypoint, previousWaypoint),
-                obstructionKind,
-                getObstruction(waypoint, previousWaypoint),
-                rawArmAngle)));
+            armGoal));
   }
 
   public static Optional<Waypoint> route(
@@ -183,7 +187,7 @@ public class CollisionAvoidance {
           collisionAvoidanceGoal = solution1;
         }
 
-      } else {
+        } else {
         if (Math.abs(solution2 - currentRawMotorAngle)
             > Math.abs(solution1 - currentRawMotorAngle)) {
           collisionAvoidanceGoal = solution1;
@@ -193,7 +197,7 @@ public class CollisionAvoidance {
       }
     }
     return collisionAvoidanceGoal;
-  }
+}
 
   public static boolean isClimberAtRisk(Waypoint current, Waypoint previous) {
 
@@ -242,30 +246,28 @@ public class CollisionAvoidance {
         ValueGraphBuilder.undirected().incidentEdgeOrder(ElementOrder.stable()).build();
 
     // Middle
-    Waypoint.STOWED.canMoveToAlways(Waypoint.HANDOFF, graph);
+    Waypoint.HANDOFF_BUT_HIGHER.canMoveToAlways(Waypoint.HANDOFF, graph);
 
-    Waypoint.STOWED.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
-    Waypoint.STOWED.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
-    Waypoint.STOWED.canMoveToWhenRightSafe(Waypoint.ALGAE_NET_UP, graph);
+    Waypoint.HANDOFF_BUT_HIGHER.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
+    Waypoint.HANDOFF_BUT_HIGHER.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToAlways(Waypoint.CLIMBER_SAFE_ARM_UP, graph);
 
-    Waypoint.STOWED_UP.canMoveToAlways(Waypoint.LEFT_SAFE_STOWED_UP, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.LOLLIPOP_INTAKE_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.ALGAE_INTAKE_RIGHT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.L2_LEFT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.L3_LEFT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_NET_UP, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.L1_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.L2_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.L3_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenRightSafe(Waypoint.ALGAE_NET_UP, graph);
 
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.LOLLIPOP_INTAKE_RIGHT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.ALGAE_INTAKE_RIGHT, graph);
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.L2_LEFT, graph);
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.L3_LEFT, graph);
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.L4_LEFT, graph);
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_NET_UP, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L1_RIGHT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L2_RIGHT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L3_RIGHT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenRightSafe(Waypoint.ALGAE_NET_UP, graph);
-
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L2_LEFT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L2_RIGHT, graph);
-    Waypoint.LEFT_SAFE_STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L3_LEFT, graph);
-    Waypoint.STOWED_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L3_RIGHT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L2_LEFT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L2_RIGHT, graph);
+    Waypoint.CLIMBER_SAFE_ARM_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L3_LEFT, graph);
+    Waypoint.ELEVATOR_0_ARM_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_L3_RIGHT, graph);
 
     Waypoint.ALGAE_NET_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_OUT_LEFT, graph);
     Waypoint.ALGAE_NET_UP.canMoveToWhenLeftSafe(Waypoint.ALGAE_OUT_RIGHT, graph);
@@ -300,15 +302,11 @@ public class CollisionAvoidance {
 
     Waypoint.L2_RIGHT.canMoveToWhenRightSafe(Waypoint.L3_RIGHT, graph);
     Waypoint.L2_RIGHT.canMoveToAlways(Waypoint.L2_RIGHT_PLACE, graph);
-
     Waypoint.L2_RIGHT.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
 
     Waypoint.L3_RIGHT.canMoveToWhenRightSafe(Waypoint.L4_RIGHT, graph);
     Waypoint.L3_RIGHT.canMoveToAlways(Waypoint.L3_RIGHT_PLACE, graph);
     Waypoint.L4_RIGHT.canMoveToAlways(Waypoint.L4_RIGHT_PLACE, graph);
-
-    Waypoint.ALGAE_L2_RIGHT.canMoveToWhenLeftSafe(Waypoint.ALGAE_NET_UP, graph);
-    Waypoint.ALGAE_L3_RIGHT.canMoveToWhenLeftSafe(Waypoint.ALGAE_NET_UP, graph);
 
     // Create an immutable copy of the graph now that we've added all the nodes
     var immutableGraph = ImmutableValueGraph.copyOf(graph);
@@ -355,7 +353,7 @@ public class CollisionAvoidance {
     }
 
     gscore.put(startWaypoint, 0.0);
-    Waypoint current = Waypoint.STOWED_UP;
+    Waypoint current = Waypoint.ELEVATOR_0_ARM_UP;
     while (!openSet.isEmpty()) {
       // current is equal to the waypoint in openset that has the smallest gscore
       var maybeCurrent =

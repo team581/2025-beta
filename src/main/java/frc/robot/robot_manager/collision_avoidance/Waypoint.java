@@ -21,9 +21,9 @@ public enum Waypoint {
   LOLLIPOP_INTAKE_RIGHT(
       new SuperstructurePosition(
           ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
-  STOWED(new SuperstructurePosition(55.0, ArmState.CORAL_HANDOFF)),
-  LEFT_SAFE_STOWED_UP(new SuperstructurePosition(10.0, ArmState.HOLDING_UPRIGHT)),
-  STOWED_UP(new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT)),
+  HANDOFF_BUT_HIGHER(new SuperstructurePosition(55.0, ArmState.CORAL_HANDOFF)),
+  CLIMBER_SAFE_ARM_UP(new SuperstructurePosition(13.0, ArmState.HOLDING_UPRIGHT)),
+  ELEVATOR_0_ARM_UP(new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT)),
   HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
   L1_RIGHT(
       new SuperstructurePosition(

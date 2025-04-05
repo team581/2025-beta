@@ -378,7 +378,7 @@ public class RobotManager extends StateMachine<RobotState> {
         claw.setState(ClawState.IDLE_NO_GP);
         moveSuperstructure(
             // TODO: We don't want to require unsafe mode here
-            ElevatorState.LOLLIPOP_CORAL_INTAKE_PUSH, ArmState.LOLLIPOP_CORAL_INTAKE_PUSH, true);
+            ElevatorState.LOLLIPOP_CORAL_INTAKE_PUSH, ArmState.LOLLIPOP_CORAL_INTAKE_PUSH);
         swerve.normalDriveRequest();
         vision.setState(VisionState.ALGAE_DETECTION);
         lights.setState(LightsState.LOLLIPOP_NO_ALGAE);
@@ -388,7 +388,7 @@ public class RobotManager extends StateMachine<RobotState> {
         claw.setState(ClawState.OUTTAKING);
         moveSuperstructure(
             // TODO: We don't want to require unsafe mode here
-            ElevatorState.LOLLIPOP_CORAL_INTAKE_PUSH, ArmState.LOLLIPOP_CORAL_INTAKE_PUSH, true);
+            ElevatorState.LOLLIPOP_CORAL_INTAKE_PUSH, ArmState.LOLLIPOP_CORAL_INTAKE_PUSH);
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.LOLLIPOP_NO_ALGAE);
@@ -421,7 +421,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case ALGAE_NET_LEFT_RELEASE -> {
         claw.setState(ClawState.SCORE_ALGAE_NET);
-        moveSuperstructure(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT, true);
+        moveSuperstructure(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT);
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.SCORING_ALGAE);
@@ -429,7 +429,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case ALGAE_NET_RIGHT_RELEASE -> {
         claw.setState(ClawState.SCORE_ALGAE_NET);
-        moveSuperstructure(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT, true);
+        moveSuperstructure(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT);
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.SCORING_ALGAE);
@@ -445,7 +445,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
       case ALGAE_PROCESSOR_RELEASE -> {
         claw.setState(ClawState.SCORE_ALGAE_PROCESSOR);
-        moveSuperstructure(ElevatorState.PROCESSOR, ArmState.ALGAE_PROCESSOR, true);
+        moveSuperstructure(ElevatorState.PROCESSOR, ArmState.ALGAE_PROCESSOR);
         swerve.snapsDriveRequest(SnapUtil.getProcessorAngle());
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.SCORING_ALGAE);
