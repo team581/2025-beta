@@ -367,13 +367,16 @@ public class CollisionAvoidance {
         graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
     Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
         graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_RIGHT_PLACE);
-    //Place to reef algae intake
-    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(graph, Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE);
-    Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(graph, Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE);
+    // Place to reef algae intake
+    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(
+        graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
+    Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(
+        graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
 
-    Waypoint.REEF_ALGAE_L2_RIGHT.alwaysSafe(graph, Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_LEFT_PLACE);
-    Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(graph, Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_LEFT_PLACE);
-
+    Waypoint.REEF_ALGAE_L2_RIGHT.alwaysSafe(
+        graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
+    Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(
+        graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
 
     // Create an immutable copy of the graph now that we've added all the nodes
     var immutableGraph = ImmutableValueGraph.copyOf(graph);
