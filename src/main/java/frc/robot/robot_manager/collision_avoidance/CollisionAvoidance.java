@@ -170,7 +170,7 @@ public class CollisionAvoidance {
       }
 
     } else {
-//NEED TO DO SOME WITH THE OPTIONAL EDGE OBSTRUCTION
+      // NEED TO DO SOME WITH THE OPTIONAL EDGE OBSTRUCTION
 
       if (obstructionKind.equals(edgeObstructionKind)) {
         if (Math.abs(solution2 - currentRawMotorAngle)
@@ -192,9 +192,7 @@ public class CollisionAvoidance {
     return collisionAvoidanceGoal;
   }
 
-  public static boolean isClimberAtRisk(
-      Waypoint current, Waypoint previous) {
-
+  public static boolean isClimberAtRisk(Waypoint current, Waypoint previous) {
 
     var edge = graph.edgeValue(current, previous);
     if (edge.isEmpty()) {
@@ -206,13 +204,12 @@ public class CollisionAvoidance {
     return false;
   }
 
-  public static ObstructionKind getObstruction(
-      Waypoint current, Waypoint previous) {
+  public static ObstructionKind getObstruction(Waypoint current, Waypoint previous) {
 
     var edge = graph.edgeValue(current, previous);
-if (edge.isEmpty()) {
-  return ObstructionKind.NONE;
-}
+    if (edge.isEmpty()) {
+      return ObstructionKind.NONE;
+    }
     if (edge.get().safeWhenLeftBlocked()) {
       return ObstructionKind.RIGHT_OBSTRUCTED;
     }
