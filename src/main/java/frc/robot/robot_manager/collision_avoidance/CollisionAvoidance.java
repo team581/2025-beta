@@ -194,22 +194,22 @@ public class CollisionAvoidance {
         longSolution = solution1;
       }
 
-      collisionAvoidanceGoal = switch (currentObstructionKind) {
-  case LEFT_OBSTRUCTED -> 
-switch (leftObstructionStrategy) {
-                case IGNORE_BLOCKED -> shortSolution;
-                case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                case LONG_WAY_IF_BLOCKED -> longSolution;
-              };
-  case RIGHT_OBSTRUCTED -> 
-switch (rightObstructionStrategy) {
-                case IGNORE_BLOCKED -> shortSolution;
-                case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                case LONG_WAY_IF_BLOCKED -> longSolution;
-              };
-  default -> 
-shortSolution;
-};
+      collisionAvoidanceGoal =
+          switch (currentObstructionKind) {
+            case LEFT_OBSTRUCTED ->
+                switch (leftObstructionStrategy) {
+                  case IGNORE_BLOCKED -> shortSolution;
+                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+                  case LONG_WAY_IF_BLOCKED -> longSolution;
+                };
+            case RIGHT_OBSTRUCTED ->
+                switch (rightObstructionStrategy) {
+                  case IGNORE_BLOCKED -> shortSolution;
+                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+                  case LONG_WAY_IF_BLOCKED -> longSolution;
+                };
+            default -> shortSolution;
+          };
 
       //   if (Math.abs(solution2 - currentRawMotorAngle)
       //       > Math.abs(solution1 - currentRawMotorAngle)) {
