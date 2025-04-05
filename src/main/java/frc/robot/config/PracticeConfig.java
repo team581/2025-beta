@@ -214,7 +214,7 @@ class PracticeConfig {
                           .withSupplyCurrentLimit(60.0)
                           .withStatorCurrentLimit(60.0))
                   .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(false)),
-              -8.1738,
+              -10.98,
               6.615),
           new DeployConfig(
               CANIVORE_NAME,
