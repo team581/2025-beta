@@ -25,7 +25,6 @@ public enum Waypoint {
   HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
   HANDOFF_CLEARS_CLIMBER(new SuperstructurePosition(60, ArmState.CORAL_HANDOFF)),
 
-
   L2_UPRIGHT(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_LINEUP_L2, ArmState.HOLDING_UPRIGHT)),
