@@ -9,26 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-  // TODO: add good tests
-
-  @Test
-  public void aStarTest() {
-    var current = new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT);
-    var goal = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
-
-    ObstructionKind obstructionKind = ObstructionKind.NONE;
-    var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
-
-    var expected =
-        List.of(
-            Waypoint.ALGAE_NET_OUT_RIGHT,
-            Waypoint.ALGAE_NET_UP,
-            Waypoint.HANDOFF_CLEARS_CLIMBER,
-            Waypoint.HANDOFF);
-
-    assertEquals(expected, result.get());
-  }
-
   //  @Test
   // public void routePositionTest() {
   //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF,
@@ -233,5 +213,22 @@ public class CollisionAvoidanceTest {
     Waypoint expected = Waypoint.HANDOFF;
 
     assertEquals(expected, result);
+  }
+
+  @Test
+  void stowsSafelyAfterRightNetScoreTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT),
+            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+            ObstructionKind.NONE);
+    var expected =
+        List.of(
+            Waypoint.ALGAE_NET_OUT_RIGHT,
+            Waypoint.ALGAE_NET_UP,
+            Waypoint.ELEVATOR_0_ARM_UP,
+            Waypoint.HANDOFF);
+
+    assertEquals(expected, result.orElseThrow());
   }
 }
