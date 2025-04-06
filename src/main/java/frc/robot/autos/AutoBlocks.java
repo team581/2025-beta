@@ -30,8 +30,8 @@ public class AutoBlocks {
 
   public static final Transform2d LOLLIPOP_OFFSET =
       new Transform2d(
-          Units.inchesToMeters(RobotConfig.get().arm().inchesFromCenter()),
-          0,
+          0.0,
+          -Units.inchesToMeters(RobotConfig.get().arm().inchesFromCenter()),
           Rotation2d.fromDegrees(90));
 
   public static final AutoConstraintOptions BASE_CONSTRAINTS =
