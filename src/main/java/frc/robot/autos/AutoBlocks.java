@@ -53,10 +53,8 @@ public class AutoBlocks {
 
   public Command startingPath(Pose2d startingPose, AutoSegment segment) {
     return Commands.sequence(
-        autoCommands.resetPoseIfNeeded(startingPose),
-        trailblazer.followSegment(segment));
-      }
-
+        autoCommands.resetPoseIfNeeded(startingPose), trailblazer.followSegment(segment));
+  }
 
   public Command scorePreloadL4(Pose2d startingPose, ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.sequence(
@@ -117,23 +115,18 @@ public class AutoBlocks {
                 new AutoSegment(
                     SCORING_CONSTRAINTS,
                     new AutoPoint(
-                        () ->
-                            robotManager.autoAlign.getUsedScoringPose(pipe),
+                        () -> robotManager.autoAlign.getUsedScoringPose(pipe),
                         autoCommands.l4ApproachCommand(pipe, scoringSide),
                         BASE_CONSTRAINTS)),
                 false)
-            .withDeadline(
-                autoCommands.waitForReleaseCommand()),
+            .withDeadline(autoCommands.waitForReleaseCommand()),
         trailblazer.followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
                 AFTER_SCORE_POSITION_TOLERANCE,
                 new AutoPoint(
-                    () ->
-                        pipe.getPose(ReefPipeLevel.BACK_AWAY, scoringSide)
-                            ,
-                    Commands.waitSeconds(0.15).andThen(robotManager::stowRequest))
-               )));
+                    () -> pipe.getPose(ReefPipeLevel.BACK_AWAY, scoringSide),
+                    Commands.waitSeconds(0.15).andThen(robotManager::stowRequest)))));
   }
 
   public Command intakeCoralGroundPoints(Points intakingPoint) {

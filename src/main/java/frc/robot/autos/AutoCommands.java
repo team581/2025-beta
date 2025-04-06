@@ -79,8 +79,6 @@ public class AutoCommands {
         .andThen(robotManager.groundManager.waitForState(GroundState.INTAKING));
   }
 
-
-
   public Command l4ApproachCommand(ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.runOnce(
         () -> {
@@ -98,7 +96,13 @@ public class AutoCommands {
   }
 
   public Command waitForReleaseCommand() {
-    return robotManager.waitForStates(RobotState.CORAL_L2_LEFT_RELEASE, RobotState.CORAL_L4_LEFT_RELEASE, RobotState.CORAL_L3_LEFT_RELEASE, RobotState.CORAL_L2_RIGHT_RELEASE, RobotState.CORAL_L3_RIGHT_RELEASE, RobotState.CORAL_L4_RIGHT_RELEASE);
+    return robotManager.waitForStates(
+        RobotState.CORAL_L2_LEFT_RELEASE,
+        RobotState.CORAL_L4_LEFT_RELEASE,
+        RobotState.CORAL_L3_LEFT_RELEASE,
+        RobotState.CORAL_L2_RIGHT_RELEASE,
+        RobotState.CORAL_L3_RIGHT_RELEASE,
+        RobotState.CORAL_L4_RIGHT_RELEASE);
   }
 
   public Command waitForAlignedForScore() {

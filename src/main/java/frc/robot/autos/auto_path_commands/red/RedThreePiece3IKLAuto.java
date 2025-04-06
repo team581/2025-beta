@@ -25,7 +25,8 @@ public class RedThreePiece3IKLAuto extends BaseAuto {
   @Override
   protected Command createAutoCommand() {
     return Commands.sequence(
-        blocks.scorePreloadL4(Points.START_R3_AND_B3.redPose, ReefPipe.PIPE_I, RobotScoringSide.LEFT),
+        blocks.scorePreloadL4(
+            Points.START_R3_AND_B3.redPose, ReefPipe.PIPE_I, RobotScoringSide.LEFT),
         blocks.intakeGround(
             new Pose2d(15.884, 0.994, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.INTAKE_CORAL_GROUND_LINEUP_OFFSET),
