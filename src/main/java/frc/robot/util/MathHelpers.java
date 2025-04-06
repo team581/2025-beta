@@ -79,5 +79,21 @@ public class MathHelpers {
     return new Translation2d(vector.vxMetersPerSecond, vector.vyMetersPerSecond).getAngle();
   }
 
+  /**
+   * Returns the value that is closer from the two given values. If they are equal, the first value
+   * is returned.
+   */
+  public static double nearest(double value, double a, double b) {
+    return Math.abs(value - a) < Math.abs(value - b) ? a : b;
+  }
+
+  /**
+   * Returns the value that is farther from the two given values. If they are equal, the first value
+   * is returned.
+   */
+  public static double farthest(double value, double a, double b) {
+    return Math.abs(value - a) >= Math.abs(value - b) ? a : b;
+  }
+
   private MathHelpers() {}
 }

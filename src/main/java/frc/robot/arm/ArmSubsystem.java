@@ -26,6 +26,64 @@ import java.util.OptionalDouble;
 public class ArmSubsystem extends StateMachine<ArmState> {
   public static final double ARM_LENGTH_METERS = Units.inchesToMeters(37.416);
 
+  /**
+   * Denormalizes a goal angle to be in the same rotation as the current angle, always moving
+   * forward (clockwise) if adjustment is needed.
+   *
+   * @param currentAngle The current, non-normalized angle of the arm.
+   * @param normalizedGoalAngle The normalized goal angle (between [-180, 180))
+   * @return A denormalized goal angle that can be reached by moving forward
+   */
+  public static double denormalizeAngleForward(double currentAngle, double normalizedGoalAngle) {
+    // Normalize the current angle to [-180, 180)
+    double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
+
+    // Calculate the number of full rotations in the current angle
+    int fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
+
+    // Calculate base angle (same rotation as current)
+    double baseAngle = fullRotations * 360.0;
+
+    // Initialize result with the base angle + normalized goal
+    double result = baseAngle + normalizedGoalAngle;
+
+    // If moving to this angle would require moving backward, add 360 degrees
+    if (MathHelpers.angleModulus(normalizedGoalAngle - normalizedCurrentAngle) < 0) {
+      result += 360.0;
+    }
+
+    return result;
+  }
+
+  /**
+   * Denormalizes a goal angle to be in the same rotation as the current angle, always moving
+   * backward (counterclockwise) if adjustment is needed.
+   *
+   * @param currentAngle The current, non-normalized angle of the arm.
+   * @param normalizedGoalAngle The normalized goal angle (between [-180, 180))
+   * @return A denormalized goal angle that can be reached by moving backward
+   */
+  public static double denormalizeAngleBackward(double currentAngle, double normalizedGoalAngle) {
+    // Normalize the current angle to [-180, 180)
+    double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
+
+    // Calculate the number of full rotations in the current angle
+    int fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
+
+    // Calculate base angle (same rotation as current)
+    double baseAngle = fullRotations * 360.0;
+
+    // Initialize result with the base angle + normalized goal
+    double result = baseAngle + normalizedGoalAngle;
+
+    // If moving to this angle would require moving forward, subtract 360 degrees
+    if (MathHelpers.angleModulus(normalizedGoalAngle - normalizedCurrentAngle) > 0) {
+      result -= 360.0;
+    }
+
+    return result;
+  }
+
   private static final double TOLERANCE = 2.0;
   private static final double NEAR_TOLERANCE = 10.0;
   private final TalonFX motor;
