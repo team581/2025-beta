@@ -226,7 +226,10 @@ class CompConfig {
                           .withStatorCurrentLimitEnable(true)
                           .withSupplyCurrentLimit(30.0)
                           .withStatorCurrentLimit(60.0))
-                  .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(false)),//TODO:Change back to true if we dont want it on comp bot
+                  .withClosedLoopGeneral(
+                      new ClosedLoopGeneralConfigs()
+                          .withContinuousWrap(
+                              false)), // TODO:Change back to true if we dont want it on comp bot
               0.0,
               6.615),
           new DeployConfig(

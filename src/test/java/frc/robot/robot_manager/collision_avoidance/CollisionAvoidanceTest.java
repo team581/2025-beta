@@ -48,6 +48,7 @@ public class CollisionAvoidanceTest {
 
     assertEquals(expected, result);
   }
+
   @Test
   public void positivearmSetCollisionAvoidanceGoalTest() {
     double goalAngle = -90.0;
@@ -65,6 +66,7 @@ public class CollisionAvoidanceTest {
 
     assertEquals(expected, result);
   }
+
   @Test
   public void armSetCollisionAvoidanceGoalStowTooMuchTest() {
     double goalAngle = -90.0;
