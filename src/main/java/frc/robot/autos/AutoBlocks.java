@@ -154,8 +154,8 @@ public class AutoBlocks {
                     autoCommands.intakeLollipopCommand(),
                     LOLLIPOP_CONSTRAINTS)),
             false)
-            .withDeadline(autoCommands.waitForLollipopIntakeDone());
-          }
+        .withDeadline(autoCommands.waitForLollipopIntakeDone());
+  }
 
   public Command intakeGround(Pose2d approachPoint, Pose2d defaultIntakingPose) {
     return trailblazer

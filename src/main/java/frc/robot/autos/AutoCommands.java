@@ -75,9 +75,9 @@ public class AutoCommands {
 
   public Command waitForLollipopIntakeDone() {
     return robotManager
-    .waitForState(RobotState.CORAL_INTAKE_LOLLIPOP_GRAB)
-    .andThen(robotManager.waitForState(RobotState.CLAW_CORAL))
-    .withTimeout(4);
+        .waitForState(RobotState.CORAL_INTAKE_LOLLIPOP_GRAB)
+        .andThen(robotManager.waitForState(RobotState.CLAW_CORAL))
+        .withTimeout(4);
   }
 
   public Command l4ApproachCommand(ReefPipe pipe, RobotScoringSide scoringSide) {
