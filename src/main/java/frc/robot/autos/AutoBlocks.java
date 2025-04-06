@@ -58,9 +58,10 @@ public class AutoBlocks {
             .followSegment(
                 new AutoSegment(
                     BASE_CONSTRAINTS,
-                    new AutoPoint(()->
-                        robotManager.autoAlign.getUsedScoringPose(
-                            pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
+                    new AutoPoint(
+                        () ->
+                            robotManager.autoAlign.getUsedScoringPose(
+                                pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
                         autoCommands
                             .preloadCoralCommand()
                             .andThen(autoCommands.l4WarmupCommand(pipe)),
