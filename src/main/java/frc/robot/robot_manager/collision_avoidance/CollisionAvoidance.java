@@ -273,7 +273,8 @@ public class CollisionAvoidance {
     // TODO: Need to see if it's actually safe to do this all in one move
     Waypoint.HANDOFF.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
-    // TODO: Previously this had ALGAE_NET_UP.avoidClimberAlwaysSafe(HANDOFF_CLEARS_CLIMBER), seems like that bonks the net?
+    // TODO: Previously this had ALGAE_NET_UP.avoidClimberAlwaysSafe(HANDOFF_CLEARS_CLIMBER), seems
+    // like that bonks the net?
 
     /* Arm up to left/right is always safe */
     Waypoint.L2_UPRIGHT.avoidClimberAlwaysSafe(
