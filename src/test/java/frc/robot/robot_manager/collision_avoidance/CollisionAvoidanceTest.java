@@ -33,19 +33,52 @@ public class CollisionAvoidanceTest {
   // }
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
-    double goalAngle = 0.0;
+    double goalAngle = -90.0;
     boolean climberRisky = false;
-    double currentAngle = -90.0;
-    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    double currentAngle = -211.0;
+    ObstructionKind obstructionKind = ObstructionKind.NONE;
     ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
+
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
+
+    double expected = -90.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void positivearmSetCollisionAvoidanceGoalTest() {
+    double goalAngle = -90.0;
+    boolean climberRisky = false;
+    double currentAngle = 140.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
+
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
+
+    double expected = -90.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalStowTooMuchTest() {
+    double goalAngle = -90.0;
+    boolean climberRisky = false;
+    double currentAngle = -318.0;
+    ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.IGNORE_BLOCKED;
     ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
 
     double result =
         CollisionAvoidance.getCollisionAvoidanceAngleGoal(
             goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-    double expected = -360.0;
+    double expected = -90.0;
 
     assertEquals(expected, result);
   }
@@ -56,14 +89,13 @@ public class CollisionAvoidanceTest {
     boolean climberRisky = true;
     double currentAngle = -90.0;
     ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
-    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
     ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
     ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
     double result =
         CollisionAvoidance.getCollisionAvoidanceAngleGoal(
             goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-    double expected = 180.0;
+    double expected = -180.0;
 
     assertEquals(expected, result);
   }

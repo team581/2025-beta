@@ -35,7 +35,7 @@ public record SuperstructurePosition(
                   RobotConfig.get().arm().motorConfig().MotionMagic.MotionMagicAcceleration)));
 
   // TODO: Tune this number, maybe the big tolerances in collision avoidance mean we can reduce it?
-  private static final double STATIC_COST = 1;
+  private static final double STATIC_COST = 1.0;
 
   public SuperstructurePosition(double elevatorHeight, double armAngle) {
     this(

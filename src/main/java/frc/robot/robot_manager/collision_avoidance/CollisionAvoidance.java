@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public class CollisionAvoidance {
   private static final double ELEVATOR_TOLERANCE = 25.0;
-  private static final double ARM_TOLERANCE = 40.0;
+  private static final double ARM_TOLERANCE = 20.0;
   private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
 
   private static final ImmutableValueGraph<Waypoint, WaypointEdge> graph = createGraph();
@@ -34,6 +34,13 @@ public class CollisionAvoidance {
   private static CollisionAvoidanceQuery lastQuery =
       new CollisionAvoidanceQuery(
           Waypoint.ELEVATOR_0_ARM_UP, Waypoint.ELEVATOR_0_ARM_UP, ObstructionKind.NONE);
+  private static double lastSolution = 90.0;
+  private static double lastgoalAngle = 90;
+  private static boolean lastClimberRisky = true;
+  private static ObstructionKind lastObstruction = ObstructionKind.NONE;
+  private static ObstructionStrategy lastLeftStrategy = ObstructionStrategy.IGNORE_BLOCKED;
+  private static ObstructionStrategy lastRightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
+
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
   private static boolean hasGeneratedPath = false;
@@ -53,6 +60,7 @@ public class CollisionAvoidance {
       SuperstructurePosition desiredPosition,
       ObstructionKind obstructionKind,
       double rawArmAngle) {
+    double armGoal;
     var maybeWaypoint = route(currentPosition, desiredPosition, obstructionKind);
     if (maybeWaypoint.isEmpty()) {
       return Optional.empty();
@@ -63,15 +71,47 @@ public class CollisionAvoidance {
       return Optional.empty();
     }
     var edge = maybeEdge;
-    var armGoal =
-        getCollisionAvoidanceAngleGoal(
-            waypoint.position.armAngle(),
-            edge.get().hitsClimber(),
-            obstructionKind,
-            edge.get().leftSideStrategy(),
-            edge.get().rightSideStrategy(),
-            rawArmAngle);
-    DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
+
+    if (waypoint.position.armAngle() != lastgoalAngle
+        || edge.get().hitsClimber() != lastClimberRisky
+        || obstructionKind != lastObstruction
+        || edge.get().leftSideStrategy() != lastLeftStrategy
+        || edge.get().rightSideStrategy() != lastRightStrategy) {
+      armGoal =
+          getCollisionAvoidanceAngleGoal(
+              waypoint.position.armAngle(),
+              edge.get().hitsClimber(),
+              obstructionKind,
+              edge.get().leftSideStrategy(),
+              edge.get().rightSideStrategy(),
+              rawArmAngle);
+      lastgoalAngle = waypoint.position.armAngle();
+      lastClimberRisky = edge.get().hitsClimber();
+      lastObstruction = obstructionKind;
+      lastLeftStrategy = edge.get().leftSideStrategy();
+      lastRightStrategy = edge.get().rightSideStrategy();
+      lastSolution = armGoal;
+    }
+    armGoal = lastSolution;
+
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/goalAngle",
+        waypoint.position.armAngle());
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/hitsClimber",
+        edge.get().hitsClimber());
+
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/obstructionKind", obstructionKind);
+
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/leftStrat",
+        edge.get().leftSideStrategy());
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/rightStrat",
+        edge.get().rightSideStrategy());
+    DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/RawArmAngle", rawArmAngle);
+    DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/solution", armGoal);
 
     return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(), armGoal));
   }
@@ -156,7 +196,20 @@ public class CollisionAvoidance {
     double longSolution;
     double collisionAvoidanceGoal;
 
-    int wrap = (int) currentRawMotorAngle / 360;
+    int wrap = (int) Math.floor(currentRawMotorAngle / 360.0);
+
+    //   double angleWrapped = MathUtil.inputModulus(angle,0,360);
+    //   double difference = Math.abs(Math.max(angleWrapped,
+    // MathUtil.inputModulus(currentRawMotorAngle, 0, 360))-Math.min(angleWrapped,
+    // MathUtil.inputModulus(currentRawMotorAngle, 0, 360)));
+
+    //   System.out.println("solution1 diff = "+difference);
+
+    //   solution1 = currentRawMotorAngle+difference;
+    //  solution2 =currentRawMotorAngle-(360-difference);
+
+    //   System.out.println("solution1  = "+solution1);
+    //   System.out.println("solution2 = "+solution2);
     if (angle < 0) {
       solution1 = (wrap * 360) - Math.abs(angle);
       solution2 = (wrap * 360) + (360 - Math.abs(angle));
@@ -186,7 +239,16 @@ public class CollisionAvoidance {
       }
 
     } else {
+      // System.out.println("1 = "+solution1);
+      // System.out.println("2 = "+solution2);
+      // double solution1Difference = Math.abs(Math.max(solution1,
+      // currentRawMotorAngle)-Math.min(solution1, currentRawMotorAngle));
+      // double solution2Difference = Math.abs(Math.max(solution2,
+      // currentRawMotorAngle)-Math.min(solution2, currentRawMotorAngle));
+      // System.out.println("sol 1 diff"+solution1Difference);
+      // System.out.println("sol 2 diff"+solution2Difference);
 
+      //       if (solution2Difference > solution1Difference) {
       if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
         shortSolution = solution1;
         longSolution = solution2;
@@ -194,6 +256,8 @@ public class CollisionAvoidance {
         shortSolution = solution2;
         longSolution = solution1;
       }
+      System.out.println("shortSolution = " + shortSolution);
+      System.out.println("longsolution = " + longSolution);
 
       collisionAvoidanceGoal =
           switch (currentObstructionKind) {
@@ -366,13 +430,13 @@ public class CollisionAvoidance {
     // TODO: Make sure the elevator doesn't go down before the arm can get safe
     // TODO: Make sure the HANDOFF_BUT_HIGHER is safe to go to left side scoring states and avoid
     // climber
-    Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberLeftSideSpecial(
+    Waypoint.HANDOFF_CLEARS_CLIMBER.leftSideSpecial(
         graph,
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_LEFT_LINEUP,
         Waypoint.L3_LEFT_LINEUP,
         Waypoint.L4_LEFT_LINEUP);
-    Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberRightSideSpecial(
+    Waypoint.HANDOFF_CLEARS_CLIMBER.rightSideSpecial(
         graph,
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_RIGHT_LINEUP,

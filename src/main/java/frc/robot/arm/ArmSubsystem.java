@@ -114,7 +114,6 @@ public class ArmSubsystem extends StateMachine<ArmState> {
 
   public void setCollisionAvoidanceGoal(double angle) {
     collisionAvoidanceGoal = angle;
-    DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
   }
 
   public boolean atGoal() {
@@ -219,6 +218,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     } else {
       DogLog.clearFault("Arm above 40°C");
     }
+    DogLog.log("Arm/CollisionAvoidanceGoalAngle", collisionAvoidanceGoal);
 
     switch (getState()) {
       case COLLISION_AVOIDANCE -> {
