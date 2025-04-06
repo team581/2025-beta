@@ -216,9 +216,11 @@ public class CollisionAvoidanceTest {
   public void rightObstructedAstarTest() {
     var result =
         CollisionAvoidance.aStar(
-            new SuperstructurePosition(0, 90),
-            new SuperstructurePosition(50, 0),
+            new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT),
+            new SuperstructurePosition(
+                ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4),
             ObstructionKind.RIGHT_OBSTRUCTED);
+    // Moves elevator first, only extends arm at the end
     var expected =
         List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP);
 
