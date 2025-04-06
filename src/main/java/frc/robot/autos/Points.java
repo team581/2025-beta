@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.util.MathHelpers;
 
 public enum Points {
-  START_R1_AND_B1(new Pose2d(10.289, 0.758, Rotation2d.kZero)),
+  START_R1_AND_B1(new Pose2d(10.289, 0.758, Rotation2d.fromDegrees(90))),
   START_R2_AND_B2(new Pose2d(10.289, 1.903, Rotation2d.kZero)),
   START_R3_AND_B3(new Pose2d(10.289, 3.054, Rotation2d.kZero)),
   START_R4_AND_B4(new Pose2d(10.289, 5.069, Rotation2d.kZero)),

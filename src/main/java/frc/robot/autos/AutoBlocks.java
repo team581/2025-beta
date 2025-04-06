@@ -161,7 +161,7 @@ public class AutoBlocks {
         .followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint, autoCommands.lollipopApproachCommand()),
+                new AutoPoint(approachPoint, autoCommands.intakeLollipopCommand()),
                 new AutoPoint(
                     () ->
                         robotManager.coralMap.getLollipopIntakePose().orElse(defaultIntakingPoint),
