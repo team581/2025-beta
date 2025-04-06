@@ -89,6 +89,10 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     return hasSeenTagDisabledDebouncer.calculate(seeingTag);
   }
 
+  public boolean seeingTag() {
+    return seeingTag;
+  }
+
   public boolean hasSeenTag() {
     return hasSeenTag;
   }

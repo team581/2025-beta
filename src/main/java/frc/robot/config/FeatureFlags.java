@@ -26,6 +26,10 @@ public class FeatureFlags {
   public static final BooleanSupplier COLLISION_AVOIDANCE_OBSTRUCTION =
       FeatureFlag.of("CollisionAvoidance/Obstruction", true);
 
+      public static final BooleanSupplier APPROACH_TAG_CHECK =
+      FeatureFlag.of("Vision/ApproachTagCheck", true);
+
+
   public static final BooleanSupplier VISION_HANDOFF_ADJUSTMENT =
       FeatureFlag.of("Vision/HandoffAdjustment", true);
 
