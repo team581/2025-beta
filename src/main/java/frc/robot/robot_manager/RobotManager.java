@@ -189,7 +189,9 @@ public class RobotManager extends StateMachine<RobotState> {
           yield currentState.getLeftToRightApproachState();
         }
 
-        yield elevator.nearGoal() && arm.nearGoal() && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
+        yield elevator.nearGoal()
+                && arm.nearGoal()
+                && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
             ? currentState.getLeftApproachToLineupState()
             : currentState;
       }
@@ -199,7 +201,9 @@ public class RobotManager extends StateMachine<RobotState> {
           yield currentState.getRightToLeftApproachState();
         }
 
-        yield elevator.nearGoal() && arm.nearGoal()  && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
+        yield elevator.nearGoal()
+                && arm.nearGoal()
+                && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
             ? currentState.getRightApproachToLineupState()
             : currentState;
       }
