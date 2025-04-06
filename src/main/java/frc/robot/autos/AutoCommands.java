@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.auto_align.ReefPipe;
+import frc.robot.auto_align.RobotScoringSide;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.RobotState;
@@ -78,24 +79,26 @@ public class AutoCommands {
         .andThen(robotManager.groundManager.waitForState(GroundState.INTAKING));
   }
 
-  public Command l4WarmupCommand(ReefPipe pipe) {
-    return Commands.runOnce(
-        () -> {
-          robotManager.autoAlign.setAutoReefPipeOverride(pipe);
-          robotManager.l4CoralApproachRequest();
-        });
-  }
 
-  public Command l4LineupCommand(ReefPipe pipe) {
+
+  public Command l4ApproachCommand(ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.runOnce(
         () -> {
           robotManager.autoAlign.setAutoReefPipeOverride(pipe);
-          robotManager.highLineupRequest();
+          if (scoringSide == RobotScoringSide.LEFT) {
+            robotManager.l4CoralLeftAutoApproachRequest();
+          } else {
+            robotManager.l4CoralRightAutoApproachRequest();
+          }
         });
   }
 
   public Command l4LeftReleaseCommand() {
     return Commands.runOnce(robotManager::l4CoralLeftReleaseRequest);
+  }
+
+  public Command waitForReleaseCommand() {
+    return robotManager.waitForStates(RobotState.CORAL_L2_LEFT_RELEASE, RobotState.CORAL_L4_LEFT_RELEASE, RobotState.CORAL_L3_LEFT_RELEASE, RobotState.CORAL_L2_RIGHT_RELEASE, RobotState.CORAL_L3_RIGHT_RELEASE, RobotState.CORAL_L4_RIGHT_RELEASE);
   }
 
   public Command waitForAlignedForScore() {

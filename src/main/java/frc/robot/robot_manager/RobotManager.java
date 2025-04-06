@@ -127,11 +127,11 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L3_LEFT_PLACE,
           CORAL_L4_RIGHT_PLACE,
           CORAL_L4_LEFT_PLACE -> {
-        if (FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()
+            if (((FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()&& scoringAlignActive) || DriverStation.isAutonomous())
             && autoAlign.isTagAlignedDebounced()
             && arm.atGoal()
             && elevator.atGoal()
-            && scoringAlignActive) {
+            ) {
           autoAlign.markPipeScored();
           yield currentState.getPlaceToReleaseState();
         }
@@ -144,11 +144,11 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L3_RIGHT_LINEUP,
           CORAL_L4_LEFT_LINEUP,
           CORAL_L4_RIGHT_LINEUP -> {
-        if (FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()
+        if (((FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()&& scoringAlignActive) || DriverStation.isAutonomous())
             && autoAlign.isTagAlignedDebounced()
             && arm.atGoal()
             && elevator.atGoal()
-            && scoringAlignActive) {
+            ) {
           yield currentState.getLineupToPlaceState();
         }
         yield currentState;
@@ -1157,6 +1157,18 @@ public class RobotManager extends StateMachine<RobotState> {
   public void scoringAlignOffRequest() {
     scoringAlignActive = false;
   }
+
+  public void l4CoralLeftAutoApproachRequest() {
+   if (DriverStation.isAutonomous()) {
+    setStateFromRequest(RobotState.CORAL_L4_LEFT_APPROACH);
+   }
+  }
+
+  public void l4CoralRightAutoApproachRequest() {
+    if (DriverStation.isAutonomous()) {
+     setStateFromRequest(RobotState.CORAL_L4_RIGHT_APPROACH);
+    }
+   }
 
   public void l4CoralApproachRequest() {
     if (getState().climbingOrRehoming) {
