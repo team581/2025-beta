@@ -26,18 +26,14 @@ public class RedLollipopAuto extends BaseAuto {
   @Override
   protected Command createAutoCommand() {
     return Commands.sequence(
-      autoCommands.resetPoseIfNeeded(getStartingPose()),
-      trailblazer.followSegment(
-        new AutoSegment(
-          new AutoPoint(
-            new Pose2d(10.289, 0.758, Rotation2d.fromDegrees(90))),
-          new AutoPoint(
-            new Pose2d(12.242, 1.278, Rotation2d.fromDegrees(90))),
-          new AutoPoint(
-            new Pose2d(13.672, 2.019, Rotation2d.fromDegrees(90))
-          )
-      )),
-        blocks.scorePreloadL4(new Pose2d(13.672, 2.019, Rotation2d.fromDegrees(90)), ReefPipe.PIPE_L),
+        autoCommands.resetPoseIfNeeded(getStartingPose()),
+        trailblazer.followSegment(
+            new AutoSegment(
+                new AutoPoint(new Pose2d(10.289, 0.758, Rotation2d.fromDegrees(90))),
+                new AutoPoint(new Pose2d(12.242, 1.278, Rotation2d.fromDegrees(90))),
+                new AutoPoint(new Pose2d(13.672, 2.019, Rotation2d.fromDegrees(90))))),
+        blocks.scorePreloadL4(
+            new Pose2d(13.672, 2.019, Rotation2d.fromDegrees(90)), ReefPipe.PIPE_L),
         blocks.intakeLollipop(
             new Pose2d(13.8, 2.168, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.LOLLIPOP_OFFSET),
