@@ -71,7 +71,7 @@ public class CollisionAvoidance {
             edge.get().leftSideStrategy(),
             edge.get().rightSideStrategy(),
             rawArmAngle);
-DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
+    DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
 
     return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(), armGoal));
   }
@@ -188,32 +188,30 @@ DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
 
     } else {
 
-    if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
-      shortSolution = solution1;
-      longSolution = solution2;
-    } else {
-      shortSolution = solution2;
-      longSolution = solution1;
-    }
+      if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
+        shortSolution = solution1;
+        longSolution = solution2;
+      } else {
+        shortSolution = solution2;
+        longSolution = solution1;
+      }
 
       collisionAvoidanceGoal =
-        switch (currentObstructionKind) {
-          case LEFT_OBSTRUCTED ->
-              switch (leftObstructionStrategy) {
-                case IGNORE_BLOCKED -> shortSolution;
-                case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                case LONG_WAY_IF_BLOCKED -> longSolution;
-              };
-          case RIGHT_OBSTRUCTED ->
-              switch (rightObstructionStrategy) {
-                case IGNORE_BLOCKED -> shortSolution;
-                case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                case LONG_WAY_IF_BLOCKED -> longSolution;
-              };
+          switch (currentObstructionKind) {
+            case LEFT_OBSTRUCTED ->
+                switch (leftObstructionStrategy) {
+                  case IGNORE_BLOCKED -> shortSolution;
+                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+                  case LONG_WAY_IF_BLOCKED -> longSolution;
+                };
+            case RIGHT_OBSTRUCTED ->
+                switch (rightObstructionStrategy) {
+                  case IGNORE_BLOCKED -> shortSolution;
+                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+                  case LONG_WAY_IF_BLOCKED -> longSolution;
+                };
             default -> shortSolution;
-        };
-
-
+          };
     }
     return collisionAvoidanceGoal;
   }
@@ -277,7 +275,6 @@ DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
     Waypoint.HANDOFF.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     Waypoint.ALGAE_NET_UP.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
-
 
     /* Arm up to left/right is always safe */
     Waypoint.L2_UPRIGHT.avoidClimberAlwaysSafe(
@@ -400,9 +397,9 @@ DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
     // Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(
     //     graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
 
-    //L1 movements
+    // L1 movements
     Waypoint.L1_RIGHT_LINEUP.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
-    //Ground algae movement
+    // Ground algae movement
     Waypoint.GROUND_ALGAE_INTAKE.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
 
     // Create an immutable copy of the graph now that we've added all the nodes
@@ -469,8 +466,10 @@ DogLog.log("CollisionAvoidance/RoutedArmGoal", armGoal);
       }
       openSet.remove(current);
       Set<Waypoint> options = graph.adjacentNodes(current);
-      // Set<Waypoint> placeException = Set.of(Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE,Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_RIGHT_PLACE);
-      // Set<Waypoint> lineUpException = Set.of(Waypoint.L2_LEFT_LINEUP,Waypoint.L3_LEFT_LINEUP,Waypoint.L4_LEFT_LINEUP,Waypoint.L2_RIGHT_LINEUP,Waypoint.L3_RIGHT_LINEUP,Waypoint.L4_RIGHT_LINEUP);
+      // Set<Waypoint> placeException =
+      // Set.of(Waypoint.L2_LEFT_PLACE,Waypoint.L3_LEFT_PLACE,Waypoint.L4_LEFT_PLACE,Waypoint.L2_RIGHT_PLACE,Waypoint.L3_RIGHT_PLACE,Waypoint.L4_RIGHT_PLACE);
+      // Set<Waypoint> lineUpException =
+      // Set.of(Waypoint.L2_LEFT_LINEUP,Waypoint.L3_LEFT_LINEUP,Waypoint.L4_LEFT_LINEUP,Waypoint.L2_RIGHT_LINEUP,Waypoint.L3_RIGHT_LINEUP,Waypoint.L4_RIGHT_LINEUP);
 
       // if(placeException.contains(current)&&options.contains(lineUpException))
 

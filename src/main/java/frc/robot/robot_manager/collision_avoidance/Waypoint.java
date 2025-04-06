@@ -102,6 +102,7 @@ public enum Waypoint {
   public double costFor(Waypoint other) {
     return position.costFor(other.position);
   }
+
   public double costForLongWay(Waypoint other) {
     return position.costForLongWay(other.position);
   }

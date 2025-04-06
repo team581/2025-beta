@@ -20,14 +20,22 @@ public class CollisionAvoidanceTest {
     var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
 
     var expected =
-        List.of(Waypoint.ALGAE_NET_OUT_RIGHT, Waypoint.ALGAE_NET_UP, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF);
+        List.of(
+            Waypoint.ALGAE_NET_OUT_RIGHT,
+            Waypoint.ALGAE_NET_UP,
+            Waypoint.HANDOFF_CLEARS_CLIMBER,
+            Waypoint.HANDOFF);
 
     assertEquals(expected, result.get());
   }
-//  @Test
+
+  //  @Test
   // public void routePositionTest() {
-  //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
-  //   SuperstructurePosition goal = new SuperstructurePosition(ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4);
+  //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF,
+  // ArmState.CORAL_HANDOFF);
+  //   SuperstructurePosition goal = new
+  // SuperstructurePosition(ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4,
+  // ArmState.CORAL_SCORE_RIGHT_LINEUP_L4);
 
   //   boolean climberRisky = false;
   //   double currentAngle = -90.0;
@@ -73,7 +81,7 @@ public class CollisionAvoidanceTest {
     ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
     double result =
         CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-            goalAngle, climberRisky, obstructionKind, leftStrategy,rightStrategy, currentAngle);
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
     double expected = 180.0;
 
@@ -211,7 +219,8 @@ public class CollisionAvoidanceTest {
             new SuperstructurePosition(0, 90),
             new SuperstructurePosition(50, 0),
             ObstructionKind.RIGHT_OBSTRUCTED);
-    var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP);
+    var expected =
+        List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP);
 
     assertEquals(expected, result.get());
   }

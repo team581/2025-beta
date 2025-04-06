@@ -78,9 +78,10 @@ public record SuperstructurePosition(double elevatorHeight, double armAngle) {
         + Math.abs(this.elevatorHeight - other.elevatorHeight) * ELEVATOR_INCHES_PER_SECOND
         + STATIC_COST;
   }
+
   public double costForLongWay(SuperstructurePosition other) {
-    return (360-Math.abs(this.armAngle - other.armAngle)) * ARM_DEGREES_PER_SECOND
-        + (360-Math.abs(this.elevatorHeight - other.elevatorHeight)) * ELEVATOR_INCHES_PER_SECOND
+    return (360 - Math.abs(this.armAngle - other.armAngle)) * ARM_DEGREES_PER_SECOND
+        + (360 - Math.abs(this.elevatorHeight - other.elevatorHeight)) * ELEVATOR_INCHES_PER_SECOND
         + STATIC_COST;
   }
 

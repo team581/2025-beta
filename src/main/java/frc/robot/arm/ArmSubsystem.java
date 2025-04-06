@@ -93,7 +93,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   public double getRawAngle() {
     return rawMotorAngle;
   }
-  private double getRawAngleFromNormalAngle(double angle){
+
+  private double getRawAngleFromNormalAngle(double angle) {
     double solution1;
     double solution2;
     int wrap = (int) rawMotorAngle / 360;
@@ -105,7 +106,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       solution2 = (wrap * 360) - (360 - angle);
     }
     if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
-return solution1;
+      return solution1;
     } else {
       return solution2;
     }
@@ -163,7 +164,8 @@ return solution1;
       }
       default -> {
         motor.setControl(
-            motionMagicRequest.withPosition(Units.degreesToRotations(getRawAngleFromNormalAngle(newState.getAngle()))));
+            motionMagicRequest.withPosition(
+                Units.degreesToRotations(getRawAngleFromNormalAngle(newState.getAngle()))));
       }
     }
   }
@@ -178,7 +180,6 @@ return solution1;
 
     DogLog.log("Arm/AtGoal", atGoal());
     DogLog.log("Arm/MotorTemp", motor.getDeviceTemp().getValueAsDouble());
-
 
     if (FeatureFlags.VISION_HANDOFF_ADJUSTMENT.getAsBoolean()) {
       switch (getState()) {
