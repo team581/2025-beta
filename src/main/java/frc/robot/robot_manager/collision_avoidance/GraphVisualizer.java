@@ -71,6 +71,7 @@ public class GraphVisualizer {
     var sb = new StringBuilder();
     var linkIndex = 0;
     var impossibleLinkIndexes = new Stack<>();
+    var penalizedLinkIndexes = new Stack<>();
 
     sb.append("# ");
     sb.append(title);
@@ -90,6 +91,9 @@ public class GraphVisualizer {
         // Easier to view in the diagram this way
         cost = 999;
         impossibleLinkIndexes.add(linkIndex);
+      } else if (cost != edge.shortCost()) {
+        // This is a penalized link
+        penalizedLinkIndexes.add(linkIndex);
       }
 
       sb.append(pair.nodeU().toString());
@@ -107,6 +111,13 @@ public class GraphVisualizer {
       sb.append(
           impossibleLinkIndexes.stream().map(String::valueOf).collect(Collectors.joining(",")));
       sb.append(" stroke:red;\n");
+    }
+
+    if (!penalizedLinkIndexes.isEmpty()) {
+      sb.append("\nlinkStyle ");
+      sb.append(
+          penalizedLinkIndexes.stream().map(String::valueOf).collect(Collectors.joining(",")));
+      sb.append(" stroke:yellow;\n");
     }
 
     sb.append("```\n");

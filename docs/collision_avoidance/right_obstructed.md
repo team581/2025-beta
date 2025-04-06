@@ -71,4 +71,6 @@ L3_RIGHT_LINEUP <-- 2.633 --> L3_LEFT_LINEUP
 L4_RIGHT_LINEUP <-- 2.549 --> L4_LEFT_LINEUP
 
 linkStyle 20,21,22,35,36,37,49,50,51 stroke:red;
+
+linkStyle 58,59,60 stroke:yellow;
 ```
