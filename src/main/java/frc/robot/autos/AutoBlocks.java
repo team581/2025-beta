@@ -139,7 +139,7 @@ public class AutoBlocks {
                     Commands.runOnce(robotManager.groundManager::intakeRequest)),
                 new AutoPoint(intakingPoint.redPose)),
             false)
-        .withDeadline(autoCommands.waitForGroundIntakeDone());
+        .withDeadline(autoCommands.waitForIntakeDone());
   }
 
   public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
@@ -154,19 +154,18 @@ public class AutoBlocks {
                     autoCommands.intakeLollipopCommand(),
                     LOLLIPOP_CONSTRAINTS)),
             false)
-        .withTimeout(5);
-  }
+            .withDeadline(autoCommands.waitForLollipopIntakeDone());
+          }
 
   public Command intakeGround(Pose2d approachPoint, Pose2d defaultIntakingPose) {
     return trailblazer
         .followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint),
                 new AutoPoint(
                     () -> robotManager.coralMap.getBestCoral().orElse(defaultIntakingPose),
-                    Commands.runOnce(robotManager::lollipopIntakeApproachRequest))),
+                    Commands.runOnce(robotManager.groundManager::intakeRequest))),
             false)
-        .withDeadline(autoCommands.waitForGroundIntakeDone());
+        .withDeadline(autoCommands.waitForIntakeDone());
   }
 }
