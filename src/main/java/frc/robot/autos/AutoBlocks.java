@@ -58,7 +58,7 @@ public class AutoBlocks {
             .followSegment(
                 new AutoSegment(
                     BASE_CONSTRAINTS,
-                    new AutoPoint(
+                    new AutoPoint(()->
                         robotManager.autoAlign.getUsedScoringPose(
                             pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
                         autoCommands
