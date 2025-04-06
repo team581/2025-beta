@@ -197,7 +197,7 @@ public class CollisionAvoidance {
     double collisionAvoidanceGoal;
 
     // var wrap = (int) Math.floor(currentRawMotorAngle / 360.0);
-    int wrap = (int) currentRawMotorAngle/360;
+    int wrap = (int) currentRawMotorAngle / 360;
 
     //   double angleWrapped = MathUtil.inputModulus(angle,0,360);
     //   double difference = Math.abs(Math.max(angleWrapped,
