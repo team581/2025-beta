@@ -12,7 +12,6 @@ import frc.robot.arm.ArmState;
 import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import frc.robot.util.MathHelpers;
-
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -185,7 +184,6 @@ public class CollisionAvoidance {
     return Optional.of(currentWaypoint);
   }
 
-
   public static double alternateGetCollisionAvoidanceAngleGoal(
       double normalizedGoalAngle,
       boolean climberRisky,
@@ -202,7 +200,6 @@ public class CollisionAvoidance {
         MathHelpers.nearest(currentRawMotorAngle, forwardsSetpoint, backwardsSetpoint);
     var longSetpoint =
         MathHelpers.farthest(currentRawMotorAngle, forwardsSetpoint, backwardsSetpoint);
-
 
     if ((leftObstructionStrategy == ObstructionStrategy.LONG_WAY_IF_BLOCKED
             && currentObstructionKind == ObstructionKind.LEFT_OBSTRUCTED)
