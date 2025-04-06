@@ -125,8 +125,7 @@ public class CollisionAvoidance {
     DogLog.log("CollisionAvoidance/Obstruction", obstructionKind);
 
     boolean near =
-        SuperstructurePosition.near(
-            currentWaypoint.position, currentPosition, ELEVATOR_TOLERANCE, ARM_TOLERANCE);
+        currentPosition.isNear(currentWaypoint.position, ELEVATOR_TOLERANCE, ARM_TOLERANCE);
     DogLog.log("CollisionAvoidance/Near", near);
 
     // Check if our current position is close to the current waypoint in path

@@ -71,25 +71,16 @@ public record SuperstructurePosition(
     }
 
     if (other instanceof SuperstructurePosition otherPosition) {
-      return near(
-          otherPosition,
-          new SuperstructurePosition(elevatorHeight, armAngle),
-          ELEVATOR_PRECISION,
-          ARM_PRECISION);
+      return isNear(otherPosition, ELEVATOR_PRECISION, ARM_PRECISION);
     }
 
     return false;
   }
 
-  public static boolean near(
-      SuperstructurePosition firstPosition,
-      SuperstructurePosition secondPosition,
-      double elevatorTolerance,
-      double armTolerance) {
-    return (MathUtil.isNear(
-            firstPosition.elevatorHeight(), secondPosition.elevatorHeight(), elevatorTolerance)
-        && MathUtil.isNear(
-            firstPosition.armAngle(), secondPosition.armAngle(), armTolerance, -180, 180));
+  public boolean isNear(
+      SuperstructurePosition other, double elevatorTolerance, double armTolerance) {
+    return MathUtil.isNear(elevatorHeight, other.elevatorHeight, elevatorTolerance)
+        && MathUtil.isNear(armAngle, other.armAngle, armTolerance, -180, 180);
   }
 
   /**
