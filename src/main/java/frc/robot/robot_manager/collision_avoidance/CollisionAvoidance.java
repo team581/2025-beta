@@ -9,7 +9,10 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.arm.ArmState;
+import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
+import frc.robot.util.MathHelpers;
+
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -180,6 +183,41 @@ public class CollisionAvoidance {
     }
     // If it's not close, return the same waypoint
     return Optional.of(currentWaypoint);
+  }
+
+
+  public static double alternateGetCollisionAvoidanceAngleGoal(
+      double normalizedGoalAngle,
+      boolean climberRisky,
+      ObstructionKind currentObstructionKind,
+      ObstructionStrategy leftObstructionStrategy,
+      ObstructionStrategy rightObstructionStrategy,
+      double currentRawMotorAngle) {
+    var forwardsSetpoint =
+        ArmSubsystem.denormalizeAngleForward(currentRawMotorAngle, normalizedGoalAngle);
+    var backwardsSetpoint =
+        ArmSubsystem.denormalizeAngleBackward(currentRawMotorAngle, normalizedGoalAngle);
+
+    var shortSetpoint =
+        MathHelpers.nearest(currentRawMotorAngle, forwardsSetpoint, backwardsSetpoint);
+    var longSetpoint =
+        MathHelpers.farthest(currentRawMotorAngle, forwardsSetpoint, backwardsSetpoint);
+
+
+    if ((leftObstructionStrategy == ObstructionStrategy.LONG_WAY_IF_BLOCKED
+            && currentObstructionKind == ObstructionKind.LEFT_OBSTRUCTED)
+        || (rightObstructionStrategy == ObstructionStrategy.LONG_WAY_IF_BLOCKED
+            && currentObstructionKind == ObstructionKind.RIGHT_OBSTRUCTED)) {
+      return longSetpoint;
+    }
+
+    if (climberRisky) {
+      // TODO: Implement
+      return 123.0;
+    }
+
+    // If there's no obstruction, you can go directly to the angle
+    return shortSetpoint;
   }
 
   public static double getCollisionAvoidanceAngleGoal(
