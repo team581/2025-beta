@@ -7,6 +7,8 @@ import frc.robot.util.MathHelpers;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 public class GraphVisualizer {
   private static final boolean HIDE_INFINITE_COSTS = false;
@@ -67,6 +69,8 @@ public class GraphVisualizer {
   private static String toMermaidGraphDiagram(
       String title, ValueGraph<Waypoint, WaypointEdge> graph, ObstructionKind obstruction) {
     var sb = new StringBuilder();
+    var linkIndex = 0;
+    var impossibleLinkIndexes = new Stack<>();
 
     sb.append("# ");
     sb.append(title);
@@ -85,6 +89,7 @@ public class GraphVisualizer {
 
         // Easier to view in the diagram this way
         cost = 999;
+        impossibleLinkIndexes.add(linkIndex);
       }
 
       sb.append(pair.nodeU().toString());
@@ -93,6 +98,15 @@ public class GraphVisualizer {
       sb.append(" --> ");
       sb.append(pair.nodeV().toString());
       sb.append('\n');
+
+      linkIndex++;
+    }
+
+    if (!impossibleLinkIndexes.isEmpty()) {
+      sb.append("\nlinkStyle ");
+      sb.append(
+          impossibleLinkIndexes.stream().map(String::valueOf).collect(Collectors.joining(",")));
+      sb.append(" stroke:red;\n");
     }
 
     sb.append("```\n");
