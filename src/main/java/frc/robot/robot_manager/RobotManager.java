@@ -252,19 +252,8 @@ public class RobotManager extends StateMachine<RobotState> {
         if (claw.getHasGP()) {
           rumbleController.rumbleRequest();
           if (cameraOnlineAndFarEnoughFromReef()) {
-            yield currentState.getAlgaeIntakeToHoldingState();
+            yield RobotState.CLAW_ALGAE;
           }
-        }
-
-        yield currentState;
-      }
-
-      case ALGAE_INTAKE_L2_LEFT_HOLDING,
-          ALGAE_INTAKE_L3_LEFT_HOLDING,
-          ALGAE_INTAKE_L2_RIGHT_HOLDING,
-          ALGAE_INTAKE_L3_RIGHT_HOLDING -> {
-        if (cameraOnlineAndFarEnoughFromReef()) {
-          yield RobotState.CLAW_ALGAE;
         }
 
         yield currentState;
@@ -852,11 +841,7 @@ public class RobotManager extends StateMachine<RobotState> {
           ALGAE_INTAKE_L2_LEFT,
           ALGAE_INTAKE_L3_LEFT,
           ALGAE_INTAKE_L2_RIGHT,
-          ALGAE_INTAKE_L3_RIGHT,
-          ALGAE_INTAKE_L2_LEFT_HOLDING,
-          ALGAE_INTAKE_L3_LEFT_HOLDING,
-          ALGAE_INTAKE_L2_RIGHT_HOLDING,
-          ALGAE_INTAKE_L3_RIGHT_HOLDING -> {
+          ALGAE_INTAKE_L3_RIGHT -> {
         if (scoringAlignActive) {
           swerve.scoringAlignmentRequest(reefSnapAngle);
         } else {
