@@ -127,11 +127,11 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L3_LEFT_PLACE,
           CORAL_L4_RIGHT_PLACE,
           CORAL_L4_LEFT_PLACE -> {
-        if (FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()
+        if (((FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean() && scoringAlignActive)
+                || DriverStation.isAutonomous())
             && autoAlign.isTagAlignedDebounced()
             && arm.atGoal()
-            && elevator.atGoal()
-            && scoringAlignActive) {
+            && elevator.atGoal()) {
           autoAlign.markPipeScored();
           yield currentState.getPlaceToReleaseState();
         }
@@ -144,11 +144,11 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L3_RIGHT_LINEUP,
           CORAL_L4_LEFT_LINEUP,
           CORAL_L4_RIGHT_LINEUP -> {
-        if (FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean()
+        if (((FeatureFlags.AUTO_ALIGN_AUTO_SCORE.getAsBoolean() && scoringAlignActive)
+                || DriverStation.isAutonomous())
             && autoAlign.isTagAlignedDebounced()
             && arm.atGoal()
-            && elevator.atGoal()
-            && scoringAlignActive) {
+            && elevator.atGoal()) {
           yield currentState.getLineupToPlaceState();
         }
         yield currentState;
@@ -189,7 +189,9 @@ public class RobotManager extends StateMachine<RobotState> {
           yield currentState.getLeftToRightApproachState();
         }
 
-        yield elevator.nearGoal() && arm.nearGoal()
+        yield elevator.nearGoal()
+                && arm.nearGoal()
+                && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
             ? currentState.getLeftApproachToLineupState()
             : currentState;
       }
@@ -199,7 +201,9 @@ public class RobotManager extends StateMachine<RobotState> {
           yield currentState.getRightToLeftApproachState();
         }
 
-        yield elevator.nearGoal() && arm.nearGoal()
+        yield elevator.nearGoal()
+                && arm.nearGoal()
+                && (!FeatureFlags.APPROACH_TAG_CHECK.getAsBoolean() || vision.seeingTag())
             ? currentState.getRightApproachToLineupState()
             : currentState;
       }
@@ -1156,6 +1160,18 @@ public class RobotManager extends StateMachine<RobotState> {
 
   public void scoringAlignOffRequest() {
     scoringAlignActive = false;
+  }
+
+  public void l4CoralLeftAutoApproachRequest() {
+    if (DriverStation.isAutonomous()) {
+      setStateFromRequest(RobotState.CORAL_L4_LEFT_APPROACH);
+    }
+  }
+
+  public void l4CoralRightAutoApproachRequest() {
+    if (DriverStation.isAutonomous()) {
+      setStateFromRequest(RobotState.CORAL_L4_RIGHT_APPROACH);
+    }
   }
 
   public void l4CoralApproachRequest() {

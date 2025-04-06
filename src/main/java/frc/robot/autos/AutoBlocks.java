@@ -51,7 +51,12 @@ public class AutoBlocks {
     this.autoCommands = autoCommands;
   }
 
-  public Command scorePreloadL4(Pose2d startingPose, ReefPipe pipe) {
+  public Command startingPath(Pose2d startingPose, AutoSegment segment) {
+    return Commands.sequence(
+        autoCommands.resetPoseIfNeeded(startingPose), trailblazer.followSegment(segment));
+  }
+
+  public Command scorePreloadL4(Pose2d startingPose, ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.sequence(
         autoCommands.resetPoseIfNeeded(startingPose),
         trailblazer
@@ -59,11 +64,12 @@ public class AutoBlocks {
                 new AutoSegment(
                     BASE_CONSTRAINTS,
                     new AutoPoint(
-                        robotManager.autoAlign.getUsedScoringPose(
-                            pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
+                        () ->
+                            robotManager.autoAlign.getUsedScoringPose(
+                                pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
                         autoCommands
                             .preloadCoralCommand()
-                            .andThen(autoCommands.l4WarmupCommand(pipe)),
+                            .andThen(autoCommands.l4ApproachCommand(pipe, scoringSide)),
                         BASE_CONSTRAINTS),
                     new AutoPoint(
                         () ->
@@ -74,7 +80,7 @@ public class AutoBlocks {
                         () ->
                             robotManager.autoAlign.getUsedScoringPose(
                                 pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
-                        autoCommands.l4LineupCommand(pipe),
+                        autoCommands.l4ApproachCommand(pipe, scoringSide),
                         SCORING_CONSTRAINTS),
                     // Actually align to score
                     new AutoPoint(
@@ -102,44 +108,25 @@ public class AutoBlocks {
                             pipe, ReefPipeLevel.L4, RobotScoringSide.LEFT)))));
   }
 
-  public Command scoreL4(ReefPipe pipe) {
+  public Command scoreL4(ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.sequence(
         trailblazer
             .followSegment(
                 new AutoSegment(
                     SCORING_CONSTRAINTS,
                     new AutoPoint(
-                        () ->
-                            robotManager.autoAlign.getUsedScoringPose(
-                                pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
-                        autoCommands.l4WarmupCommand(pipe),
-                        BASE_CONSTRAINTS),
-                    new AutoPoint(
-                        () ->
-                            robotManager.autoAlign.getUsedScoringPose(
-                                pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
-                        autoCommands.l4LineupCommand(pipe),
-                        SCORING_CONSTRAINTS),
-                    new AutoPoint(
-                        () ->
-                            robotManager.autoAlign.getUsedScoringPose(
-                                pipe, ReefPipeLevel.L4, RobotScoringSide.LEFT))),
+                        () -> robotManager.autoAlign.getUsedScoringPose(pipe),
+                        autoCommands.l4ApproachCommand(pipe, scoringSide),
+                        BASE_CONSTRAINTS)),
                 false)
-            .withDeadline(
-                autoCommands.waitForAlignedForScore().andThen(autoCommands.l4LeftReleaseCommand())),
+            .withDeadline(autoCommands.waitForReleaseCommand()),
         trailblazer.followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
                 AFTER_SCORE_POSITION_TOLERANCE,
                 new AutoPoint(
-                    () ->
-                        robotManager.autoAlign.getUsedScoringPose(
-                            pipe, ReefPipeLevel.RAISING, RobotScoringSide.LEFT),
-                    Commands.waitSeconds(0.15).andThen(robotManager::stowRequest)),
-                new AutoPoint(
-                    () ->
-                        robotManager.autoAlign.getUsedScoringPose(
-                            pipe, ReefPipeLevel.L4, RobotScoringSide.LEFT)))));
+                    () -> pipe.getPose(ReefPipeLevel.BACK_AWAY, scoringSide),
+                    Commands.waitSeconds(0.15).andThen(robotManager::stowRequest)))));
   }
 
   public Command intakeCoralGroundPoints(Points intakingPoint) {
@@ -152,7 +139,7 @@ public class AutoBlocks {
                     Commands.runOnce(robotManager.groundManager::intakeRequest)),
                 new AutoPoint(intakingPoint.redPose)),
             false)
-        .withDeadline(autoCommands.waitForGroundIntakeDone());
+        .withDeadline(autoCommands.waitForIntakeDone());
   }
 
   public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
@@ -160,14 +147,14 @@ public class AutoBlocks {
         .followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint, autoCommands.lollipopApproachCommand()),
+                new AutoPoint(approachPoint, autoCommands.intakeLollipopCommand()),
                 new AutoPoint(
                     () ->
                         robotManager.coralMap.getLollipopIntakePose().orElse(defaultIntakingPoint),
                     autoCommands.intakeLollipopCommand(),
                     LOLLIPOP_CONSTRAINTS)),
             false)
-        .withTimeout(5);
+        .withDeadline(autoCommands.waitForLollipopIntakeDone());
   }
 
   public Command intakeGround(Pose2d approachPoint, Pose2d defaultIntakingPose) {
@@ -175,11 +162,10 @@ public class AutoBlocks {
         .followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint),
                 new AutoPoint(
                     () -> robotManager.coralMap.getBestCoral().orElse(defaultIntakingPose),
-                    Commands.runOnce(robotManager::lollipopIntakeApproachRequest))),
+                    Commands.runOnce(robotManager.groundManager::intakeRequest))),
             false)
-        .withDeadline(autoCommands.waitForGroundIntakeDone());
+        .withDeadline(autoCommands.waitForIntakeDone());
   }
 }

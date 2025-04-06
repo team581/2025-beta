@@ -151,15 +151,7 @@ public class TagAlign {
   }
 
   public Pose2d getUsedScoringPose(ReefPipe pipe) {
-    var theoreticalScoringPose = pipe.getPose(pipeLevel, robotScoringSide);
-
-    if (DriverStation.isTeleop()) {
-      var offsetPose =
-          new Pose2d(theoreticalScoringPose.getTranslation(), theoreticalScoringPose.getRotation());
-      return offsetPose;
-    }
-
-    return theoreticalScoringPose;
+    return pipe.getPose(pipeLevel, robotScoringSide);
   }
 
   /** Returns the best reef pipe for scoring, based on the robot's current state. */
