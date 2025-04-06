@@ -1,149 +1,192 @@
 package frc.robot.robot_manager.collision_avoidance;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import frc.robot.arm.ArmState;
+import frc.robot.elevator.ElevatorState;
+import frc.robot.robot_manager.SuperstructurePosition;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+
 public class CollisionAvoidanceTest {
   // TODO: add good tests
 
-  // @Test
-  // public void aStarTest() {
-  //   var current = new SuperstructurePosition(0, 90);
-  //   var goal = new SuperstructurePosition(50, -90);
+  @Test
+  public void aStarTest() {
+    var current = new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT);
+    var goal = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
 
-  //   ObstructionKind obstructionKind = ObstructionKind.NONE;
-  //   var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
+    ObstructionKind obstructionKind = ObstructionKind.NONE;
+    var result = CollisionAvoidance.aStar(current, goal, obstructionKind);
 
-  //   var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT,
-  // Waypoint.HANDOFF_BUT_HIGHER);
+    var expected =
+        List.of(Waypoint.ALGAE_NET_OUT_RIGHT, Waypoint.ALGAE_NET_UP, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF);
 
-  //   assertEquals(expected, result.get());
-  // }
+    assertEquals(expected, result.get());
+  }
+//  @Test
+  // public void routePositionTest() {
+  //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF, ArmState.CORAL_HANDOFF);
+  //   SuperstructurePosition goal = new SuperstructurePosition(ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4);
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalTest() {
-  //   double goalAngle = 0.0;
   //   boolean climberRisky = false;
   //   double currentAngle = -90.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  //   ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+  //   ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+  //   ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+
+  //   var result =
+  //       CollisionAvoidance.routePosition(
+  //           current, goal, obstructionKind, currentAngle);
 
   //   double expected = -360.0;
 
   //   assertEquals(expected, result);
   // }
+  @Test
+  public void armSetCollisionAvoidanceGoalTest() {
+    double goalAngle = 0.0;
+    boolean climberRisky = false;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalTest2() {
-  //   double goalAngle = 180.0;
-  //   boolean climberRisky = false;
-  //   double currentAngle = -90.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = -180.0;
+    double expected = -360.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalTest3() {
-  //   double goalAngle = 180.0;
-  //   boolean climberRisky = false;
-  //   double currentAngle = -90.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalTest2() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy,rightStrategy, currentAngle);
 
-  //   double expected = 180.0;
+    double expected = 180.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalBackwardTest() {
-  //   double goalAngle = -25.0;
-  //   boolean climberRisky = true;
-  //   double currentAngle = 0.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalTest3() {
+    double goalAngle = 180.0;
+    boolean climberRisky = false;
+    double currentAngle = -90.0;
+    ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = -25.0;
+    double expected = 180.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalGoLongWayTest() {
-  //   double goalAngle = 200.0;
-  //   boolean climberRisky = true;
-  //   double currentAngle = 360.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalBackwardTest() {
+    double goalAngle = -25.0;
+    boolean climberRisky = true;
+    double currentAngle = 0.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = 560.0;
+    double expected = -25.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalGoLongWayNegativeTest() {
-  //   double goalAngle = -200.0;
-  //   boolean climberRisky = true;
-  //   double currentAngle = -360.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalGoLongWayTest() {
+    double goalAngle = 200.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = -200.0;
+    double expected = 560.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalNegativeTest() {
-  //   double goalAngle = 180.0;
-  //   boolean climberRisky = true;
-  //   double currentAngle = -360.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalGoLongWayNegativeTest() {
+    double goalAngle = -200.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = -180.0;
+    double expected = -200.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 
-  // @Test
-  // public void armSetCollisionAvoidanceGoalPositiveTest() {
-  //   double goalAngle = 180.0;
-  //   boolean climberRisky = true;
-  //   double currentAngle = 360.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
-  //   double result =
-  //       CollisionAvoidance.getCollisionAvoidanceAngleGoal(
-  //           goalAngle, climberRisky, obstructionKind, edgeObstructionKind, currentAngle);
+  @Test
+  public void armSetCollisionAvoidanceGoalNegativeTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = -360.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
-  //   double expected = 540.0;
+    double expected = -180.0;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void armSetCollisionAvoidanceGoalPositiveTest() {
+    double goalAngle = 180.0;
+    boolean climberRisky = true;
+    double currentAngle = 360.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionKind edgeObstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
+
+    double expected = 540.0;
+
+    assertEquals(expected, result);
+  }
 
   // @Test
   // public void leftObstructedAstarTest() {
@@ -161,24 +204,23 @@ public class CollisionAvoidanceTest {
   //   assertEquals(expected, result.get());
   // }
 
-  // @Test
-  // public void rightObstructedAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.aStar(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 0),
-  //           ObstructionKind.RIGHT_OBSTRUCTED);
-  //   var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_RIGHT,
-  // Waypoint.L4_RIGHT_PLACE);
+  @Test
+  public void rightObstructedAstarTest() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(0, 90),
+            new SuperstructurePosition(50, 0),
+            ObstructionKind.RIGHT_OBSTRUCTED);
+    var expected = List.of(Waypoint.ELEVATOR_0_ARM_UP, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP);
 
-  //   assertEquals(expected, result.get());
-  // }
+    assertEquals(expected, result.get());
+  }
 
-  // @Test
-  // public void getClosestNodeStowedTest() {
-  //   var result = Waypoint.getClosest(new SuperstructurePosition(43, -90));
-  //   Waypoint expected = Waypoint.HANDOFF;
+  @Test
+  public void getClosestNodeStowedTest() {
+    var result = Waypoint.getClosest(new SuperstructurePosition(43, -90));
+    Waypoint expected = Waypoint.HANDOFF;
 
-  //   assertEquals(expected, result);
-  // }
+    assertEquals(expected, result);
+  }
 }

@@ -93,6 +93,23 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   public double getRawAngle() {
     return rawMotorAngle;
   }
+  private double getRawAngleFromNormalAngle(double angle){
+    double solution1;
+    double solution2;
+    int wrap = (int) rawMotorAngle / 360;
+    if (angle < 0) {
+      solution1 = (wrap * 360) - Math.abs(angle);
+      solution2 = (wrap * 360) + (360 - Math.abs(angle));
+    } else {
+      solution1 = (wrap * 360) + angle;
+      solution2 = (wrap * 360) - (360 - angle);
+    }
+    if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
+return solution1;
+    } else {
+      return solution2;
+    }
+  }
 
   public void setCollisionAvoidanceGoal(double angle) {
     collisionAvoidanceGoal = angle;
@@ -146,7 +163,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       }
       default -> {
         motor.setControl(
-            motionMagicRequest.withPosition(Units.degreesToRotations(newState.getAngle())));
+            motionMagicRequest.withPosition(Units.degreesToRotations(getRawAngleFromNormalAngle(newState.getAngle()))));
       }
     }
   }
@@ -157,8 +174,11 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     DogLog.log("Arm/StatorCurrent", motorCurrent);
     DogLog.log("Arm/AppliedVoltage", motor.getMotorVoltage().getValueAsDouble());
     DogLog.log("Arm/Angle", motorAngle);
+    DogLog.log("Arm/RawAngle", rawMotorAngle);
+
     DogLog.log("Arm/AtGoal", atGoal());
     DogLog.log("Arm/MotorTemp", motor.getDeviceTemp().getValueAsDouble());
+
 
     if (FeatureFlags.VISION_HANDOFF_ADJUSTMENT.getAsBoolean()) {
       switch (getState()) {

@@ -23,7 +23,7 @@ public enum Waypoint {
           ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
   ELEVATOR_0_ARM_UP(new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT)),
   HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
-  HANDOFF_CLEARS_CLIMBER(new SuperstructurePosition(60, ArmState.CORAL_HANDOFF)),
+  HANDOFF_CLEARS_CLIMBER(new SuperstructurePosition(55, ArmState.CORAL_HANDOFF)),
 
   L2_UPRIGHT(
       new SuperstructurePosition(
@@ -41,40 +41,40 @@ public enum Waypoint {
   L2_RIGHT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L2, ArmState.CORAL_SCORE_RIGHT_LINEUP_L2)),
-  L2_RIGHT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2)),
+  // L2_RIGHT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L2, ArmState.CORAL_SCORE_RIGHT_RELEASE_L2)),
   L3_RIGHT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L3, ArmState.CORAL_SCORE_RIGHT_LINEUP_L3)),
-  L3_RIGHT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3)),
+  // L3_RIGHT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L3, ArmState.CORAL_SCORE_RIGHT_RELEASE_L3)),
   L4_RIGHT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4)),
-  L4_RIGHT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4)),
+  // L4_RIGHT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_RIGHT_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4)),
   L2_LEFT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_LINEUP_L2, ArmState.CORAL_SCORE_LEFT_LINEUP_L2)),
-  L2_LEFT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L2, ArmState.CORAL_SCORE_LEFT_RELEASE_L2)),
+  // L2_LEFT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_LEFT_RELEASE_L2, ArmState.CORAL_SCORE_LEFT_RELEASE_L2)),
   L3_LEFT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_LINEUP_L3, ArmState.CORAL_SCORE_LEFT_LINEUP_L3)),
-  L3_LEFT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L3, ArmState.CORAL_SCORE_LEFT_RELEASE_L3)),
+  // L3_LEFT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_LEFT_RELEASE_L3, ArmState.CORAL_SCORE_LEFT_RELEASE_L3)),
   L4_LEFT_LINEUP(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_LEFT_LINEUP_L4, ArmState.CORAL_SCORE_LEFT_LINEUP_L4)),
-  L4_LEFT_PLACE(
-      new SuperstructurePosition(
-          ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4)),
-  ALGAE_NET_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
+  // L4_LEFT_PLACE(
+  //     new SuperstructurePosition(
+  //         ElevatorState.CORAL_SCORE_LEFT_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4)),
+  ALGAE_NET_UP(new SuperstructurePosition(48.0, ArmState.HOLDING_UPRIGHT)),
   ALGAE_NET_OUT_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
   ALGAE_NET_OUT_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
@@ -101,6 +101,9 @@ public enum Waypoint {
 
   public double costFor(Waypoint other) {
     return position.costFor(other.position);
+  }
+  public double costForLongWay(Waypoint other) {
+    return position.costForLongWay(other.position);
   }
 
   public static void log() {
