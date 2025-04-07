@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.arm.ArmState;
 import frc.robot.robot_manager.SuperstructurePosition;
+import frc.robot.util.MathHelpers;
+
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.EnumMap;
@@ -75,9 +78,9 @@ public class CollisionAvoidance {
     var edge = maybeEdge;
 
     if (edge.get().hitsClimber() != lastClimberRisky
-        || obstructionKind != lastObstruction
-        || edge.get().leftSideStrategy() != lastLeftStrategy
-        || edge.get().rightSideStrategy() != lastRightStrategy
+        //|| obstructionKind != lastObstruction
+        //|| edge.get().leftSideStrategy() != lastLeftStrategy
+        //|| edge.get().rightSideStrategy() != lastRightStrategy
         || waypoint != lastWaypoint) {
       DogLog.timestamp("New Arm Goal Calculation");
       lastSolution =
@@ -219,38 +222,43 @@ public class CollisionAvoidance {
     // return new double[] {expected1, expected2};
 
     // Find the closest lower multiple of 360 so that the unwrapped angle is near current
-    double smallGoal;
-    double otherSmallGoal;
+
     int n = (int) currentRawAngle / 360;
-    double baseUnwrappedGoal = normalizedGoalAngle + 360 * n;
-    double altUnwrappedGoal = baseUnwrappedGoal + 360;
-    double secondAltGoal = baseUnwrappedGoal - 360;
-    if (Math.abs(baseUnwrappedGoal - currentRawAngle)
-        < Math.abs(altUnwrappedGoal - currentRawAngle)) {
-      smallGoal = baseUnwrappedGoal;
-      if (Math.abs(altUnwrappedGoal - currentRawAngle)
-          < Math.abs(secondAltGoal - currentRawAngle)) {
-        otherSmallGoal = altUnwrappedGoal;
-      }
-      {
-        otherSmallGoal = secondAltGoal;
-      }
-    } else {
-      smallGoal = altUnwrappedGoal;
-      if (Math.abs(baseUnwrappedGoal - currentRawAngle)
-          < Math.abs(secondAltGoal - currentRawAngle)) {
-        otherSmallGoal = baseUnwrappedGoal;
-      } else {
-        otherSmallGoal = secondAltGoal;
-      }
-    }
+    double solution1 = normalizedGoalAngle + 360 * n;
+    double solution2 = solution1 + 360;
+    double solution3 = solution1 - 360;
+
+        var sorted = new ArrayList<Double>(List.of(solution1,solution2,solution3));
+        sorted.sort(Comparator.comparingDouble(solution -> Math.abs(solution-currentRawAngle)));
+        var closest = sorted.get(0);
+        var secondClosest = sorted.get(1);
+
+    // if (Math.abs(baseUnwrappedGoal - currentRawAngle)
+    //     < Math.abs(altUnwrappedGoal - currentRawAngle)) {
+    //   smallGoal = baseUnwrappedGoal;
+    //   if (Math.abs(altUnwrappedGoal - currentRawAngle)
+    //       < Math.abs(secondAltGoal - currentRawAngle)) {
+    //     otherSmallGoal = altUnwrappedGoal;
+    //   }
+    //   {
+    //     otherSmallGoal = secondAltGoal;
+    //   }
+    // } else {
+    //   smallGoal = altUnwrappedGoal;
+    //   if (Math.abs(baseUnwrappedGoal - currentRawAngle)
+    //       < Math.abs(secondAltGoal - currentRawAngle)) {
+    //     otherSmallGoal = baseUnwrappedGoal;
+    //   } else {
+    //     otherSmallGoal = secondAltGoal;
+    //   }
+    // }
 
     // System.out.println("1="+baseUnwrappedGoal);
     // System.out.println("2="+altUnwrappedGoal);
     // System.out.println("3="+otherSmallGoal);
 
     // Return both — determine which is CW/CCW externally if needed
-    return new double[] {smallGoal, otherSmallGoal};
+    return new double[] {closest, secondClosest};
   }
 
   public static double getCollisionAvoidanceAngleGoal(

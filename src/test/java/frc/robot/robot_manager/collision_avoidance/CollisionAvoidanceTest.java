@@ -101,6 +101,7 @@ public class CollisionAvoidanceTest {
 
   //   assertEquals(expected, result);
   // }
+
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
     double goalAngle = -90.0;
@@ -115,6 +116,36 @@ public class CollisionAvoidanceTest {
             goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
 
     double expected = -90.0;
+
+    assertEquals(expected, result);
+  }
+  @Test
+  public void solutionsTest() {
+    var normalizedGoalAngle = 160;
+    var currentRawAngle = 269.0;
+    var result =
+        List.of(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(currentRawAngle, normalizedGoalAngle)[
+                0],
+            CollisionAvoidance.getCollisionAvoidanceSolutions(currentRawAngle, normalizedGoalAngle)[
+                1]);
+    var expected = List.of(160.0, 520.0);
+    assertEquals(expected, result);
+  }
+  @Test
+  public void armSetCollisionAvoidanceGoalTestL3Lineup() {
+    double goalAngle = 160.0;
+    boolean climberRisky = false;
+    double currentAngle = 269.0;
+    ObstructionKind obstructionKind = ObstructionKind.LEFT_OBSTRUCTED;
+    ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
+    ObstructionStrategy rightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
+
+    double result =
+        CollisionAvoidance.getCollisionAvoidanceAngleGoal(
+            goalAngle, climberRisky, obstructionKind, leftStrategy, rightStrategy, currentAngle);
+
+    double expected = 520.0;
 
     assertEquals(expected, result);
   }
