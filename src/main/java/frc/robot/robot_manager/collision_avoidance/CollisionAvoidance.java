@@ -12,7 +12,6 @@ import frc.robot.arm.ArmState;
 import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import frc.robot.util.MathHelpers;
-
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;

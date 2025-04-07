@@ -40,7 +40,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
 
     // Calculate the number of full rotations in the current angle
-    int fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
+    var fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
 
     // Calculate base angle (same rotation as current)
     double baseAngle = fullRotations * 360.0;
@@ -69,7 +69,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
 
     // Calculate the number of full rotations in the current angle
-    int fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
+    var fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
 
     // Calculate base angle (same rotation as current)
     double baseAngle = fullRotations * 360.0;
