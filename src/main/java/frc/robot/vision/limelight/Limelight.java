@@ -37,6 +37,7 @@ public class Limelight extends StateMachine<LimelightState> {
 
   private double lastTimestamp = 0.0;
 
+  private Optional<TagResult> lastGoodTagResult = Optional.empty();
   private Optional<TagResult> tagResult = Optional.empty();
 
   private Optional<GamePieceResult> coralResult = Optional.empty();
@@ -199,6 +200,9 @@ public class Limelight extends StateMachine<LimelightState> {
   @Override
   protected void collectInputs() {
     tagResult = getTagResult();
+    if (tagResult.isPresent()) {
+      lastGoodTagResult = tagResult;
+    }
     coralResult = getRawCoralResult();
     algaeResult = getRawAlgaeResult();
   }
@@ -207,6 +211,13 @@ public class Limelight extends StateMachine<LimelightState> {
   public void robotPeriodic() {
     super.robotPeriodic();
     DogLog.log("Vision/" + name + "/State", getState());
+
+    var lastTagTimestamp = lastGoodTagResult.map(TagResult::timestamp).orElse(Double.MIN_VALUE);
+
+    if (Timer.getTimestamp() - lastTagTimestamp > 30) {
+      DogLog.logFault("Vision/" + name + "/HasNotSeenTagFor30Secoonds");
+    }
+
     LimelightHelpers.setPipelineIndex(limelightTableName, getState().pipelineIndex);
     switch (getState()) {
       case TAGS -> {
