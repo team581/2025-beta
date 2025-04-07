@@ -153,10 +153,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   private double getRawAngleFromNormalAngle(double angle) {
-    double solution1 =
-        CollisionAvoidance.getCollisionAvoidanceSolutions(rawMotorAngle, angle)[0];
-    double solution2 =
-        CollisionAvoidance.getCollisionAvoidanceSolutions(rawMotorAngle, angle)[1];
+    double solution1 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawMotorAngle, angle)[0];
+    double solution2 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawMotorAngle, angle)[1];
 
     if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
       return solution1;
@@ -166,10 +164,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   public static double getRawAngleFromNormalAngleTest(double angle, double rawAngle) {
-    double solution1 =
-        CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[0];
-    double solution2 =
-        CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[1];
+    double solution1 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[0];
+    double solution2 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[1];
 
     if (Math.abs(solution2 - rawAngle) > Math.abs(solution1 - rawAngle)) {
       return solution1;
