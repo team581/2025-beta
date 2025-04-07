@@ -9,9 +9,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.arm.ArmState;
-import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
-import frc.robot.util.MathHelpers;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -42,7 +40,7 @@ public class CollisionAvoidance {
   private static ObstructionStrategy lastLeftStrategy = ObstructionStrategy.IGNORE_BLOCKED;
   private static ObstructionStrategy lastRightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
   private static Waypoint lastWaypoint = Waypoint.ELEVATOR_0_ARM_UP;
-  private static Waypoint lastPreviousWaypoint = Waypoint.ELEVATOR_0_ARM_UP;
+  private static final Waypoint lastPreviousWaypoint = Waypoint.ELEVATOR_0_ARM_UP;
 
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
 
@@ -193,13 +191,15 @@ public class CollisionAvoidance {
     return Optional.of(currentWaypoint);
   }
 
-  public static double getShortSolution(double solution1, double solution2, double currentRawMotorAngle){
+  public static double getShortSolution(
+      double solution1, double solution2, double currentRawMotorAngle) {
     if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
-return solution1;
+      return solution1;
     } else {
-return solution2;
+      return solution2;
     }
   }
+
   public static double[] hectorsVersionGetCollisionAvoidanceGoal(
       double currentRawAngle, double normalizedGoalAngle) {
     // var normalizedCurrent = MathHelpers.angleModulus(currentRawAngle);
@@ -217,38 +217,39 @@ return solution2;
     // }
     // return new double[] {expected1, expected2};
 
-
     // Find the closest lower multiple of 360 so that the unwrapped angle is near current
     double smallGoal;
     double otherSmallGoal;
-    int n = (int)currentRawAngle / 360;
+    int n = (int) currentRawAngle / 360;
     double baseUnwrappedGoal = normalizedGoalAngle + 360 * n;
     double altUnwrappedGoal = baseUnwrappedGoal + 360;
-    double secondAltGoal = baseUnwrappedGoal-360;
-    if(Math.abs(baseUnwrappedGoal-currentRawAngle)< Math.abs(altUnwrappedGoal-currentRawAngle)){
- smallGoal = baseUnwrappedGoal;
- if(Math.abs(altUnwrappedGoal-currentRawAngle)<Math.abs(secondAltGoal-currentRawAngle)){
-  otherSmallGoal = altUnwrappedGoal;
- }{
-  otherSmallGoal = secondAltGoal;
- }
-    }
-    else{
-smallGoal = altUnwrappedGoal;
-if(Math.abs(baseUnwrappedGoal-currentRawAngle)<Math.abs(secondAltGoal-currentRawAngle)){
-  otherSmallGoal = baseUnwrappedGoal;
- }else{
-  otherSmallGoal = secondAltGoal;
- }
+    double secondAltGoal = baseUnwrappedGoal - 360;
+    if (Math.abs(baseUnwrappedGoal - currentRawAngle)
+        < Math.abs(altUnwrappedGoal - currentRawAngle)) {
+      smallGoal = baseUnwrappedGoal;
+      if (Math.abs(altUnwrappedGoal - currentRawAngle)
+          < Math.abs(secondAltGoal - currentRawAngle)) {
+        otherSmallGoal = altUnwrappedGoal;
+      }
+      {
+        otherSmallGoal = secondAltGoal;
+      }
+    } else {
+      smallGoal = altUnwrappedGoal;
+      if (Math.abs(baseUnwrappedGoal - currentRawAngle)
+          < Math.abs(secondAltGoal - currentRawAngle)) {
+        otherSmallGoal = baseUnwrappedGoal;
+      } else {
+        otherSmallGoal = secondAltGoal;
+      }
     }
 
     // System.out.println("1="+baseUnwrappedGoal);
     // System.out.println("2="+altUnwrappedGoal);
     // System.out.println("3="+otherSmallGoal);
 
-
     // Return both — determine which is CW/CCW externally if needed
-    return new double[] { smallGoal, otherSmallGoal};
+    return new double[] {smallGoal, otherSmallGoal};
   }
 
   public static double getCollisionAvoidanceAngleGoal(
@@ -306,25 +307,24 @@ if(Math.abs(baseUnwrappedGoal-currentRawAngle)<Math.abs(secondAltGoal-currentRaw
         shortSolution = solution2;
         longSolution = solution1;
       }
-      System.out.println("short="+shortSolution);
-    System.out.println("long="+longSolution);
+      System.out.println("short=" + shortSolution);
+      System.out.println("long=" + longSolution);
 
-
-          return switch (currentObstructionKind) {
-            case LEFT_OBSTRUCTED ->
-                switch (leftObstructionStrategy) {
-                  case IGNORE_BLOCKED -> shortSolution;
-                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                  case LONG_WAY_IF_BLOCKED -> longSolution;
-                };
-            case RIGHT_OBSTRUCTED ->
-                switch (rightObstructionStrategy) {
-                  case IGNORE_BLOCKED -> shortSolution;
-                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                  case LONG_WAY_IF_BLOCKED -> longSolution;
-                };
-            default -> shortSolution;
-          };
+      return switch (currentObstructionKind) {
+        case LEFT_OBSTRUCTED ->
+            switch (leftObstructionStrategy) {
+              case IGNORE_BLOCKED -> shortSolution;
+              case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+              case LONG_WAY_IF_BLOCKED -> longSolution;
+            };
+        case RIGHT_OBSTRUCTED ->
+            switch (rightObstructionStrategy) {
+              case IGNORE_BLOCKED -> shortSolution;
+              case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+              case LONG_WAY_IF_BLOCKED -> longSolution;
+            };
+        default -> shortSolution;
+      };
     }
 
     // System.out.println("1 = "+solution1);

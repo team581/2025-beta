@@ -64,6 +64,7 @@ public class ArmTest {
 
     assertEquals(180, result);
   }
+
   @Test
   void getRawAngleFromNormalAngleTest() {
     var goalAngle = -90;
@@ -73,6 +74,7 @@ public class ArmTest {
 
     assertEquals(-450, result);
   }
+
   @Test
   void getRawAngleFromNormalAngleTest2() {
     var goalAngle = -90;
@@ -82,6 +84,7 @@ public class ArmTest {
 
     assertEquals(270, result);
   }
+
   @Test
   void getRawAngleFromNormalAngleTest3() {
     var goalAngle = -90;
@@ -91,6 +94,7 @@ public class ArmTest {
 
     assertEquals(-90, result);
   }
+
   @Test
   void getRawAngleFromNormalAngleTest4() {
     var goalAngle = -90;
@@ -99,7 +103,9 @@ public class ArmTest {
     var result = ArmSubsystem.getRawAngleFromNormalAngleTest(goalAngle, rawAngle);
 
     assertEquals(-90, result);
-  } @Test
+  }
+
+  @Test
   void getRawAngleFromNormalAngleTest5() {
     var goalAngle = -90;
     var rawAngle = -179;

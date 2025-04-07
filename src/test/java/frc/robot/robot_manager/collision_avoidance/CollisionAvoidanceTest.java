@@ -37,7 +37,6 @@ public class CollisionAvoidanceTest {
     assertEquals(expected, result);
   }
 
-
   @Test
   public void hectorTest4() {
     var normalizedGoalAngle = -90;
@@ -48,9 +47,10 @@ public class CollisionAvoidanceTest {
                 currentRawAngle, normalizedGoalAngle)[0],
             CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
                 currentRawAngle, normalizedGoalAngle)[1]);
-    var expected = List.of( -90.0,-450.0);
+    var expected = List.of(-90.0, -450.0);
     assertEquals(expected, result);
   }
+
   @Test
   public void hectorTest5() {
     var normalizedGoalAngle = -90;
@@ -61,9 +61,10 @@ public class CollisionAvoidanceTest {
                 currentRawAngle, normalizedGoalAngle)[0],
             CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
                 currentRawAngle, normalizedGoalAngle)[1]);
-    var expected = List.of( 270.0,-90.0);
+    var expected = List.of(270.0, -90.0);
     assertEquals(expected, result);
   }
+
   @Test
   public void hectorTest6() {
     var normalizedGoalAngle = -90;
@@ -74,7 +75,7 @@ public class CollisionAvoidanceTest {
                 currentRawAngle, normalizedGoalAngle)[0],
             CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
                 currentRawAngle, normalizedGoalAngle)[1]);
-    var expected = List.of( -90.0,-450.0);
+    var expected = List.of(-90.0, -450.0);
     assertEquals(expected, result);
   }
 
@@ -137,7 +138,7 @@ public class CollisionAvoidanceTest {
   }
 
   @Test
-  public void swingsaroundtwicewhenstowing() {//TODO: make this pass
+  public void swingsaroundtwicewhenstowing() { // TODO: make this pass
     double goalAngle = -90.0;
     boolean climberRisky = false;
     double currentAngle = -147.7;
@@ -153,8 +154,9 @@ public class CollisionAvoidanceTest {
 
     assertEquals(expected, result);
   }
+
   @Test
-  public void swingsaroundtwicewhenstowin324g() {//TODO: make this pass
+  public void swingsaroundtwicewhenstowin324g() { // TODO: make this pass
     double goalAngle = -90.0;
     boolean climberRisky = false;
     double currentAngle = 147.7;

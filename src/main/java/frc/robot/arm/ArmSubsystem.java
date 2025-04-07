@@ -154,23 +154,28 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   private double getRawAngleFromNormalAngle(double angle) {
-    double solution1 = CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[0];
-    double solution2 = CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[1];
+    double solution1 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[0];
+    double solution2 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[1];
 
     if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
-        return solution1;
+      return solution1;
     } else {
-        return solution2;
+      return solution2;
     }
   }
+
   public static double getRawAngleFromNormalAngleTest(double angle, double rawAngle) {
-    double solution1 = CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawAngle, angle)[0];
-    double solution2 = CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawAngle, angle)[1];
+    double solution1 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawAngle, angle)[0];
+    double solution2 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawAngle, angle)[1];
 
     if (Math.abs(solution2 - rawAngle) > Math.abs(solution1 - rawAngle)) {
-        return solution1;
+      return solution1;
     } else {
-        return solution2;
+      return solution2;
     }
   }
 
@@ -227,7 +232,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
         motor.setControl(
             motionMagicRequest.withPosition(
                 Units.degreesToRotations(getRawAngleFromNormalAngle(newState.getAngle()))));
-                DogLog.log("Arm/defaultSetPosition", getRawAngleFromNormalAngle(newState.getAngle()));
+        DogLog.log("Arm/defaultSetPosition", getRawAngleFromNormalAngle(newState.getAngle()));
       }
     }
   }
@@ -247,8 +252,9 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       switch (getState()) {
         case CORAL_HANDOFF -> {
           motor.setControl(
-              motionMagicRequest.withPosition(Units.degreesToRotations(getRawAngleFromNormalAngle(usedHandoffAngle))));
-              DogLog.log("ArmCoralHandoffSetPostion", getRawAngleFromNormalAngle(usedHandoffAngle));
+              motionMagicRequest.withPosition(
+                  Units.degreesToRotations(getRawAngleFromNormalAngle(usedHandoffAngle))));
+          DogLog.log("ArmCoralHandoffSetPostion", getRawAngleFromNormalAngle(usedHandoffAngle));
         }
         default -> {}
       }
