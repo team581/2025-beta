@@ -24,8 +24,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class CollisionAvoidance {
-  private static final double ELEVATOR_TOLERANCE = 25.0;
-  private static final double ARM_TOLERANCE = 20.0;
+  private static final double ELEVATOR_TOLERANCE = 10.0;
+  private static final double ARM_TOLERANCE = 10.0;
   private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
 
   private static final ImmutableValueGraph<Waypoint, WaypointEdge> graph = createGraph();
@@ -557,24 +557,6 @@ public class CollisionAvoidance {
         Waypoint.L3_RIGHT_LINEUP,
         Waypoint.L4_RIGHT_LINEUP);
 
-    // /* Finish score, go back to handoff, depends a lot on obstructions */
-    // // TODO: Make sure we can stow to HANDOFF_CLEARS_CLIMBER from each place position
-    // Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(
-    //     graph,Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
-    // Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(
-    //     graph,Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_RIGHT_PLACE);
-
-    // /* Place to reef algae intake */
-    // Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(
-    //     graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
-    // Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(
-    //     graph, Waypoint.L2_LEFT_PLACE, Waypoint.L3_LEFT_PLACE, Waypoint.L4_LEFT_PLACE);
-
-    // Waypoint.REEF_ALGAE_L2_RIGHT.alwaysSafe(
-    //     graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
-    // Waypoint.REEF_ALGAE_L3_RIGHT.alwaysSafe(
-    //     graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
-
     // L1 movements
     var l1AreaWaypoints =
         List.of(
@@ -592,8 +574,11 @@ public class CollisionAvoidance {
       }
     }
 
-    // Ground algae movement
+    // From Right down side to stow
     Waypoint.GROUND_ALGAE_INTAKE.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
+    Waypoint.LOLLIPOP_INTAKE_RIGHT.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
+
+
 
     // Create an immutable copy of the graph now that we've added all the nodes
     var immutableGraph = ImmutableValueGraph.copyOf(graph);
