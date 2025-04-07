@@ -136,7 +136,6 @@ public class CollisionAvoidance {
     var closestToCurrent = Waypoint.getClosest(currentPosition);
     var closestToDesired = Waypoint.getClosest(desiredPosition);
 
-
     if (DriverStation.isDisabled()) {
       return Optional.empty();
     }
@@ -147,9 +146,7 @@ public class CollisionAvoidance {
     // Check if the desired position and obstruction is the same, then use the same path
     if (!lastQuery.goalWaypoint().equals(closestToDesired)
         || !lastQuery.obstructionKind().equals(obstructionKind)) {
-      lastQuery =
-          new CollisionAvoidanceQuery(
-              closestToCurrent, closestToDesired, obstructionKind);
+      lastQuery = new CollisionAvoidanceQuery(closestToCurrent, closestToDesired, obstructionKind);
 
       var maybePath = cachedAStar(lastQuery).map(ArrayDeque::new);
       if (maybePath.isPresent()) {
