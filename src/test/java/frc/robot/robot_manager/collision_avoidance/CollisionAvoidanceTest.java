@@ -375,7 +375,8 @@ public class CollisionAvoidanceTest {
     var result =
         CollisionAvoidance.aStar(
             new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
+            new SuperstructurePosition(
+                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
             ObstructionKind.NONE);
     var expected =
         List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_ARM_OUT_RIGHT, Waypoint.REEF_ALGAE_L2_RIGHT);
@@ -388,13 +389,12 @@ public class CollisionAvoidanceTest {
     var result =
         CollisionAvoidance.aStar(
             new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
+            new SuperstructurePosition(
+                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
             ObstructionKind.NONE);
     var expected =
         List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_ARM_OUT_LEFT, Waypoint.REEF_ALGAE_L2_LEFT);
 
     assertEquals(expected, result.orElseThrow());
   }
-
-
 }
