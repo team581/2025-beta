@@ -426,7 +426,7 @@ public class CollisionAvoidance {
     }
 
     // TODO: Need to see if it's actually safe to do this all in one move
-    Waypoint.HANDOFF.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
+    // Waypoint.HANDOFF.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     // TODO: Previously this had ALGAE_NET_UP.avoidClimberAlwaysSafe(HANDOFF_CLEARS_CLIMBER), seems
     // like that bonks the net?
@@ -557,6 +557,13 @@ public class CollisionAvoidance {
         Waypoint.L2_RIGHT_LINEUP,
         Waypoint.L3_RIGHT_LINEUP,
         Waypoint.L4_RIGHT_LINEUP);
+
+    Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
+        graph,
+        Waypoint.REEF_ALGAE_L2_LEFT,
+        Waypoint.REEF_ALGAE_L3_LEFT,
+        Waypoint.REEF_ALGAE_L2_RIGHT,
+        Waypoint.REEF_ALGAE_L3_RIGHT);
 
     // L1 movements
     var l1AreaWaypoints =

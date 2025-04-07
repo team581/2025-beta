@@ -369,4 +369,19 @@ public class CollisionAvoidanceTest {
 
     assertEquals(expected, result.orElseThrow());
   }
+
+  @Test
+  void handoffToL2ReefAlgae() {
+    var result =
+        CollisionAvoidance.aStar(
+            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+            new SuperstructurePosition(
+                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
+            ObstructionKind.NONE);
+
+    var expected =
+        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.REEF_ALGAE_L2_LEFT);
+
+    assertEquals(expected, result.orElseThrow());
+  }
 }
