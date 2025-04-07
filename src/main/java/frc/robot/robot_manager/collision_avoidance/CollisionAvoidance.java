@@ -133,20 +133,23 @@ public class CollisionAvoidance {
       ObstructionKind obstructionKind) {
     DogLog.log("CollisionAvoidance/ClawPos", currentPosition.getTranslation());
 
+    var closestToCurrent = Waypoint.getClosest(currentPosition);
+    var closestToDesired = Waypoint.getClosest(desiredPosition);
+
+
     if (DriverStation.isDisabled()) {
       return Optional.empty();
     }
-    if (Waypoint.getClosest(currentPosition) == Waypoint.getClosest(desiredPosition)) {
+    if (closestToCurrent == closestToDesired) {
       return Optional.empty();
     }
-    DogLog.log("CollisionAvoidance/DesiredWaypoint", Waypoint.getClosest(desiredPosition));
+    DogLog.log("CollisionAvoidance/DesiredWaypoint", closestToDesired);
     // Check if the desired position and obstruction is the same, then use the same path
-    if (!lastQuery.goalWaypoint().equals(Waypoint.getClosest(desiredPosition))
+    if (!lastQuery.goalWaypoint().equals(closestToDesired)
         || !lastQuery.obstructionKind().equals(obstructionKind)) {
-      var currentWaypoint = Waypoint.getClosest(currentPosition);
       lastQuery =
           new CollisionAvoidanceQuery(
-              currentWaypoint, Waypoint.getClosest(desiredPosition), obstructionKind);
+              closestToCurrent, closestToDesired, obstructionKind);
 
       var maybePath = cachedAStar(lastQuery).map(ArrayDeque::new);
       if (maybePath.isPresent()) {
@@ -167,7 +170,7 @@ public class CollisionAvoidance {
         currentWaypoint.position.elevatorHeight());
     DogLog.log("CollisionAvoidance/CurrentWaypoint/ArmAngle", currentWaypoint.position.armAngle());
     DogLog.log("CollisionAvoidance/CurrentWaypoint", currentWaypoint);
-    DogLog.log("CollisionAvoidance/ClosestWaypoint", Waypoint.getClosest(currentPosition));
+    DogLog.log("CollisionAvoidance/ClosestWaypoint", closestToCurrent);
     DogLog.log("CollisionAvoidance/AstarPath", lastPath.toArray(Waypoint[]::new));
 
     DogLog.log(
@@ -266,8 +269,9 @@ public class CollisionAvoidance {
       ObstructionStrategy leftObstructionStrategy,
       ObstructionStrategy rightObstructionStrategy,
       double currentRawMotorAngle) {
-    double solution1 = getCollisionAvoidanceSolutions(currentRawMotorAngle, angle)[0];
-    double solution2 = getCollisionAvoidanceSolutions(currentRawMotorAngle, angle)[1];
+    double[] solutions = getCollisionAvoidanceSolutions(currentRawMotorAngle, angle);
+    double solution1 = solutions[0];
+    double solution2 = solutions[1];
     // System.out.println("1="+solution1);
     // System.out.println("2="+solution2);
 
@@ -609,14 +613,14 @@ public class CollisionAvoidance {
       SuperstructurePosition currentPosition,
       SuperstructurePosition desiredPosition,
       ObstructionKind obstructionKind) {
-    var openSet = EnumSet.of(Waypoint.getClosest(currentPosition));
+    var startWaypoint = Waypoint.getClosest(currentPosition);
+    var goalWaypoint = Waypoint.getClosest(desiredPosition);
+    var openSet = EnumSet.of(startWaypoint);
 
     Map<Waypoint, Waypoint> cameFrom = new EnumMap<Waypoint, Waypoint>(Waypoint.class);
 
     Map<Waypoint, Double> gscore = new EnumMap<Waypoint, Double>(Waypoint.class);
 
-    Waypoint startWaypoint = Waypoint.getClosest(currentPosition);
-    Waypoint goalWaypoint = Waypoint.getClosest(desiredPosition);
     if (startWaypoint.equals(goalWaypoint)) {
       DogLog.timestamp("CollisionAvoidance/StartAndEndSame");
       return Optional.empty();
@@ -656,7 +660,7 @@ public class CollisionAvoidance {
       }
     }
     DogLog.logFault("Collision avoidance path not possible", AlertType.kWarning);
-    return Optional.of(ImmutableList.of(Waypoint.getClosest(currentPosition)));
+    return Optional.of(ImmutableList.of(startWaypoint));
   }
 
   /** Don't use this. */
