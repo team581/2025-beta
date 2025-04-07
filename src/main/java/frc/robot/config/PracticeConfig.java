@@ -48,8 +48,8 @@ class PracticeConfig {
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimit(60)
-                          .withStatorCurrentLimit(60))
+                          .withSupplyCurrentLimit(80)
+                          .withStatorCurrentLimit(80))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
@@ -72,8 +72,8 @@ class PracticeConfig {
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimit(60)
-                          .withStatorCurrentLimit(60))
+                          .withSupplyCurrentLimit(80)
+                          .withStatorCurrentLimit(80))
                   .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
                   .withSlot0(
                       new Slot0Configs()
@@ -102,8 +102,8 @@ class PracticeConfig {
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(90)
-                          .withSupplyCurrentLimit(90))
+                          .withStatorCurrentLimit(150)
+                          .withSupplyCurrentLimit(150))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
@@ -129,7 +129,7 @@ class PracticeConfig {
           new SwerveConfig(new PhoenixPIDController(5.75, 0, 0), true, true, true),
           new VisionConfig(
               0.005,
-              0.8,
+              Double.MAX_VALUE,
               // Translation: Positive X = Forward, Positive Y = Left, Positive Z = Up
               // Rotation: Positive X = Roll Right, Positive Y = Pitch Down, Positive Z = Yaw Left
 
@@ -211,8 +211,8 @@ class PracticeConfig {
                           .withSensorToMechanismRatio((64.0 / 8.0) * (90.0 / 10.0)))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimit(60.0)
-                          .withStatorCurrentLimit(60.0))
+                          .withSupplyCurrentLimit(80.0)
+                          .withStatorCurrentLimit(80.0))
                   .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(false)),
               -10.98,
               6.615),

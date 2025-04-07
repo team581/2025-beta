@@ -125,4 +125,9 @@ public class RobotCommands {
     return Commands.runOnce(robot::algaeFlingRequest, rmRequirements)
         .withName("WaitAlgaeFlingCommand");
   }
+
+  public Command endgameStowCommand() {
+    return Commands.runOnce(robot::endgameStowRequest, rmRequirements)
+        .withName("EndgameStowCommand");
+  }
 }

@@ -78,7 +78,7 @@ public class FieldCalibrationUtil {
     var actualElevator = elevator.getHeight();
     var actualArm = arm.getAngle();
 
-    var wantedElevator = branchToElevator(level, position.side());
+    var wantedElevator = branchToElevator(level);
     var wantedArm = branchToArm(level, position.side());
 
     var wantedPose = position.getPose(level);
@@ -88,20 +88,11 @@ public class FieldCalibrationUtil {
         wantedElevator, actualElevator, wantedArm, actualArm, wantedPose, actualPose);
   }
 
-  private static ElevatorState branchToElevator(ReefPipeLevel level, RobotScoringSide side) {
+  private static ElevatorState branchToElevator(ReefPipeLevel level) {
     return switch (level) {
-      case L2 ->
-          side == RobotScoringSide.LEFT
-              ? ElevatorState.CORAL_SCORE_LEFT_LINEUP_L2
-              : ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L2;
-      case L3 ->
-          side == RobotScoringSide.LEFT
-              ? ElevatorState.CORAL_SCORE_LEFT_LINEUP_L3
-              : ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L3;
-      case L4 ->
-          side == RobotScoringSide.LEFT
-              ? ElevatorState.CORAL_SCORE_LEFT_LINEUP_L4
-              : ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4;
+      case L2 -> ElevatorState.CORAL_SCORE_LINEUP_L2;
+      case L3 -> ElevatorState.CORAL_SCORE_LINEUP_L3;
+      case L4 -> ElevatorState.CORAL_SCORE_LINEUP_L4;
       default -> ElevatorState.UNTUNED;
     };
   }

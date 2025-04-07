@@ -13,7 +13,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -41,7 +40,7 @@ class CompConfig {
 
   public static final RobotConfig competitionBot =
       new RobotConfig(
-          "competition",
+          "comp",
           new ElevatorConfig(
               CANIVORE_NAME,
               15,
@@ -49,47 +48,44 @@ class CompConfig {
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(60)
-                          .withSupplyCurrentLimit(40))
+                          .withSupplyCurrentLimit(60)
+                          .withStatorCurrentLimit(60))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
                           .withNeutralMode(NeutralModeValue.Brake))
                   .withSlot0(
                       new Slot0Configs()
-                          .withKP(0.0)
+                          .withKP(30.0)
+                          .withKD(0.0)
                           .withKV(0)
-                          .withKG(0.0)
+                          .withKG(0.8)
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(0.0)
-                          .withMotionMagicCruiseVelocity(0.0))
+                          .withMotionMagicAcceleration(240.0)
+                          .withMotionMagicCruiseVelocity(240.0))
                   .withFeedback(
                       new FeedbackConfigs()
-                          // Sensor to mechanism ratio is the gear ratio multiplied by the sprocket
-                          // circumfrence
                           .withSensorToMechanismRatio(
                               1.0 / ((8.0 / 40.0) * (2.0 / 1.0) * (Math.PI * 1.274)))),
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(60)
-                          .withSupplyCurrentLimit(40))
-                  .withMotorOutput(
-                      new MotorOutputConfigs()
-                          .withInverted(InvertedValue.CounterClockwise_Positive)
-                          .withNeutralMode(NeutralModeValue.Brake))
+                          .withSupplyCurrentLimit(60)
+                          .withStatorCurrentLimit(60))
+                  .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
                   .withSlot0(
                       new Slot0Configs()
-                          .withKP(0.0)
+                          .withKP(30.0)
+                          .withKD(0.0)
                           .withKV(0)
-                          .withKG(0.0)
+                          .withKG(0.8)
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(0)
-                          .withMotionMagicCruiseVelocity(0.0))
+                          .withMotionMagicAcceleration(240.0)
+                          .withMotionMagicCruiseVelocity(240.0))
                   .withFeedback(
                       new FeedbackConfigs()
                           .withSensorToMechanismRatio(
@@ -97,25 +93,21 @@ class CompConfig {
               0,
               25,
               0,
-              62.0),
+              61.5),
           new IntakeConfig(
               CANIVORE_NAME,
               25,
               26,
-              new Debouncer(0.1, DebounceType.kBoth),
+              new Debouncer(0.3, DebounceType.kBoth),
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(15)
-                          .withSupplyCurrentLimit(20))
+                          .withStatorCurrentLimit(150)
+                          .withSupplyCurrentLimit(150))
                   .withMotorOutput(
                       new MotorOutputConfigs()
-                          .withInverted(InvertedValue.CounterClockwise_Positive)
-                          .withNeutralMode(NeutralModeValue.Coast))
-                  .withTorqueCurrent(
-                      new TorqueCurrentConfigs()
-                          .withPeakForwardTorqueCurrent(70.0)
-                          .withPeakReverseTorqueCurrent(70.0))),
+                          .withInverted(InvertedValue.Clockwise_Positive)
+                          .withNeutralMode(NeutralModeValue.Coast))),
           new ClawConfig(
               RIO_CAN_NAME,
               18,
@@ -124,20 +116,20 @@ class CompConfig {
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimit(80)
-                          .withSupplyCurrentLimit(80))
+                          .withStatorCurrentLimit(90.0)
+                          .withSupplyCurrentLimit(58.1))
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withInverted(InvertedValue.Clockwise_Positive)
                           .withNeutralMode(NeutralModeValue.Coast))
                   .withTorqueCurrent(
                       new TorqueCurrentConfigs()
-                          .withPeakForwardTorqueCurrent(80.0)
-                          .withPeakReverseTorqueCurrent(80.0))),
+                          .withPeakForwardTorqueCurrent(70.0)
+                          .withPeakReverseTorqueCurrent(70.0))),
           new SwerveConfig(new PhoenixPIDController(5.75, 0, 0), true, true, true),
           new VisionConfig(
-              0.05,
-              0.1,
+              0.005,
+              0.8,
               // Translation: Positive X = Forward, Positive Y = Left, Positive Z = Up
               // Rotation: Positive X = Roll Right, Positive Y = Pitch Down, Positive Z = Yaw Left
 
@@ -202,35 +194,27 @@ class CompConfig {
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withNeutralMode(NeutralModeValue.Brake)
-                          .withInverted(InvertedValue.Clockwise_Positive))
+                          .withInverted(InvertedValue.CounterClockwise_Positive))
                   .withSlot0(
                       new Slot0Configs()
-                          .withKP(0.0)
+                          .withKP(150.0)
                           .withKV(0.0)
-                          .withKD(0.0)
-                          .withKG(0.0)
+                          .withKD(7.0)
+                          .withKG(0.50)
                           .withGravityType(GravityTypeValue.Arm_Cosine))
-                  // .withMotionMagic(
-                  //     new MotionMagicConfigs()
-                  //         .withMotionMagicAcceleration(10.0)
-                  //         .withMotionMagicCruiseVelocity(150.0 / 7.0))
-                  // TODO: once cancoder is wired fix ID and ratio
+                  .withMotionMagic(
+                      new MotionMagicConfigs()
+                          .withMotionMagicAcceleration(3.0)
+                          .withMotionMagicCruiseVelocity(3.0))
                   .withFeedback(
                       new FeedbackConfigs()
-                          .withSensorToMechanismRatio((64.0 / 8.0) * (90.0 / 10.0))
-                          .withFusedCANcoder(new CANcoder(999))
-                          .withRotorToSensorRatio((64.0 / 8.0) * (90.0 / 10.0)))
+                          .withSensorToMechanismRatio((64.0 / 8.0) * (90.0 / 10.0)))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withSupplyCurrentLimitEnable(true)
-                          .withStatorCurrentLimitEnable(true)
-                          .withSupplyCurrentLimit(30.0)
+                          .withSupplyCurrentLimit(60.0)
                           .withStatorCurrentLimit(60.0))
-                  .withClosedLoopGeneral(
-                      new ClosedLoopGeneralConfigs()
-                          .withContinuousWrap(
-                              false)), // TODO:Change back to true if we dont want it on comp bot
-              0.0,
+                  .withClosedLoopGeneral(new ClosedLoopGeneralConfigs().withContinuousWrap(false)),
+              -12.568359375,
               6.615),
           new DeployConfig(
               CANIVORE_NAME,
@@ -242,23 +226,23 @@ class CompConfig {
                   .withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(0.0)
-                          .withMotionMagicCruiseVelocity(0.0))
+                          .withMotionMagicAcceleration(0.5)
+                          .withMotionMagicCruiseVelocity(0.5))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
                           .withStatorCurrentLimit(60)
                           .withStatorCurrentLimit(60))
                   .withSlot0(
                       new Slot0Configs()
-                          .withKP(0.0)
+                          .withKP(200.0)
                           .withKV(0.0)
                           .withKG(0.0)
                           .withGravityType(GravityTypeValue.Arm_Cosine)),
-              0.0,
-              581,
-              0.0,
-              0.0,
-              0.0), // TODO: get these numbers
+              -34.0,
+              120.673828125,
+              3,
+              20,
+              120.673828125),
           new ClimberConfig(
               CANIVORE_NAME,
               21,
@@ -266,33 +250,32 @@ class CompConfig {
               23,
               24,
               -55.0,
-              100.0,
+              215.0,
               new TalonFXConfiguration()
                   .withMotorOutput(
                       new MotorOutputConfigs()
                           .withNeutralMode(NeutralModeValue.Brake)
+                          .withInverted(InvertedValue.Clockwise_Positive)
                           .withPeakReverseDutyCycle(0))
                   .withVoltage(new VoltageConfigs().withPeakReverseVoltage(0))
                   .withFeedback(new FeedbackConfigs().withSensorToMechanismRatio(75.0))
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimitEnable(true)
-                          .withStatorCurrentLimit(60)
-                          .withSupplyCurrentLimitEnable(true)
-                          .withSupplyCurrentLimit(60)),
+                          .withStatorCurrentLimit(100)
+                          .withSupplyCurrentLimit(100)),
               new CANcoderConfiguration()
                   .withMagnetSensor(
                       new MagnetSensorConfigs()
-                          .withMagnetOffset(-0.444580078125)
+                          .withMagnetOffset(-0.44921875)
                           .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
                           .withAbsoluteSensorDiscontinuityPoint(0.5)),
               new TalonFXConfiguration()
                   .withCurrentLimits(
                       new CurrentLimitsConfigs()
-                          .withStatorCurrentLimitEnable(true)
                           .withStatorCurrentLimit(35)
-                          .withSupplyCurrentLimitEnable(true)
-                          .withSupplyCurrentLimit(35)),
+                          .withSupplyCurrentLimit(35))
+                  .withMotorOutput(
+                      new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)),
               new CANrangeConfiguration()
                   .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(0.06))),
           new LightsConfig(CANIVORE_NAME, 17));

@@ -71,7 +71,7 @@ public class ClawSubsystem extends StateMachine<ClawState> {
         motor.setVoltage(-6);
       }
       case LOLLIPOP_CORAL_INTAKE -> {
-        motor.setVoltage(8);
+        motor.setVoltage(12);
       }
     }
   }

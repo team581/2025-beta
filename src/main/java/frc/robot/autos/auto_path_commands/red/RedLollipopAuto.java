@@ -21,7 +21,7 @@ public class RedLollipopAuto extends BaseAuto {
 
   @Override
   protected Pose2d getStartingPose() {
-    return Points.START_R1_AND_B1_FORWARD.redPose;
+    return Points.START_R1_AND_B1.redPose;
   }
 
   @Override
@@ -30,20 +30,20 @@ public class RedLollipopAuto extends BaseAuto {
         blocks.startingPath(
             getStartingPose(),
             new AutoSegment(
-                new AutoPoint(new Pose2d(10.289, 0.758, Rotation2d.fromDegrees(0.0))),
-                new AutoPoint(new Pose2d(12.242, 1.278, Rotation2d.fromDegrees(30))),
+                new AutoPoint(new Pose2d(10.289, 0.758, Rotation2d.fromDegrees(90.0))),
+                new AutoPoint(new Pose2d(12.242, 1.278, Rotation2d.fromDegrees(60))),
                 new AutoPoint(new Pose2d(13.672, 2.019, Rotation2d.fromDegrees(30))))),
         blocks.scoreL4(ReefPipe.PIPE_L, RobotScoringSide.LEFT),
         blocks.intakeLollipop(
-            new Pose2d(13.8, 2.168, Rotation2d.fromDegrees(0))
+            new Pose2d(13.7, 2.168, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.LOLLIPOP_OFFSET),
-            new Pose2d(15.2, 2.168, Rotation2d.fromDegrees(0))
+            new Pose2d(15.1, 2.168, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.LOLLIPOP_OFFSET)),
         blocks.scoreL4(ReefPipe.PIPE_A, RobotScoringSide.LEFT),
         blocks.intakeLollipop(
-            new Pose2d(14.1, 3.996, Rotation2d.fromDegrees(0))
+            new Pose2d(13.9, 3.996, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.LOLLIPOP_OFFSET),
-            new Pose2d(15.2, 3.996, Rotation2d.fromDegrees(0))
+            new Pose2d(15.1, 3.996, Rotation2d.fromDegrees(0))
                 .transformBy(AutoBlocks.LOLLIPOP_OFFSET)),
         blocks.scoreL4(ReefPipe.PIPE_B, RobotScoringSide.LEFT),
         blocks.intakeLollipop(
