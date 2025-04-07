@@ -9,7 +9,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.arm.ArmState;
-import frc.robot.arm.ArmSubsystem;
 import frc.robot.robot_manager.SuperstructurePosition;
 import frc.robot.util.MathHelpers;
 import java.util.ArrayDeque;
@@ -43,9 +42,7 @@ public class CollisionAvoidance {
   private static ObstructionStrategy lastRightStrategy = ObstructionStrategy.IGNORE_BLOCKED;
   private static Waypoint lastWaypoint = Waypoint.ELEVATOR_0_ARM_UP;
 
-
   private static Deque<Waypoint> lastPath = new ArrayDeque<>();
-
 
   private static boolean hasGeneratedPath = false;
   private static Waypoint previousWaypoint;
@@ -76,12 +73,12 @@ public class CollisionAvoidance {
     }
     var edge = maybeEdge;
 
-    if ( edge.get().hitsClimber() != lastClimberRisky
+    if (edge.get().hitsClimber() != lastClimberRisky
         || obstructionKind != lastObstruction
         || edge.get().leftSideStrategy() != lastLeftStrategy
         || edge.get().rightSideStrategy() != lastRightStrategy
-        || waypoint!=lastWaypoint) {
-          DogLog.timestamp("New Arm Goal Calculation");
+        || waypoint != lastWaypoint) {
+      DogLog.timestamp("New Arm Goal Calculation");
       lastSolution =
           getCollisionAvoidanceAngleGoal(
               waypoint.position.armAngle(),
@@ -95,9 +92,6 @@ public class CollisionAvoidance {
       lastLeftStrategy = edge.get().leftSideStrategy();
       lastRightStrategy = edge.get().rightSideStrategy();
       lastWaypoint = waypoint;
-
-
-
     }
 
     DogLog.log(
@@ -117,16 +111,18 @@ public class CollisionAvoidance {
         "CollisionAvoidance/CollisionAvoidanceAngleVariables/rightStrat",
         edge.get().rightSideStrategy());
     DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/RawArmAngle", rawArmAngle);
-  //  DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/edge", edge.get());
-  DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/goalanglefar", desiredPosition.armAngle());
-  DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/goalheightfar", desiredPosition.elevatorHeight());
-
-
+    //  DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/edge", edge.get());
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/goalanglefar",
+        desiredPosition.armAngle());
+    DogLog.log(
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/goalheightfar",
+        desiredPosition.elevatorHeight());
 
     DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/armsolution", lastSolution);
 
-
-    return Optional.of(new SuperstructurePosition(waypoint.position.elevatorHeight(), lastSolution));
+    return Optional.of(
+        new SuperstructurePosition(waypoint.position.elevatorHeight(), lastSolution));
   }
 
   public static Optional<Waypoint> route(
@@ -195,7 +191,6 @@ public class CollisionAvoidance {
     return Optional.of(currentWaypoint);
   }
 
-
   // public static double alternateGetCollisionAvoidanceAngleGoal(
   //     double normalizedGoalAngle,
   //     boolean climberRisky,
@@ -213,7 +208,6 @@ public class CollisionAvoidance {
   //   var longSetpoint =
   //       MathHelpers.farthest(currentRawMotorAngle, forwardsSetpoint, backwardsSetpoint);
 
-
   //   if ((leftObstructionStrategy == ObstructionStrategy.LONG_WAY_IF_BLOCKED
   //           && currentObstructionKind == ObstructionKind.LEFT_OBSTRUCTED)
   //       || (rightObstructionStrategy == ObstructionStrategy.LONG_WAY_IF_BLOCKED
@@ -229,7 +223,8 @@ public class CollisionAvoidance {
   //   // If there's no obstruction, you can go directly to the angle
   //   return shortSetpoint;
   // }
-  // public static double[] booooRyansVersion(double currentRawMotorAngle, double normalizedGoalAngle){
+  // public static double[] booooRyansVersion(double currentRawMotorAngle, double
+  // normalizedGoalAngle){
   //    // var wrap = (int) Math.floor(currentRawMotorAngle / 360.0);
   //    int wrap = (int) currentRawMotorAngle / 360;
   //    double solution1;
@@ -257,22 +252,24 @@ public class CollisionAvoidance {
   //    return new double[]{solution1, solution2};
 
   // }
-public static double[] hectorsVersionGetCollisionAvoidanceGoal(double currentRawAngle, double normalizedGoalAngle){
-  var normalizedCurrent = MathHelpers.angleModulus(currentRawAngle);
-  var dif = 0.0;
-  var expected1 = 0.0;
-  var expected2 = 0.0;
+  public static double[] hectorsVersionGetCollisionAvoidanceGoal(
+      double currentRawAngle, double normalizedGoalAngle) {
+    var normalizedCurrent = MathHelpers.angleModulus(currentRawAngle);
+    var dif = 0.0;
+    var expected1 = 0.0;
+    var expected2 = 0.0;
 
-  dif = normalizedGoalAngle - normalizedCurrent;
-  if (normalizedGoalAngle >= 0) {
-    expected1 = currentRawAngle + dif;
-    expected2 = currentRawAngle + (dif - 360);
-  } else {
-    expected1 = currentRawAngle - Math.abs(dif);
-    expected2 = (currentRawAngle + 360) - Math.abs(dif);
+    dif = normalizedGoalAngle - normalizedCurrent;
+    if (normalizedGoalAngle >= 0) {
+      expected1 = currentRawAngle + dif;
+      expected2 = currentRawAngle + (dif - 360);
+    } else {
+      expected1 = currentRawAngle - Math.abs(dif);
+      expected2 = (currentRawAngle + 360) - Math.abs(dif);
+    }
+    return new double[] {expected1, expected2};
   }
-  return new double[]{expected1,expected2};
-}
+
   public static double getCollisionAvoidanceAngleGoal(
       double angle,
       boolean climberRisky,
@@ -281,14 +278,13 @@ public static double[] hectorsVersionGetCollisionAvoidanceGoal(double currentRaw
       ObstructionStrategy rightObstructionStrategy,
       double currentRawMotorAngle) {
 
-    double solution1= hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[0];
-    double solution2=hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[1];
+    double solution1 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[0];
+    double solution2 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[1];
     double shortSolution;
     double longSolution;
     double collisionAvoidanceGoal;
 
     int wrap = (int) currentRawMotorAngle / 360;
-
 
     double climberUnsafeAngle1 = (wrap * 360) - (360 - CLIMBER_UNSAFE_ANGLE);
     double climberUnsafeAngle2 = (wrap * 360) + CLIMBER_UNSAFE_ANGLE;
@@ -328,7 +324,6 @@ public static double[] hectorsVersionGetCollisionAvoidanceGoal(double currentRaw
         shortSolution = solution2;
         longSolution = solution1;
       }
-
 
       collisionAvoidanceGoal =
           switch (currentObstructionKind) {

@@ -154,8 +154,10 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   private double getRawAngleFromNormalAngle(double angle) {
-    double solution1= CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[0];
-    double solution2=CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[1];
+    double solution1 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[0];
+    double solution2 =
+        CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[1];
     if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
       return solution1;
     } else {
