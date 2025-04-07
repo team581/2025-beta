@@ -201,7 +201,7 @@ public class CollisionAvoidance {
     }
   }
 
-  public static double[] hectorsVersionGetCollisionAvoidanceGoal(
+  public static double[] getCollisionAvoidanceSolutions(
       double currentRawAngle, double normalizedGoalAngle) {
     // var normalizedCurrent = MathHelpers.angleModulus(currentRawAngle);
     // var dif = 0.0;
@@ -260,8 +260,8 @@ public class CollisionAvoidance {
       ObstructionStrategy leftObstructionStrategy,
       ObstructionStrategy rightObstructionStrategy,
       double currentRawMotorAngle) {
-    double solution1 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[0];
-    double solution2 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[1];
+    double solution1 = getCollisionAvoidanceSolutions(currentRawMotorAngle, angle)[0];
+    double solution2 = getCollisionAvoidanceSolutions(currentRawMotorAngle, angle)[1];
     // System.out.println("1="+solution1);
     // System.out.println("2="+solution2);
 

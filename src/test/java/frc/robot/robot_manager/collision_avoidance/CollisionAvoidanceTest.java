@@ -15,9 +15,9 @@ public class CollisionAvoidanceTest {
     var normalizedGoalAngle = 90;
     var result =
         List.of(
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[0],
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[1]);
     var expected = List.of(810.0, 450.0);
     assertEquals(expected, result);
@@ -29,9 +29,9 @@ public class CollisionAvoidanceTest {
     var normalizedGoalAngle = 90;
     var result =
         List.of(
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[0],
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[1]);
     var expected = List.of(-630.0, -990.0);
     assertEquals(expected, result);
@@ -43,9 +43,9 @@ public class CollisionAvoidanceTest {
     var currentRawAngle = -179;
     var result =
         List.of(
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[0],
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[1]);
     var expected = List.of(-90.0, -450.0);
     assertEquals(expected, result);
@@ -57,9 +57,9 @@ public class CollisionAvoidanceTest {
     var currentRawAngle = 147.7;
     var result =
         List.of(
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[0],
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[1]);
     var expected = List.of(270.0, -90.0);
     assertEquals(expected, result);
@@ -71,9 +71,9 @@ public class CollisionAvoidanceTest {
     var currentRawAngle = -147.7;
     var result =
         List.of(
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[0],
-            CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(
+            CollisionAvoidance.getCollisionAvoidanceSolutions(
                 currentRawAngle, normalizedGoalAngle)[1]);
     var expected = List.of(-90.0, -450.0);
     assertEquals(expected, result);
