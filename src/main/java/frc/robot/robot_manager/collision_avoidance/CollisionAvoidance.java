@@ -277,12 +277,10 @@ public class CollisionAvoidance {
       ObstructionStrategy leftObstructionStrategy,
       ObstructionStrategy rightObstructionStrategy,
       double currentRawMotorAngle) {
-
     double solution1 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[0];
     double solution2 = hectorsVersionGetCollisionAvoidanceGoal(currentRawMotorAngle, angle)[1];
     double shortSolution;
     double longSolution;
-    double collisionAvoidanceGoal;
 
     int wrap = (int) currentRawMotorAngle / 360;
 
@@ -293,56 +291,57 @@ public class CollisionAvoidance {
       if ((Math.max(currentRawMotorAngle, solution1) >= climberUnsafeAngle1
               && Math.min(currentRawMotorAngle, solution1) <= climberUnsafeAngle1)
           || (Math.max(currentRawMotorAngle, solution1) >= climberUnsafeAngle2
-              && Math.min(currentRawMotorAngle, solution1)
-                  <= climberUnsafeAngle2)) { // bad spot is in between the solution 1 path
-        collisionAvoidanceGoal = solution2;
-      } else if ((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1
+              && Math.min(currentRawMotorAngle, solution1) <= climberUnsafeAngle2)) {
+        // bad spot is in between the solution 1 path
+        return solution2;
+      }
+
+      if ((Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle1
               && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle1)
           || (Math.max(currentRawMotorAngle, solution2) > climberUnsafeAngle2
-              && Math.min(currentRawMotorAngle, solution2)
-                  < climberUnsafeAngle2)) { // bad spot is in between the solution 2 path
-        collisionAvoidanceGoal = solution1;
-      } else {
-        collisionAvoidanceGoal = currentRawMotorAngle; // Something very bad has happened
+              && Math.min(currentRawMotorAngle, solution2) < climberUnsafeAngle2)) {
+        // bad spot is in between the solution 2 path
+        return solution1;
       }
 
-    } else {
-      // System.out.println("1 = "+solution1);
-      // System.out.println("2 = "+solution2);
-      // double solution1Difference = Math.abs(Math.max(solution1,
-      // currentRawMotorAngle)-Math.min(solution1, currentRawMotorAngle));
-      // double solution2Difference = Math.abs(Math.max(solution2,
-      // currentRawMotorAngle)-Math.min(solution2, currentRawMotorAngle));
-      // System.out.println("sol 1 diff"+solution1Difference);
-      // System.out.println("sol 2 diff"+solution2Difference);
-
-      //       if (solution2Difference > solution1Difference) {
-      if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
-        shortSolution = solution1;
-        longSolution = solution2;
-      } else {
-        shortSolution = solution2;
-        longSolution = solution1;
-      }
-
-      collisionAvoidanceGoal =
-          switch (currentObstructionKind) {
-            case LEFT_OBSTRUCTED ->
-                switch (leftObstructionStrategy) {
-                  case IGNORE_BLOCKED -> shortSolution;
-                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                  case LONG_WAY_IF_BLOCKED -> longSolution;
-                };
-            case RIGHT_OBSTRUCTED ->
-                switch (rightObstructionStrategy) {
-                  case IGNORE_BLOCKED -> shortSolution;
-                  case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
-                  case LONG_WAY_IF_BLOCKED -> longSolution;
-                };
-            default -> shortSolution;
-          };
+      // Something very bad has happened
+      DogLog.logFault("Impossible arm angle to avoid climber");
+      return currentRawMotorAngle;
     }
-    return collisionAvoidanceGoal;
+
+    // System.out.println("1 = "+solution1);
+    // System.out.println("2 = "+solution2);
+    // double solution1Difference = Math.abs(Math.max(solution1,
+    // currentRawMotorAngle)-Math.min(solution1, currentRawMotorAngle));
+    // double solution2Difference = Math.abs(Math.max(solution2,
+    // currentRawMotorAngle)-Math.min(solution2, currentRawMotorAngle));
+    // System.out.println("sol 1 diff"+solution1Difference);
+    // System.out.println("sol 2 diff"+solution2Difference);
+
+    //       if (solution2Difference > solution1Difference) {
+    if (Math.abs(solution2 - currentRawMotorAngle) > Math.abs(solution1 - currentRawMotorAngle)) {
+      shortSolution = solution1;
+      longSolution = solution2;
+    } else {
+      shortSolution = solution2;
+      longSolution = solution1;
+    }
+
+    return switch (currentObstructionKind) {
+      case LEFT_OBSTRUCTED ->
+          switch (leftObstructionStrategy) {
+            case IGNORE_BLOCKED -> shortSolution;
+            case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+            case LONG_WAY_IF_BLOCKED -> longSolution;
+          };
+      case RIGHT_OBSTRUCTED ->
+          switch (rightObstructionStrategy) {
+            case IGNORE_BLOCKED -> shortSolution;
+            case IMPOSSIBLE_IF_BLOCKED -> currentRawMotorAngle;
+            case LONG_WAY_IF_BLOCKED -> longSolution;
+          };
+      case NONE -> shortSolution;
+    };
   }
 
   private static Optional<ImmutableList<Waypoint>> cachedAStar(CollisionAvoidanceQuery query) {
