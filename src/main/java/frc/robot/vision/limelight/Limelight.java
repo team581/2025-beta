@@ -215,7 +215,8 @@ public class Limelight extends StateMachine<LimelightState> {
     var lastTagTimestamp = lastGoodTagResult.map(TagResult::timestamp).orElse(Double.MIN_VALUE);
 
     if (Timer.getTimestamp() - lastTagTimestamp > 30) {
-      DogLog.logFault(limelightTableName + " has not seen a tag in the last 30 seconds", AlertType.kWarning);
+      DogLog.logFault(
+          limelightTableName + " has not seen a tag in the last 30 seconds", AlertType.kWarning);
     }
 
     LimelightHelpers.setPipelineIndex(limelightTableName, getState().pipelineIndex);
