@@ -19,6 +19,7 @@ import frc.robot.controller.RumbleControllerSubsystem;
 import frc.robot.elevator.ElevatorState;
 import frc.robot.elevator.ElevatorSubsystem;
 import frc.robot.imu.ImuSubsystem;
+import frc.robot.intake_deploy.DeployState;
 import frc.robot.lights.LightsState;
 import frc.robot.lights.LightsSubsystem;
 import frc.robot.localization.LocalizationSubsystem;
@@ -175,7 +176,7 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_L2_RELEASE_HANDOFF,
           CORAL_L3_RELEASE_HANDOFF,
           CORAL_L4_RELEASE_HANDOFF ->
-          claw.getHasGP()
+          claw.getHasGP() && groundManager.deploy.atGoal(DeployState.STOWED)
               ? currentState.getHandoffReleaseToApproachState(robotScoringSide)
               : currentState;
 
@@ -838,6 +839,7 @@ public class RobotManager extends StateMachine<RobotState> {
     moveSuperstructure(latestElevatorGoal, latestArmGoal, latestUnsafe);
 
     arm.setCoralTx(vision.getHandoffOffsetTx());
+    groundManager.deploy.setClawHasGP(claw.getHasGP());
 
     switch (getState()) {
       case ALGAE_INTAKE_L2_LEFT_APPROACH,
@@ -1168,6 +1170,18 @@ public class RobotManager extends StateMachine<RobotState> {
     }
   }
 
+  public void l3CoralLeftAutoApproachRequest() {
+    if (DriverStation.isAutonomous()) {
+      setStateFromRequest(RobotState.CORAL_L3_LEFT_APPROACH);
+    }
+  }
+
+  public void l3CoralRightAutoApproachRequest() {
+    if (DriverStation.isAutonomous()) {
+      setStateFromRequest(RobotState.CORAL_L3_RIGHT_APPROACH);
+    }
+  }
+
   public void l4CoralApproachRequest() {
     if (getState().climbingOrRehoming) {
       return;
@@ -1265,6 +1279,16 @@ public class RobotManager extends StateMachine<RobotState> {
         setStateFromRequest(RobotState.CORAL_L4_LEFT_RELEASE);
       } else {
         setStateFromRequest(RobotState.CORAL_L4_PREPARE_HANDOFF);
+      }
+    }
+  }
+
+  public void l3CoralLeftReleaseRequest() {
+    if (!getState().climbingOrRehoming) {
+      if (claw.getHasGP()) {
+        setStateFromRequest(RobotState.CORAL_L3_LEFT_RELEASE);
+      } else {
+        setStateFromRequest(RobotState.CORAL_L3_PREPARE_HANDOFF);
       }
     }
   }

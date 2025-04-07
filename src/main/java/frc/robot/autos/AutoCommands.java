@@ -94,8 +94,24 @@ public class AutoCommands {
         });
   }
 
+  public Command l3ApproachCommand(ReefPipe pipe, RobotScoringSide scoringSide) {
+    return Commands.runOnce(
+        () -> {
+          robotManager.autoAlign.setAutoReefPipeOverride(pipe);
+          if (scoringSide == RobotScoringSide.LEFT) {
+            robotManager.l3CoralLeftAutoApproachRequest();
+          } else {
+            robotManager.l3CoralRightAutoApproachRequest();
+          }
+        });
+  }
+
   public Command l4LeftReleaseCommand() {
     return Commands.runOnce(robotManager::l4CoralLeftReleaseRequest);
+  }
+
+  public Command l3LeftReleaseCommand() {
+    return Commands.runOnce(robotManager::l3CoralLeftReleaseRequest);
   }
 
   public Command waitForReleaseCommand() {

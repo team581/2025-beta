@@ -6,10 +6,10 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 public enum DeployState {
   UNHOMED(0.0),
   HOMING(0.0),
-  STOWED(113),
-  FLOOR_INTAKE(-34),
-  HANDOFF(113),
-  L1_SCORE(70),
+  STOWED(70.0),
+  FLOOR_INTAKE(-34.0),
+  HANDOFF(113.0),
+  L1_SCORE(70.0),
 
   UNJAM(-28);
 

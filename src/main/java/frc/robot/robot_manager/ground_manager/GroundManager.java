@@ -36,7 +36,7 @@ public class GroundManager extends StateMachine<GroundState> {
         intake.setState(IntakeState.IDLE_NO_GP);
       }
       case IDLE_CORAL -> {
-        deploy.setState(DeployState.STOWED);
+        deploy.setState(DeployState.HANDOFF);
         intake.setState(IntakeState.IDLE_GP);
       }
       case INTAKING -> {

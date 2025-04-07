@@ -27,13 +27,13 @@ public class FeatureFlags {
       FeatureFlag.of("CollisionAvoidance/Obstruction", true);
 
   public static final BooleanSupplier APPROACH_TAG_CHECK =
-      FeatureFlag.of("Vision/ApproachTagCheck", true);
+      FeatureFlag.of("Vision/ApproachTagCheck", false);
 
   public static final BooleanSupplier VISION_HANDOFF_ADJUSTMENT =
       FeatureFlag.of("Vision/HandoffAdjustment", true);
 
   public static final BooleanSupplier AUTO_ALIGN_AUTO_SCORE =
-      FeatureFlag.of("AutoAlign/AutoScore", false);
+      FeatureFlag.of("AutoAlign/AutoScore", true);
 
   public static final BooleanSupplier SPIN_TO_WIN = FeatureFlag.of("Yapping/SpinToWin", false);
 

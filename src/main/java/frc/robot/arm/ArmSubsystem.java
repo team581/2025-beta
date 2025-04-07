@@ -86,7 +86,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   private static final double TOLERANCE = 2.0;
-  private static final double NEAR_TOLERANCE = 10.0;
+  private static final double NEAR_TOLERANCE = 25.0;
+  private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
   private final TalonFX motor;
   private double rawMotorAngle;
   private double motorAngle;
@@ -112,9 +113,7 @@ public class ArmSubsystem extends StateMachine<ArmState> {
           .withVelocity(Units.degreesToRotations(90));
 
   public ArmSubsystem(TalonFX motor) {
-    super(
-        SubsystemPriority.ARM,
-        RobotConfig.IS_PRACTICE_BOT ? ArmState.PRE_MATCH_HOMING : ArmState.HOLDING_UPRIGHT);
+    super(SubsystemPriority.ARM, ArmState.PRE_MATCH_HOMING);
     motor.getConfigurator().apply(RobotConfig.get().arm().motorConfig());
 
     this.motor = motor;
