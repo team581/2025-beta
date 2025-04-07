@@ -1,5 +1,6 @@
 package frc.robot.intake_assist;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -45,21 +46,20 @@ public final class IntakeAssistUtil {
     var translation =
         GamePieceDetectionUtil.calculateRobotRelativeLollipopTranslationFromCamera(
             robotPose, result.get());
-    var robotRelativeRotation =
-        Rotation2d.fromDegrees(getIntakeAssistAngle(translation, Pose2d.kZero) + 90.0);
-    var withRotation = new Pose2d(translation.getX(), translation.getY(), robotRelativeRotation);
+
+    var fieldRelativePose =
+        new Pose2d(
+            translation.rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation()),
+            robotPose.getRotation());
+    DogLog.log("Debug/FieldRelativePose", fieldRelativePose);
     var offset =
-        withRotation.transformBy(
+        fieldRelativePose.transformBy(
             new Transform2d(
                 Units.inchesToMeters(-RobotConfig.get().arm().inchesFromCenter()),
                 INTAKE_OFFSET,
                 Rotation2d.kZero));
-    var fieldRelativeIntakePose =
-        new Pose2d(
-            GamePieceDetectionUtil.robotRelativeToFieldRelativeGamePiecePose(
-                robotPose, offset.getTranslation()),
-            robotRelativeRotation.plus(robotPose.getRotation()));
-    return Optional.of(fieldRelativeIntakePose);
+
+    return Optional.of(offset);
   }
 
   private IntakeAssistUtil() {}

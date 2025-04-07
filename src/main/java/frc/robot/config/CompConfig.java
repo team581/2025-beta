@@ -63,8 +63,8 @@ class CompConfig {
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(240.0 / 6.0)
-                          .withMotionMagicCruiseVelocity(240.0 / 6.0))
+                          .withMotionMagicAcceleration(240.0)
+                          .withMotionMagicCruiseVelocity(240.0))
                   .withFeedback(
                       new FeedbackConfigs()
                           .withSensorToMechanismRatio(
@@ -84,8 +84,8 @@ class CompConfig {
                           .withGravityType(GravityTypeValue.Elevator_Static))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(240.0 / 6.0)
-                          .withMotionMagicCruiseVelocity(240.0 / 6.0))
+                          .withMotionMagicAcceleration(240.0)
+                          .withMotionMagicCruiseVelocity(240.0))
                   .withFeedback(
                       new FeedbackConfigs()
                           .withSensorToMechanismRatio(
@@ -112,6 +112,7 @@ class CompConfig {
               RIO_CAN_NAME,
               18,
               27,
+              true,
               new Debouncer(0.1, DebounceType.kBoth),
               new TalonFXConfiguration()
                   .withCurrentLimits(
@@ -204,8 +205,8 @@ class CompConfig {
                           .withGravityType(GravityTypeValue.Arm_Cosine))
                   .withMotionMagic(
                       new MotionMagicConfigs()
-                          .withMotionMagicAcceleration(3.0 / 6.0)
-                          .withMotionMagicCruiseVelocity(3.0 / 6.0))
+                          .withMotionMagicAcceleration(3.0)
+                          .withMotionMagicCruiseVelocity(3.0))
                   .withFeedback(
                       new FeedbackConfigs()
                           .withSensorToMechanismRatio((64.0 / 8.0) * (90.0 / 10.0)))

@@ -12,6 +12,9 @@ public enum GroundState {
   L1_WAIT,
   L1_SCORE,
 
+  UNOBSTRUCT_ARM_NO_CORAL,
+  UNOBSTRUCT_ARM_W_CORAL,
+
   REHOME_DEPLOY,
   UNJAM;
 }

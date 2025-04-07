@@ -41,6 +41,7 @@ public record RobotConfig(
       String canBusName,
       int motorId,
       int candiId,
+      boolean sensorFlipped,
       Debouncer debouncer,
       TalonFXConfiguration motorConfig) {}
 

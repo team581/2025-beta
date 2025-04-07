@@ -12,6 +12,8 @@ public enum RobotState {
   CLAW_ALGAE(ClawGamePiece.ALGAE, false),
   /** Claw holding coral */
   CLAW_CORAL(ClawGamePiece.CORAL, false),
+  /** Claw holding algae, stowed inward */
+  CLAW_ALGAE_STOW_INWARD(ClawGamePiece.ALGAE, false),
 
   // Intake states
   // In theory we could have intake upright while holding algae but nobody is going to use that

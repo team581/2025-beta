@@ -109,6 +109,8 @@ public class RobotManager extends StateMachine<RobotState> {
       case CLAW_EMPTY,
           CLAW_ALGAE,
           CLAW_CORAL,
+          CLAW_ALGAE_STOW_INWARD,
+          ENDGAME_STOWED,
           ALGAE_INTAKE_FLOOR,
           ALGAE_PROCESSOR_WAITING,
           ALGAE_NET_LEFT_WAITING,
@@ -120,8 +122,7 @@ public class RobotManager extends StateMachine<RobotState> {
           CORAL_INTAKE_LOLLIPOP_APPROACH,
           CORAL_INTAKE_LOLLIPOP_PUSH,
           PREPARE_HANDOFF_AFTER_INTAKE,
-          ALGAE_FLING_WAIT,
-          ENDGAME_STOWED ->
+          ALGAE_FLING_WAIT ->
           currentState;
       case CORAL_L2_RIGHT_PLACE,
           CORAL_L2_LEFT_PLACE,
@@ -264,6 +265,9 @@ public class RobotManager extends StateMachine<RobotState> {
           ALGAE_INTAKE_L2_RIGHT_HOLDING,
           ALGAE_INTAKE_L3_RIGHT_HOLDING -> {
         if (cameraOnlineAndFarEnoughFromReef()) {
+          // yield DriverStation.isAutonomous() ? RobotState.CLAW_ALGAE_STOW_INWARD :
+          // RobotState.CLAW_ALGAE;
+          // TODO: implement stow inward
           yield RobotState.CLAW_ALGAE;
         }
 
@@ -823,6 +827,15 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.SCORING_ALGAE);
+        climber.setState(ClimberState.STOPPED);
+      }
+      case CLAW_ALGAE_STOW_INWARD -> {
+        claw.setState(ClawState.IDLE_W_ALGAE);
+        groundManager.unobstructArmRequest();
+        moveSuperstructure(ElevatorState.STOWED_INWARD, ArmState.STOWED_INWARD);
+        swerve.normalDriveRequest();
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.HOLDING_ALGAE);
         climber.setState(ClimberState.STOPPED);
       }
     }
