@@ -58,7 +58,7 @@ public class DeploySubsystem extends StateMachine<DeployState> {
       case HOMING -> {
         if (filteredCurrent > RobotConfig.get().deploy().homingCurrentThreshold()) {
           motor.setPosition(
-              Units.degreesToRotations(clamp(RobotConfig.get().deploy().homingEndPosition())));
+              Units.degreesToRotations(RobotConfig.get().deploy().homingEndPosition()));
           yield DeployState.STOWED;
         }
         yield currentState;
