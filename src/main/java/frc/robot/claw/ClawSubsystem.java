@@ -27,7 +27,11 @@ public class ClawSubsystem extends StateMachine<ClawState> {
 
   @Override
   protected void collectInputs() {
-    sensorRaw = candi.getS1State().getValue() != S1StateValue.Low;
+    var candiValue = candi.getS1State().getValue();
+    sensorRaw =
+        RobotConfig.get().claw().sensorFlipped()
+            ? candiValue == S1StateValue.Low
+            : candiValue != S1StateValue.Low;
 
     sensorDebounced = debouncer.calculate(sensorRaw);
   }

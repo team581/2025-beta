@@ -112,6 +112,7 @@ class PracticeConfig {
               RIO_CAN_NAME,
               18,
               27,
+              false,
               new Debouncer(0.1, DebounceType.kBoth),
               new TalonFXConfiguration()
                   .withCurrentLimits(
