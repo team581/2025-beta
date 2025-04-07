@@ -16,6 +16,7 @@ import java.util.Deque;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -493,12 +494,45 @@ public class CollisionAvoidance {
         Waypoint.L2_RIGHT_LINEUP,
         Waypoint.L3_RIGHT_LINEUP);
 
-    /* Scoring coral (arm left to arm right) */
+    /* Elevator stays the same, arm switches from left to right */
     Waypoint.L2_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L2_RIGHT_LINEUP);
-
     Waypoint.L3_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L3_RIGHT_LINEUP);
-
     Waypoint.L4_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L4_RIGHT_LINEUP);
+    Waypoint.ALGAE_NET_OUT_LEFT.alwaysSafe(graph, Waypoint.ALGAE_NET_OUT_RIGHT);
+    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
+    Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_RIGHT);
+
+    /* Switching coral level on the same side is okay if you won't hit the reef */
+    var leftCoralScoreWaypoints =
+        List.of(Waypoint.L2_LEFT_LINEUP, Waypoint.L3_LEFT_LINEUP, Waypoint.L4_LEFT_LINEUP);
+    var rightCoralScoreWaypoints =
+        List.of(
+            Waypoint.L1_RIGHT_LINEUP,
+            Waypoint.L2_RIGHT_LINEUP,
+            Waypoint.L3_RIGHT_LINEUP,
+            Waypoint.L4_RIGHT_LINEUP);
+
+    for (var a : leftCoralScoreWaypoints) {
+      for (var b : leftCoralScoreWaypoints) {
+        if (a == b) {
+          // Skip because it's the same waypoint
+          continue;
+        }
+
+        a.leftSideSpecial(graph, ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED, b);
+      }
+    }
+
+    for (var a : rightCoralScoreWaypoints) {
+      for (var b : rightCoralScoreWaypoints) {
+        if (a == b) {
+          // Skip because it's the same waypoint
+          continue;
+        }
+
+        a.rightSideSpecial(graph, ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED, b);
+      }
+    }
 
     /* Scoring coral directly from handoff, depends a lot on obstructions */
     // TODO: Make sure the elevator doesn't go down before the arm can get safe
@@ -536,7 +570,22 @@ public class CollisionAvoidance {
     //     graph, Waypoint.L2_RIGHT_PLACE, Waypoint.L3_RIGHT_PLACE, Waypoint.L4_LEFT_PLACE);
 
     // L1 movements
-    Waypoint.L1_RIGHT_LINEUP.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
+    var l1AreaWaypoints =
+        List.of(
+            Waypoint.L1_RIGHT_LINEUP, Waypoint.GROUND_ALGAE_INTAKE, Waypoint.LOLLIPOP_INTAKE_RIGHT);
+
+    Waypoint.ELEVATOR_0_ARM_UP.alwaysSafe(graph, l1AreaWaypoints.toArray(Waypoint[]::new));
+    for (var a : l1AreaWaypoints) {
+      for (var b : l1AreaWaypoints) {
+        if (a == b) {
+          // Skip because it's the same waypoint
+          continue;
+        }
+
+        a.alwaysSafe(graph, b);
+      }
+    }
+
     // Ground algae movement
     Waypoint.GROUND_ALGAE_INTAKE.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
 
