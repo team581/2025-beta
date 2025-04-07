@@ -29,10 +29,10 @@ public class AutoAlign extends StateMachine<AutoAlignState> {
   private static final Translation2d CENTER_OF_REEF_BLUE =
       new Translation2d(Units.inchesToMeters(176.746), Units.inchesToMeters(158.5));
 
-  private static final DoubleSubscriber TIME_TO_RAISE_ARM_FORWARD =
-      DogLog.tunable("AutoAlign/ArmForwardRaiseTime", 0.2);
-  private static final DoubleSubscriber SAFE_ARM_FORWARD_DISTANCE_FROM_REEF_SIDE =
-      DogLog.tunable("AutoAlign/SafeReefDistanceArmForward", 1.3);
+  private static final DoubleSubscriber OBSTRUCTION_LOOKAHEAD =
+      DogLog.tunable("AutoAlign/ObstructionLookahead", 0.2);
+  private static final DoubleSubscriber OBSTRUCTION_DISTANCE =
+      DogLog.tunable("AutoAlign/ObstructionDistance", 1.0);
 
   public static RobotScoringSide getNetScoringSideFromRobotPose(Pose2d robotPose) {
     double robotX = robotPose.getX();
@@ -148,15 +148,15 @@ public class AutoAlign extends StateMachine<AutoAlignState> {
     tagAlign.setControllerValues(controllerValues.getX(), controllerValues.getY());
   }
 
-  public ObstructionKind shouldArmGoAroundToScore() {
+  public ObstructionKind getObstruction() {
     // Account for distance we'll be at once we finish forward motion
-    var lookaheadPose = localization.getLookaheadPose(TIME_TO_RAISE_ARM_FORWARD.get());
+    var lookaheadPose = localization.getLookaheadPose(OBSTRUCTION_LOOKAHEAD.get());
     var lookaheadPoseDistance =
         lookaheadPose
             .getTranslation()
             .getDistance(
                 bestReefPipe.getPose(ReefPipeLevel.BASE, robotScoringSide).getTranslation());
-    if (lookaheadPoseDistance < SAFE_ARM_FORWARD_DISTANCE_FROM_REEF_SIDE.get()) {
+    if (lookaheadPoseDistance < OBSTRUCTION_DISTANCE.get()) {
       return robotScoringSide == RobotScoringSide.RIGHT
           ? ObstructionKind.RIGHT_OBSTRUCTED
           : ObstructionKind.LEFT_OBSTRUCTED;
