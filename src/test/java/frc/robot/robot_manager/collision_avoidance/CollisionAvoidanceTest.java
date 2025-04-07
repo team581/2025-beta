@@ -119,6 +119,7 @@ public class CollisionAvoidanceTest {
 
     assertEquals(expected, result);
   }
+
   @Test
   public void solutionsTest() {
     var normalizedGoalAngle = 160;
@@ -132,6 +133,7 @@ public class CollisionAvoidanceTest {
     var expected = List.of(160.0, 520.0);
     assertEquals(expected, result);
   }
+
   @Test
   public void armSetCollisionAvoidanceGoalTestL3Lineup() {
     double goalAngle = 160.0;

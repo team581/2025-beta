@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.arm.ArmState;
 import frc.robot.robot_manager.SuperstructurePosition;
-import frc.robot.util.MathHelpers;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -78,9 +76,9 @@ public class CollisionAvoidance {
     var edge = maybeEdge;
 
     if (edge.get().hitsClimber() != lastClimberRisky
-        //|| obstructionKind != lastObstruction
-        //|| edge.get().leftSideStrategy() != lastLeftStrategy
-        //|| edge.get().rightSideStrategy() != lastRightStrategy
+        // || obstructionKind != lastObstruction
+        // || edge.get().leftSideStrategy() != lastLeftStrategy
+        // || edge.get().rightSideStrategy() != lastRightStrategy
         || waypoint != lastWaypoint) {
       DogLog.timestamp("New Arm Goal Calculation");
       lastSolution =
@@ -228,10 +226,10 @@ public class CollisionAvoidance {
     double solution2 = solution1 + 360;
     double solution3 = solution1 - 360;
 
-        var sorted = new ArrayList<Double>(List.of(solution1,solution2,solution3));
-        sorted.sort(Comparator.comparingDouble(solution -> Math.abs(solution-currentRawAngle)));
-        var closest = sorted.get(0);
-        var secondClosest = sorted.get(1);
+    var sorted = new ArrayList<Double>(List.of(solution1, solution2, solution3));
+    sorted.sort(Comparator.comparingDouble(solution -> Math.abs(solution - currentRawAngle)));
+    var closest = sorted.get(0);
+    var secondClosest = sorted.get(1);
 
     // if (Math.abs(baseUnwrappedGoal - currentRawAngle)
     //     < Math.abs(altUnwrappedGoal - currentRawAngle)) {
