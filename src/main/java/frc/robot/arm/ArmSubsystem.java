@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.config.FeatureFlags;
 import frc.robot.config.RobotConfig;
+import frc.robot.robot_manager.collision_avoidance.CollisionAvoidance;
 import frc.robot.util.MathHelpers;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
@@ -153,16 +154,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
   }
 
   private double getRawAngleFromNormalAngle(double angle) {
-    double solution1;
-    double solution2;
-    int wrap = (int) rawMotorAngle / 360;
-    if (angle < 0) {
-      solution1 = (wrap * 360) - Math.abs(angle);
-      solution2 = (wrap * 360) + (360 - Math.abs(angle));
-    } else {
-      solution1 = (wrap * 360) + angle;
-      solution2 = (wrap * 360) - (360 - angle);
-    }
+    double solution1= CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[0];
+    double solution2=CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(rawMotorAngle, angle)[1];
     if (Math.abs(solution2 - rawMotorAngle) > Math.abs(solution1 - rawMotorAngle)) {
       return solution1;
     } else {

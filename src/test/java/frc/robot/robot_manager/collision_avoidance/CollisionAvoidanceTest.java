@@ -9,6 +9,38 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
+  @Test
+  public void hectorTest(){
+    var currentRawAngle = 720;
+    var normalizedGoalAngle = 90;
+    var result = List.of(CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[0],CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[1]);
+    var expected = List.of(810.0, 450.0);
+    assertEquals(expected, result);
+  }
+  @Test
+  public void hectorTest1(){
+    var currentRawAngle = -720;
+    var normalizedGoalAngle = 90;
+    var result = List.of(CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[0],CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[1]);
+    var expected = List.of(-630.0,-990.0 );
+    assertEquals(expected, result);
+  }
+  @Test
+  public void hectorTest2(){
+    var currentRawAngle = 720;
+    var normalizedGoalAngle = -90;
+    var result = List.of(CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[0],CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[1]);
+    var expected = List.of(630.0, 990.0);
+    assertEquals(expected, result);
+  }
+  @Test
+  public void hectorTest3(){
+    var currentRawAngle = -720;
+    var normalizedGoalAngle = -90;
+    var result = List.of(CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[0],CollisionAvoidance.hectorsVersionGetCollisionAvoidanceGoal(currentRawAngle, normalizedGoalAngle)[1]);
+    var expected = List.of(-810.0,-450.0 );
+    assertEquals(expected, result);
+  }
   //  @Test
   // public void routePositionTest() {
   //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF,
