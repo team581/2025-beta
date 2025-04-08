@@ -1,7 +1,9 @@
 package frc.robot.vision;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.config.FeatureFlags;
 import frc.robot.imu.ImuSubsystem;
 import frc.robot.util.scheduling.SubsystemPriority;
@@ -15,7 +17,10 @@ import java.util.OptionalDouble;
 
 public class VisionSubsystem extends StateMachine<VisionState> {
   private static final double REEF_CLOSEUP_DISTANCE = 0.7;
-  private final Debouncer hasSeenTagDisabledDebouncer = new Debouncer(1.0, DebounceType.kFalling);
+  private final Debouncer seeingTagDebouncer = new Debouncer(1.0, DebounceType.kFalling);
+  private final Debouncer seeingTagForPoseResetDebouncer =
+      new Debouncer(5.0, DebounceType.kFalling);
+
   private final ImuSubsystem imu;
   private final Limelight leftBackLimelight;
   private final Limelight leftFrontLimelight;
@@ -35,6 +40,8 @@ public class VisionSubsystem extends StateMachine<VisionState> {
 
   private boolean hasSeenTag = false;
   private boolean seeingTag = false;
+  private boolean seeingTagDebounced = false;
+  private boolean seenTagRecentlyForReset = true;
 
   public VisionSubsystem(
       ImuSubsystem imu,
@@ -52,12 +59,7 @@ public class VisionSubsystem extends StateMachine<VisionState> {
 
   @Override
   protected void collectInputs() {
-    robotHeading = imu.getRobotHeading();
     angularVelocity = imu.getRobotAngularVelocity();
-    pitch = imu.getPitch();
-    pitchRate = imu.getPitchRate();
-    roll = imu.getRoll();
-    rollRate = imu.getRollRate();
 
     leftBackTagResult = leftBackLimelight.getTagResult();
     leftFrontTagResult = leftFrontLimelight.getTagResult();
@@ -71,6 +73,16 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     } else {
       seeingTag = false;
     }
+    seeingTagDebounced = seeingTagDebouncer.calculate(seeingTag);
+    if (DriverStation.isDisabled()) {
+      seenTagRecentlyForReset = true;
+    } else {
+      seenTagRecentlyForReset = seeingTagForPoseResetDebouncer.calculate(seeingTag);
+    }
+  }
+
+  public void setEstimatedPoseAngle(double robotHeading) {
+    this.robotHeading = robotHeading;
   }
 
   public Optional<TagResult> getLeftBackTagResult() {
@@ -85,8 +97,12 @@ public class VisionSubsystem extends StateMachine<VisionState> {
     return rightTagResult;
   }
 
-  public boolean seeingTagRecentlyDisabled() {
-    return hasSeenTagDisabledDebouncer.calculate(seeingTag);
+  public boolean seeingTagDebounced() {
+    return seeingTagDebounced;
+  }
+
+  public boolean seenTagRecentlyForReset() {
+    return seenTagRecentlyForReset;
   }
 
   public boolean seeingTag() {
@@ -149,9 +165,9 @@ public class VisionSubsystem extends StateMachine<VisionState> {
   public void robotPeriodic() {
     super.robotPeriodic();
 
-    leftBackLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
-    leftFrontLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
-    rightLimelight.sendImuData(robotHeading, angularVelocity, pitch, pitchRate, roll, rollRate);
+    leftBackLimelight.sendImuData(robotHeading, angularVelocity, 0.0, 0.0, 0.0, 0.0);
+    leftFrontLimelight.sendImuData(robotHeading, angularVelocity, 0.0, 0.0, 0.0, 0.0);
+    rightLimelight.sendImuData(robotHeading, angularVelocity, 0.0, 0.0, 0.0, 0.0);
 
     if (FeatureFlags.CAMERA_POSITION_CALIBRATION.getAsBoolean()) {
       setStateFromRequest(VisionState.TAGS);
@@ -160,6 +176,9 @@ public class VisionSubsystem extends StateMachine<VisionState> {
       rightLimelight.logCameraPositionCalibrationValues();
       gamePieceDetectionLimelight.logCameraPositionCalibrationValues();
     }
+
+    DogLog.log("Vision/SeeingTag", seeingTag);
+    DogLog.log("Vision/SeeingTagLast5Seconds", seenTagRecentlyForReset);
   }
 
   public void setClosestScoringReefAndPipe(int tagID) {

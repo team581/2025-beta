@@ -26,7 +26,6 @@ public class RedPushPartnerAuto extends BaseAuto {
   @Override
   protected Command createAutoCommand() {
     return Commands.sequence(
-        autoCommands.resetPoseIfNeeded(Points.START_R3_AND_B3.redPose),
         trailblazer.followSegment(
             new AutoSegment(
                 new AutoPoint(Points.START_R3_AND_B3.redPose),

@@ -18,8 +18,8 @@ public class FeatureFlags {
   public static final BooleanSupplier VISION_STALE_DATA_CHECK =
       FeatureFlag.of("Vision/StaleDataRejection", true);
 
-  public static final BooleanSupplier CONTEXT_BASED_MEGATAG_1 =
-      FeatureFlag.of("Vision/ContextBasedMegatag1", false);
+  public static final BooleanSupplier MT_VISION_METHOD =
+      FeatureFlag.of("Vision/MTVisionMethod", true);
 
   public static final BooleanSupplier FIELD_CALIBRATION = FeatureFlag.of("FieldCalibration", false);
 

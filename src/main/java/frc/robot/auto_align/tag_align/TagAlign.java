@@ -30,9 +30,6 @@ public class TagAlign {
   private static final DoubleSubscriber ROTATION_GOOD_THRESHOLD =
       DogLog.tunable("AutoAlign/IsAlignedRotation", 5.0);
 
-  /** Ratio from joystick percentage to scoring pose offset in meters. */
-  private static final double FINE_ADJUST_CONTROLLER_SCALAR = 0.3;
-
   private static final double PIPE_SWITCH_TIMEOUT = 1.0;
 
   private final AlignmentCostUtil alignmentCostUtil;

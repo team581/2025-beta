@@ -1,13 +1,11 @@
 package frc.robot.autos;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.auto_align.ReefPipe;
 import frc.robot.auto_align.RobotScoringSide;
-import frc.robot.config.FeatureFlags;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
 import frc.robot.robot_manager.RobotState;
@@ -39,16 +37,6 @@ public class AutoCommands {
         && robotManager.imu.isFlatDebounced()
         && robotManager.elevator.atGoal()
         && robotManager.arm.atGoal();
-  }
-
-  public Command resetPoseIfNeeded(Pose2d pose) {
-    return Commands.runOnce(
-        () -> {
-          if (!robotManager.vision.hasSeenTag()
-              || !FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()) {
-            robotManager.localization.resetPose(pose);
-          }
-        });
   }
 
   public Command intakeCoralHorizontalCommand() {

@@ -51,14 +51,14 @@ public final class IntakeAssistUtil {
         new Pose2d(
             translation.rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation()),
             robotPose.getRotation());
-    DogLog.log("Debug/FieldRelativePose", fieldRelativePose);
+    DogLog.log("Debug/Lollipop/FieldRelativePose", fieldRelativePose);
     var offset =
         fieldRelativePose.transformBy(
             new Transform2d(
                 Units.inchesToMeters(-RobotConfig.get().arm().inchesFromCenter()),
                 INTAKE_OFFSET,
                 Rotation2d.kZero));
-
+    DogLog.log("Debug/Lollipop/IntakePose", offset);
     return Optional.of(offset);
   }
 

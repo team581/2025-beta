@@ -81,17 +81,11 @@ public class LocalizationSubsystem extends StateMachine<LocalizationState> {
   private void ingestTagResult(TagResult result) {
     var visionPose = result.pose();
 
-    if (DriverStation.isDisabled() && FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()) {
+    if (!vision.seenTagRecentlyForReset() && FeatureFlags.MT_VISION_METHOD.getAsBoolean()) {
       resetPose(visionPose);
     }
-
-    var stdDevs =
-        FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()
-            ? MT1_VISION_STD_DEVS
-            : MT2_VISION_STD_DEVS;
-
     swerve.drivetrain.addVisionMeasurement(
-        visionPose, Utils.fpgaToCurrentTime(result.timestamp()), stdDevs);
+        visionPose, Utils.fpgaToCurrentTime(result.timestamp()), result.standardDevs());
   }
 
   private void resetGyro(Rotation2d gyroAngle) {

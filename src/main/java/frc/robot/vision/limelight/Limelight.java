@@ -1,12 +1,12 @@
 package frc.robot.vision.limelight;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.config.FeatureFlags;
@@ -14,7 +14,6 @@ import frc.robot.config.RobotConfig;
 import frc.robot.util.scheduling.SubsystemPriority;
 import frc.robot.util.state_machines.StateMachine;
 import frc.robot.vision.CameraHealth;
-import frc.robot.vision.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.vision.results.GamePieceResult;
 import frc.robot.vision.results.TagResult;
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class Limelight extends StateMachine<LimelightState> {
       new int[] {1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 22};
 
   private static final double IS_OFFLINE_TIMEOUT = 3;
-
+  private static final double USE_MT1_DISTANCE_THRESHOLD = Units.inchesToMeters(40.0);
   private final String limelightTableName;
   private final String name;
   private final LimelightModel limelightModel;
@@ -83,29 +82,21 @@ public class Limelight extends StateMachine<LimelightState> {
       return Optional.empty();
     }
 
-    PoseEstimate estimatePose;
-    if (FeatureFlags.CONTEXT_BASED_MEGATAG_1.getAsBoolean()
-        && (DriverStation.isDisabled() || getState() == LimelightState.CLOSEST_REEF_TAG)) {
-      estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightTableName);
-    } else {
-      estimatePose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightTableName);
-    }
-
-    if (estimatePose == null) {
+    var mT2Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightTableName);
+    if (mT2Estimate == null) {
       return Optional.empty();
     }
-
     if (FeatureFlags.VISION_STALE_DATA_CHECK.getAsBoolean()) {
-      var newTimestamp = estimatePose.timestampSeconds;
+      var newTimestamp = mT2Estimate.timestampSeconds;
       if (newTimestamp == lastTimestamp) {
         return Optional.empty();
       }
 
       lastTimestamp = newTimestamp;
     }
-    var newPose = estimatePose.pose;
 
-    if (estimatePose.tagCount == 0) {
+    var newPose = mT2Estimate.pose;
+    if (mT2Estimate.tagCount == 0) {
       DogLog.log("Vision/" + name + "/Tags/RawLimelightPose", Pose2d.kZero);
 
       return Optional.empty();
@@ -116,9 +107,34 @@ public class Limelight extends StateMachine<LimelightState> {
 
       return Optional.empty();
     }
+    var devs =
+        VecBuilder.fill(
+            RobotConfig.get().vision().xyStdDev(),
+            RobotConfig.get().vision().xyStdDev(),
+            Double.MAX_VALUE);
+    if (FeatureFlags.MT_VISION_METHOD.getAsBoolean()) {
+      var cameraToTagPose = LimelightHelpers.getCameraPose3d_TargetSpace(limelightTableName);
+      DogLog.log("Vision/" + name + "/Tags/CameraToTagPose", cameraToTagPose);
+
+      if (cameraToTagPose != null) {
+        var distance = Math.hypot(cameraToTagPose.getX(), cameraToTagPose.getZ());
+        var xyDev = 0.01 *  Math.pow(distance, 1.2);
+        var thetaDev = 0.03 *  Math.pow(distance, 1.2);
+
+        devs = VecBuilder.fill(xyDev, xyDev, thetaDev);
+        DogLog.log("Vision/" + name + "/Tags/DistanceFromTag", Units.metersToInches(distance));
+        if (distance <= USE_MT1_DISTANCE_THRESHOLD) {
+          DogLog.timestamp("Vision/" + name + "/Tags/UsingMT1Rotation");
+          var mT1Result = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightTableName);
+          if (mT1Result != null && mT1Result.pose.getRotation().getDegrees() != 0.0) {
+            newPose = new Pose2d(mT2Estimate.pose.getTranslation(), mT1Result.pose.getRotation());
+          }
+        }
+      }
+    }
 
     DogLog.log("Vision/" + name + "/Tags/RawLimelightPose", newPose);
-    return Optional.of(new TagResult(estimatePose.pose, estimatePose.timestampSeconds));
+    return Optional.of(new TagResult(newPose, mT2Estimate.timestampSeconds, devs));
   }
 
   private Optional<GamePieceResult> getRawCoralResult() {

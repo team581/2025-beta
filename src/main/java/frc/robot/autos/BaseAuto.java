@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.config.RobotConfig;
 import frc.robot.robot_manager.RobotCommands;
 import frc.robot.robot_manager.RobotManager;
@@ -46,7 +47,9 @@ public abstract class BaseAuto {
     TrailblazerPathLogger.markAuto(this);
     // We continuously reset the pose anyway, but doing it here should be fine
     // It's basically free as long as we aren't updating the IMU
-    return createAutoCommand()
+    return Commands.sequence(
+            Commands.runOnce(() -> robotManager.localization.resetPose(getStartingPose())),
+            createAutoCommand())
         .finallyDo(
             interrupted -> {
               // Check if we are enabled, since auto commands are cancelled during disable

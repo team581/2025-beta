@@ -27,7 +27,6 @@ public class RedDoNothingAuto extends BaseAuto {
   @Override
   protected Command createAutoCommand() {
     return Commands.sequence(
-        autoCommands.resetPoseIfNeeded(Points.START_R1_AND_B1.redPose),
         trailblazer.followSegment(
             new AutoSegment(
                 CONSTRAINTS,

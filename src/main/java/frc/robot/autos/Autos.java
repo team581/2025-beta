@@ -44,18 +44,15 @@ public class Autos extends LifecycleSubsystem {
   public void robotPeriodic() {
     if (DriverStation.isDisabled()) {
       updateSelection();
+
+      if (!hasEnabledAuto) {
+        // Continuously reset pose
+        resetPoseForAuto();
+      }
     }
 
     if (DriverStation.isAutonomousEnabled()) {
       hasEnabledAuto = true;
-    }
-
-    // Continuously reset pose before auto
-    if (!hasEnabledAuto
-        && DriverStation.isDisabled()
-        && DriverStation.isAutonomous()
-        && !robotManager.vision.hasSeenTag()) {
-      resetPoseForAuto();
     }
   }
 

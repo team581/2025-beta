@@ -129,7 +129,7 @@ class PracticeConfig {
                           .withPeakReverseTorqueCurrent(70.0))),
           new SwerveConfig(new PhoenixPIDController(5.75, 0, 0), true, true, true),
           new VisionConfig(
-              0.005,
+              0.01,
               Double.MAX_VALUE,
               // Translation: Positive X = Forward, Positive Y = Left, Positive Z = Up
               // Rotation: Positive X = Roll Right, Positive Y = Pitch Down, Positive Z = Yaw Left
@@ -169,13 +169,13 @@ class PracticeConfig {
               // Forward: 0.187706, Right: 0.186182, Up: 0.2042922, Roll: 0.0, Pitch: 10.0, Yaw:
               // -90.0
               new Pose3d(
-                  Units.inchesToMeters(7.390),
-                  Units.inchesToMeters(-7.330),
-                  Units.inchesToMeters(8.043),
+                  Units.inchesToMeters(7.5),
+                  Units.inchesToMeters(-7.0),
+                  Units.inchesToMeters(8.75),
                   new Rotation3d(
                       Units.degreesToRadians(0.0),
                       Units.degreesToRadians(-10.0),
-                      Units.degreesToRadians(-90.0))),
+                      Units.degreesToRadians(-95.0))),
 
               // Game Piece Limelight
               // Forward: 0.0, Right: 0.0, Up: 0.0, Roll: 0.0, Pitch: 0.0, Yaw:

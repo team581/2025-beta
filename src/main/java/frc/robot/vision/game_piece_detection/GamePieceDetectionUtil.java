@@ -16,11 +16,9 @@ public final class GamePieceDetectionUtil {
   private static final double CORAL_LENGTH = 11.875;
   private static final double CORAL_RADIUS = 2.25;
   private static final double ALGAE_DIAMETER = 16.25;
-  private static final double algaeToGroundOffset =
-      CORAL_LENGTH + (ALGAE_DIAMETER / 2.0); // length of coral + half of diameter of algae
 
   private static final Transform3d LOLLIPOP_OFFSET =
-      new Transform3d(0, 0, Units.inchesToMeters(-algaeToGroundOffset), Rotation3d.kZero);
+      new Transform3d(0, 0, Units.inchesToMeters(-CORAL_LENGTH), Rotation3d.kZero);
 
   private static final Transform3d HORIZONTAL_CORAL_OFFSET =
       new Transform3d(0, 0, Units.inchesToMeters(-CORAL_RADIUS), Rotation3d.kZero);

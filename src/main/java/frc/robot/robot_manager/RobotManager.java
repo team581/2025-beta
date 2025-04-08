@@ -925,7 +925,7 @@ public class RobotManager extends StateMachine<RobotState> {
       lights.setDisabledState(LightsState.ERROR);
     } else if (arm.getState() == ArmState.PRE_MATCH_HOMING && !arm.rangeOfMotionGood()) {
       lights.setDisabledState(LightsState.UNHOMED);
-    } else if (vision.seeingTagRecentlyDisabled()) {
+    } else if (vision.seeingTagDebounced()) {
       lights.setDisabledState(LightsState.HOMED_SEES_TAGS);
     } else {
       lights.setDisabledState(LightsState.HOMED_NO_TAGS);
@@ -944,6 +944,7 @@ public class RobotManager extends StateMachine<RobotState> {
   @Override
   protected void collectInputs() {
     super.collectInputs();
+    vision.setEstimatedPoseAngle(localization.getPose().getRotation().getDegrees());
     nearestReefSide = autoAlign.getClosestReefSide();
     robotPose = localization.getPose();
 

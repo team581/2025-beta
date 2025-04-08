@@ -51,14 +51,8 @@ public class AutoBlocks {
     this.autoCommands = autoCommands;
   }
 
-  public Command startingPath(Pose2d startingPose, AutoSegment segment) {
-    return Commands.sequence(
-        autoCommands.resetPoseIfNeeded(startingPose), trailblazer.followSegment(segment));
-  }
-
   public Command scorePreloadL4(Pose2d startingPose, ReefPipe pipe, RobotScoringSide scoringSide) {
     return Commands.sequence(
-        autoCommands.resetPoseIfNeeded(startingPose),
         trailblazer
             .followSegment(
                 new AutoSegment(
@@ -142,19 +136,50 @@ public class AutoBlocks {
         .withDeadline(autoCommands.waitForIntakeDone());
   }
 
-  public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
-    return trailblazer
-        .followSegment(
+  public Command scoreL3(ReefPipe pipe, RobotScoringSide scoringSide) {
+    return Commands.sequence(
+        trailblazer
+            .followSegment(
+                new AutoSegment(
+                    SCORING_CONSTRAINTS,
+                    new AutoPoint(
+                        () -> robotManager.autoAlign.getUsedScoringPose(pipe),
+                        autoCommands.l3ApproachCommand(pipe, scoringSide),
+                        BASE_CONSTRAINTS)),
+                false)
+            .withDeadline(autoCommands.waitForReleaseCommand()),
+        trailblazer.followSegment(
             new AutoSegment(
                 BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint, autoCommands.intakeLollipopCommand()),
+                AFTER_SCORE_POSITION_TOLERANCE,
                 new AutoPoint(
-                    () ->
-                        robotManager.coralMap.getLollipopIntakePose().orElse(defaultIntakingPoint),
-                    autoCommands.intakeLollipopCommand(),
-                    LOLLIPOP_CONSTRAINTS)),
-            false)
-        .withDeadline(autoCommands.waitForLollipopIntakeDone());
+                    () -> pipe.getPose(ReefPipeLevel.BACK_AWAY, scoringSide),
+                    Commands.waitSeconds(0.15).andThen(robotManager::stowRequest)))));
+  }
+
+  public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
+    return Commands.sequence(
+        trailblazer.followSegment(
+            new AutoSegment(
+                BASE_CONSTRAINTS,
+                new AutoPoint(approachPoint, autoCommands.lollipopApproachCommand()))),
+        trailblazer
+            .followSegment(
+                new AutoSegment(
+                    BASE_CONSTRAINTS,
+                    new AutoPoint(
+                        () ->
+                            new Pose2d(
+                                robotManager
+                                    .coralMap
+                                    .getLollipopIntakePose()
+                                    .orElse(defaultIntakingPoint)
+                                    .getTranslation(),
+                                defaultIntakingPoint.getRotation()),
+                        autoCommands.intakeLollipopCommand(),
+                        LOLLIPOP_CONSTRAINTS)),
+                false)
+            .withDeadline(autoCommands.waitForLollipopIntakeDone()));
   }
 
   public Command intakeGround(Pose2d approachPoint, Pose2d defaultIntakingPose) {
