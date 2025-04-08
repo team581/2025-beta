@@ -79,10 +79,14 @@ public enum Waypoint {
   ALGAE_NET_OUT_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
   ALGAE_NET_OUT_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
+  REEF_ALGAE_L2_ELEVATOR(
+      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.CORAL_HANDOFF)),
   REEF_ALGAE_L2_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2)),
   REEF_ALGAE_L2_LEFT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2)),
+  REEF_ALGAE_L3_ELEVATOR(
+      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.CORAL_HANDOFF)),
   REEF_ALGAE_L3_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3)),
   REEF_ALGAE_L3_LEFT(

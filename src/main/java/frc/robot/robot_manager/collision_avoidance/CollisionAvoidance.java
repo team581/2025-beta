@@ -582,6 +582,15 @@ public class CollisionAvoidance {
     Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.HANDOFF_ARM_OUT_RIGHT);
     Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.HANDOFF_ARM_OUT_LEFT);
 
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_ELEVATOR);
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_ELEVATOR);
+
+    Waypoint.REEF_ALGAE_L2_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
+    Waypoint.REEF_ALGAE_L2_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT);
+
+    Waypoint.REEF_ALGAE_L3_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_RIGHT);
+    Waypoint.REEF_ALGAE_L3_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_LEFT);
+
     Waypoint.HANDOFF_ARM_OUT_RIGHT.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
     Waypoint.HANDOFF_ARM_OUT_LEFT.alwaysSafe(graph, Waypoint.ELEVATOR_0_ARM_UP);
 
