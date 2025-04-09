@@ -10,7 +10,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
-  private static void assertNoCollision(
+  
+private static void assertNoCollision(
       ObstructionKind obstruction, SuperstructurePosition start, SuperstructurePosition end) {
     assertPath(
         obstruction, start, end, List.of(Waypoint.getClosest(start), Waypoint.getClosest(end)));
@@ -21,14 +22,31 @@ public class CollisionAvoidanceTest {
     assertPath(obstruction, start, end, List.of(start, Waypoint.getClosest(end)));
   }
 
+
   private static void assertNoCollision(
       ObstructionKind obstruction, SuperstructurePosition start, Waypoint end) {
     assertPath(obstruction, start, end, List.of(Waypoint.getClosest(start), end));
   }
 
+
   private static void assertNoCollision(ObstructionKind obstruction, Waypoint start, Waypoint end) {
     assertPath(obstruction, start, end, List.of(start, end));
   }
+
+
+  @Test
+  void assertNoCollision() {
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3));
+  }
+
+
+  
+
+  
 
   private static void assertPath(
       ObstructionKind obstruction, Waypoint start, Waypoint end, List<Waypoint> expected) {
@@ -429,15 +447,6 @@ public class CollisionAvoidanceTest {
         new SuperstructurePosition(
             ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
-  }
-
-  @Test
-  void assertNoCollision() {
-    assertNoCollision(
-        ObstructionKind.NONE,
-        new SuperstructurePosition(
-            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
-        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3));
   }
 
   @Test

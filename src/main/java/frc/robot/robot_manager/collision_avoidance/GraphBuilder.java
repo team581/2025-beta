@@ -9,7 +9,7 @@ import frc.robot.arm.ArmState;
 import java.util.List;
 import java.util.stream.Stream;
 
-class GraphBuilder {
+final class GraphBuilder {
   public static ImmutableValueGraph<Waypoint, WaypointEdge> createGraph() {
     // Create an undirected value graph to represent safe motion between waypoints. Undirected
     // because if you can go from A to B, you can also go from B to A. Value graph because we want
@@ -325,4 +325,7 @@ class GraphBuilder {
   private static List<Pair<Waypoint, Waypoint>> allPairs(Waypoint... waypoints) {
     return Stream.of(waypoints).flatMap(a -> Stream.of(waypoints).map(b -> Pair.of(a, b))).toList();
   }
+
+
+private GraphBuilder() {}
 }

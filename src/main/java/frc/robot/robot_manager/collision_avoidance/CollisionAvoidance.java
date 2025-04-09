@@ -30,8 +30,7 @@ public class CollisionAvoidance {
       new HashMap<>();
 
   private static CollisionAvoidanceQuery lastQuery =
-      new CollisionAvoidanceQuery(
-          Waypoint.L1_UPRIGHT, Waypoint.L1_UPRIGHT, ObstructionKind.NONE);
+      new CollisionAvoidanceQuery(Waypoint.L1_UPRIGHT, Waypoint.L1_UPRIGHT, ObstructionKind.NONE);
   private static double lastSolution = 90.0;
   private static boolean lastClimberRisky = true;
   private static ObstructionKind lastObstruction = ObstructionKind.NONE;
@@ -96,18 +95,15 @@ public class CollisionAvoidance {
         "CollisionAvoidance/CollisionAvoidanceAngleVariables/goalAngle",
         waypoint.position.armAngle());
     DogLog.log(
-        "CollisionAvoidance/CollisionAvoidanceAngleVariables/hitsClimber",
-        edge.hitsClimber());
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/hitsClimber", edge.hitsClimber());
 
     DogLog.log(
         "CollisionAvoidance/CollisionAvoidanceAngleVariables/obstructionKind", obstructionKind);
 
     DogLog.log(
-        "CollisionAvoidance/CollisionAvoidanceAngleVariables/leftStrat",
-        edge.leftSideStrategy());
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/leftStrat", edge.leftSideStrategy());
     DogLog.log(
-        "CollisionAvoidance/CollisionAvoidanceAngleVariables/rightStrat",
-        edge.rightSideStrategy());
+        "CollisionAvoidance/CollisionAvoidanceAngleVariables/rightStrat", edge.rightSideStrategy());
     DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/RawArmAngle", rawArmAngle);
     //  DogLog.log("CollisionAvoidance/CollisionAvoidanceAngleVariables/edge", edge);
     DogLog.log(
