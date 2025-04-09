@@ -512,8 +512,10 @@ public class CollisionAvoidance {
 
     // Place
 
-    Waypoint.L4_LEFT_PLACE.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.REEF_ALGAE_L3_LEFT);
-    Waypoint.L4_RIGHT_PLACE.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+    Waypoint.L4_LEFT_PLACE.alwaysSafe(
+        graph, Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.REEF_ALGAE_L3_LEFT);
+    Waypoint.L4_RIGHT_PLACE.alwaysSafe(
+        graph, Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
 
     /* Elevator stays the same, arm switches from left to right */
     Waypoint.L2_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L2_RIGHT_LINEUP);
