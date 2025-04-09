@@ -90,7 +90,7 @@ dependencies {
 	errorprone "com.google.errorprone:error_prone_core:2.37.0"
 
 	// https://central.sonatype.com/artifact/com.google.guava/guava
-	implementation 'com.google.guava:guava:33.4.6-jre'
+	implementation 'com.google.guava:guava:33.4.7-android'
 }
 
 test {
