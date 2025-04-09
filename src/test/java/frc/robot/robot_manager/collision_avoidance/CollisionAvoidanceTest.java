@@ -364,7 +364,7 @@ public class CollisionAvoidanceTest {
         List.of(
             Waypoint.ALGAE_NET_OUT_RIGHT,
             Waypoint.ALGAE_NET_UP,
-            Waypoint.ELEVATOR_0_ARM_UP,
+            Waypoint.HANDOFF_CLEARS_CLIMBER,
             Waypoint.HANDOFF);
 
     assertEquals(expected, result.orElseThrow());
@@ -393,7 +393,7 @@ public class CollisionAvoidanceTest {
                 ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
             ObstructionKind.NONE);
     var expected =
-        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_ARM_OUT_LEFT, Waypoint.REEF_ALGAE_L2_LEFT);
+        List.of(Waypoint.HANDOFF,Waypoint. HANDOFF_CLEARS_CLIMBER, Waypoint.REEF_ALGAE_L2_LEFT);
 
     assertEquals(expected, result.orElseThrow());
   }
@@ -463,7 +463,7 @@ public class CollisionAvoidanceTest {
                 ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
             ObstructionKind.NONE);
     var expected =
-        List.of(Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF);
+        List.of(Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.HANDOFF_ARM_OUT_LEFT, Waypoint.HANDOFF);
 
     assertEquals(expected, result.orElseThrow());
   }
