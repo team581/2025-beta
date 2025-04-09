@@ -451,7 +451,8 @@ public class CollisionAvoidanceTest {
   void stowedUprightToL3RightAlgae() {
     assertNoCollision(
         ObstructionKind.LEFT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
-    assertNoCollision(ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+    assertNoCollision(
+        ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
     assertNoCollision(
         ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
   }
