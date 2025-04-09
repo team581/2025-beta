@@ -9,6 +9,9 @@ public enum GroundState {
   HANDOFF_WAIT,
   HANDOFF_RELEASE,
 
+  OUTWARD_EMPTY,
+  OUTWARD_CORAL,
+
   L1_WAIT,
   L1_SCORE,
 

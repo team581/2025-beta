@@ -43,6 +43,14 @@ public class GroundManager extends StateMachine<GroundState> {
         deploy.setState(DeployState.FLOOR_INTAKE);
         intake.setState(IntakeState.INTAKING);
       }
+      case OUTWARD_EMPTY -> {
+        deploy.setState(DeployState.OUTWARD);
+        intake.setState(IntakeState.IDLE_NO_GP);
+      }
+      case OUTWARD_CORAL -> {
+        deploy.setState(DeployState.OUTWARD);
+        intake.setState(IntakeState.IDLE_GP);
+      }
       case L1_WAIT -> {
         deploy.setState(DeployState.L1_SCORE);
         intake.setState(IntakeState.IDLE_GP);
@@ -119,5 +127,23 @@ public class GroundManager extends StateMachine<GroundState> {
 
   public void rehomeDeployRequest() {
     setStateFromRequest(GroundState.REHOME_DEPLOY);
+  }
+
+  public void outwardRequest() {
+    if (hasCoral) {
+      setState(GroundState.OUTWARD_CORAL);
+    } else {
+      setState(GroundState.OUTWARD_EMPTY);
+    }
+  }
+
+  public void stopOutwardRequest() {
+    switch (getState()) {
+      case OUTWARD_CORAL -> setState(GroundState.IDLE_CORAL);
+      case OUTWARD_EMPTY -> setState(GroundState.IDLE_EMPTY);
+      default -> {
+        // Intentionally empty
+      }
+    }
   }
 }

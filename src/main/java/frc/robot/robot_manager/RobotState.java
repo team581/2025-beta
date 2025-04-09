@@ -25,6 +25,7 @@ public enum RobotState {
   CORAL_INTAKE_LOLLIPOP_PUSH(ClawGamePiece.CORAL, false),
   CORAL_INTAKE_LOLLIPOP_GRAB(ClawGamePiece.EMPTY, false),
 
+  PREPARE_ALGAE_INTAKE_FLOOR(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_FLOOR(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L2_LEFT_APPROACH(ClawGamePiece.ALGAE, false),
   ALGAE_INTAKE_L3_LEFT_APPROACH(ClawGamePiece.ALGAE, false),
