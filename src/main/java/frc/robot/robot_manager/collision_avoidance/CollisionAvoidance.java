@@ -473,43 +473,54 @@ public class CollisionAvoidance {
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L3_LEFT_LINEUP,
-        Waypoint.L4_LEFT_LINEUP);
+        Waypoint.L4_LEFT_LINEUP,
+        Waypoint.L2_LEFT_PLACE);
     Waypoint.L3_UPRIGHT.leftSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L2_LEFT_LINEUP,
-        Waypoint.L4_LEFT_LINEUP);
+        Waypoint.L4_LEFT_LINEUP,
+        Waypoint.L3_LEFT_PLACE);
     Waypoint.L4_UPRIGHT.leftSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L2_LEFT_LINEUP,
-        Waypoint.L3_LEFT_LINEUP);
+        Waypoint.L3_LEFT_LINEUP,
+        Waypoint.L4_LEFT_PLACE);
 
     Waypoint.L2_UPRIGHT.rightSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L1_RIGHT_LINEUP,
         Waypoint.L3_RIGHT_LINEUP,
-        Waypoint.L4_RIGHT_LINEUP);
+        Waypoint.L4_RIGHT_LINEUP,
+        Waypoint.L2_RIGHT_PLACE);
     Waypoint.L3_UPRIGHT.rightSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L1_RIGHT_LINEUP,
         Waypoint.L2_RIGHT_LINEUP,
-        Waypoint.L4_RIGHT_LINEUP);
+        Waypoint.L4_RIGHT_LINEUP,
+        Waypoint.L3_RIGHT_PLACE);
     Waypoint.L4_UPRIGHT.rightSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
         Waypoint.L1_RIGHT_LINEUP,
         Waypoint.L2_RIGHT_LINEUP,
-        Waypoint.L3_RIGHT_LINEUP);
+        Waypoint.L3_RIGHT_LINEUP,
+        Waypoint.L4_RIGHT_PLACE);
+
+    // Place
+
+    Waypoint.L4_LEFT_PLACE.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.REEF_ALGAE_L3_LEFT);
+    Waypoint.L4_RIGHT_PLACE.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
 
     /* Elevator stays the same, arm switches from left to right */
     Waypoint.L2_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L2_RIGHT_LINEUP);
     Waypoint.L3_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L3_RIGHT_LINEUP);
     Waypoint.L4_LEFT_LINEUP.alwaysSafe(graph, Waypoint.L4_RIGHT_LINEUP);
     Waypoint.ALGAE_NET_OUT_LEFT.alwaysSafe(graph, Waypoint.ALGAE_NET_OUT_RIGHT);
-    Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
+    // Waypoint.REEF_ALGAE_L2_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
     Waypoint.REEF_ALGAE_L3_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_RIGHT);
 
     /* Switching coral level on the same side is okay if you won't hit the reef */
@@ -582,11 +593,14 @@ public class CollisionAvoidance {
     Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.HANDOFF_ARM_OUT_RIGHT);
     Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.HANDOFF_ARM_OUT_LEFT);
 
-    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_ELEVATOR);
-    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_ELEVATOR);
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
 
-    Waypoint.REEF_ALGAE_L2_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
-    Waypoint.REEF_ALGAE_L2_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT);
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_ELEVATOR);
+    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.L1_RIGHT_LINEUP);
+
+    Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT_ARM);
+    Waypoint.REEF_ALGAE_L2_LEFT_ARM.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT);
 
     Waypoint.REEF_ALGAE_L3_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_RIGHT);
     Waypoint.REEF_ALGAE_L3_ELEVATOR.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_LEFT);
@@ -597,7 +611,6 @@ public class CollisionAvoidance {
     Waypoint.HANDOFF_ARM_OUT_RIGHT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT);
     Waypoint.HANDOFF_ARM_OUT_RIGHT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_RIGHT);
 
-    Waypoint.HANDOFF_ARM_OUT_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT);
     Waypoint.HANDOFF_ARM_OUT_LEFT.alwaysSafe(graph, Waypoint.REEF_ALGAE_L3_LEFT);
 
     Waypoint.HANDOFF_ARM_OUT_RIGHT.alwaysSafe(graph, Waypoint.LOLLIPOP_INTAKE_RIGHT);
