@@ -326,6 +326,5 @@ final class GraphBuilder {
     return Stream.of(waypoints).flatMap(a -> Stream.of(waypoints).map(b -> Pair.of(a, b))).toList();
   }
 
-
-private GraphBuilder() {}
+  private GraphBuilder() {}
 }
