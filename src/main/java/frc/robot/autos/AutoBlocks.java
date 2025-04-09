@@ -159,10 +159,9 @@ public class AutoBlocks {
 
   public Command intakeLollipop(Pose2d approachPoint, Pose2d defaultIntakingPoint) {
     return Commands.sequence(
-        trailblazer.followSegment(
-            new AutoSegment(
-                BASE_CONSTRAINTS,
-                new AutoPoint(approachPoint, autoCommands.lollipopApproachCommand()))),
+        autoCommands.lollipopApproachCommand(),
+        trailblazer.followSegment(new AutoSegment(BASE_CONSTRAINTS, new AutoPoint(approachPoint))),
+        autoCommands.intakeLollipopCommand(),
         trailblazer
             .followSegment(
                 new AutoSegment(
@@ -176,7 +175,6 @@ public class AutoBlocks {
                                     .orElse(defaultIntakingPoint)
                                     .getTranslation(),
                                 defaultIntakingPoint.getRotation()),
-                        autoCommands.intakeLollipopCommand(),
                         LOLLIPOP_CONSTRAINTS)),
                 false)
             .withDeadline(autoCommands.waitForLollipopIntakeDone()));

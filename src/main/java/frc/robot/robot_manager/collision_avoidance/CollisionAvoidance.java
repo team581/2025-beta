@@ -123,7 +123,7 @@ public class CollisionAvoidance {
       SuperstructurePosition currentPosition,
       SuperstructurePosition desiredPosition,
       ObstructionKind obstructionKind) {
-    DogLog.log("CollisionAvoidance/ClawPos", currentPosition.getTranslation());
+    DogLog.log("CollisionAvoidance/ClawPos", currentPosition.translation());
 
     var closestToCurrent = Waypoint.getClosest(currentPosition);
     var closestToDesired = Waypoint.getClosest(desiredPosition);

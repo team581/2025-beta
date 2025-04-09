@@ -87,7 +87,9 @@ public class CoralMap extends StateMachine<CoralMapState> {
     var newPose =
         IntakeAssistUtil.getLollipopIntakePoseFromVisionResult(
             lollipopResult, localization.getPose());
-    if (newPose.isPresent() && safeToTrack()) {
+    if (newPose.isPresent()
+        && safeToTrack()
+        && isLollipopInSafeSpotForAuto(newPose.get().getTranslation())) {
       if (filteredLollipopPose.isEmpty()) {
         resetLollipopFilter(newPose.get().getTranslation());
       }
@@ -181,6 +183,16 @@ public class CoralMap extends StateMachine<CoralMapState> {
 
     if ((FmsSubsystem.isRedAlliance() && coralPose.getX() > Units.inchesToMeters(630))
         || (!FmsSubsystem.isRedAlliance() && coralPose.getX() < Units.inchesToMeters(55))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public static boolean isLollipopInSafeSpotForAuto(Translation2d coralPose) {
+
+    if ((FmsSubsystem.isRedAlliance() && coralPose.getX() < Units.inchesToMeters(603))
+        || (!FmsSubsystem.isRedAlliance() && coralPose.getX() > Units.inchesToMeters(72))) {
       return false;
     }
 

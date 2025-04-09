@@ -16,7 +16,8 @@ public record SuperstructurePosition(
     double elevatorHeight,
     double armAngle,
     TrapezoidProfile.State elevatorState,
-    TrapezoidProfile.State armState) {
+    TrapezoidProfile.State armState,
+    Translation2d translation) {
   // Elevator heights are accurate to 0.1 inches
   private static final double ELEVATOR_PRECISION = 0.1;
   // Arm angles are accurate to 0.1 degrees
@@ -42,7 +43,11 @@ public record SuperstructurePosition(
         elevatorHeight,
         armAngle,
         new TrapezoidProfile.State(elevatorHeight, 0),
-        new TrapezoidProfile.State(armAngle, 0));
+        new TrapezoidProfile.State(armAngle, 0),
+        new Translation2d(0, Units.inchesToMeters(elevatorHeight))
+            .plus(
+                new Translation2d(
+                    ArmSubsystem.ARM_LENGTH_METERS, Rotation2d.fromDegrees(armAngle))));
   }
 
   public SuperstructurePosition(ElevatorState elevatorState, double armAngle) {
@@ -104,10 +109,5 @@ public record SuperstructurePosition(
         new TrapezoidProfile.State((360 - Math.abs(this.armAngle - other.armAngle)), 0));
 
     return ELEVATOR_PROFILE.totalTime() + ARM_PROFILE.totalTime() + STATIC_COST;
-  }
-
-  public Translation2d getTranslation() {
-    return new Translation2d(0, Units.inchesToMeters(elevatorHeight))
-        .plus(new Translation2d(ArmSubsystem.ARM_LENGTH_METERS, Rotation2d.fromDegrees(armAngle)));
   }
 }

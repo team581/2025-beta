@@ -17,10 +17,6 @@ public class CollisionAvoidanceTest {
         obstruction, start, end, List.of(Waypoint.getClosest(start), Waypoint.getClosest(end)));
   }
 
-  
-
-  
-
   private static void assertNoCollision(ObstructionKind obstruction, Waypoint start, Waypoint end) {
     assertPath(obstruction, start, end, List.of(start, end));
   }
@@ -374,7 +370,7 @@ public class CollisionAvoidanceTest {
             Waypoint.ALGAE_NET_OUT_RIGHT,
             Waypoint.ALGAE_NET_UP,
             Waypoint.L3_UPRIGHT,
-            Waypoint.HANDOFF_CLEARS_CLIMBER,
+            Waypoint.L3_RIGHT_LINEUP,
             Waypoint.HANDOFF));
   }
 
@@ -388,7 +384,7 @@ public class CollisionAvoidanceTest {
             Waypoint.ALGAE_NET_OUT_LEFT,
             Waypoint.ALGAE_NET_UP,
             Waypoint.L3_UPRIGHT,
-            Waypoint.HANDOFF_CLEARS_CLIMBER,
+            Waypoint.L3_RIGHT_LINEUP,
             Waypoint.HANDOFF));
   }
 

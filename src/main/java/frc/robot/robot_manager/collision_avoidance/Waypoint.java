@@ -118,13 +118,12 @@ public enum Waypoint {
   public static void log() {
     for (var waypoint : values()) {
       DogLog.log(
-          "CollisionAvoidance/Waypoints/" + waypoint.toString(),
-          waypoint.position.getTranslation());
+          "CollisionAvoidance/Waypoints/" + waypoint.toString(), waypoint.position.translation());
     }
     DogLog.log(
         "CollisionAvoidance/Waypoints/All",
         Stream.of(values())
-            .map(waypoint -> waypoint.position.getTranslation())
+            .map(waypoint -> waypoint.position.translation())
             .toArray(Translation2d[]::new));
   }
 
@@ -135,12 +134,12 @@ public enum Waypoint {
    */
   public static Waypoint getClosest(SuperstructurePosition position) {
     if (FeatureFlags.USE_ALTERNATE_WAYPOINT_CHOOSER.getAsBoolean()) {
-      var positionTranslation = position.getTranslation();
+      var positionTranslation = position.translation();
 
       return ALL_WAYPOINTS.stream()
           .min(
               Comparator.comparingDouble(
-                  waypoint -> positionTranslation.getDistance(waypoint.position.getTranslation())))
+                  waypoint -> positionTranslation.getDistance(waypoint.position.translation())))
           .orElseThrow();
     }
 
