@@ -963,7 +963,12 @@ public class RobotManager extends StateMachine<RobotState> {
             robotPose,
             vision.isAnyLeftScoringTagLimelightOnline(),
             vision.isAnyRightScoringTagLimelightOnline());
-    shouldLoopAroundToScoreObstruction = autoAlign.getObstruction();
+    shouldLoopAroundToScoreObstruction =
+        switch (getState()) {
+          case ALGAE_NET_LEFT_WAITING, ALGAE_NET_LEFT_RELEASE -> ObstructionKind.LEFT_OBSTRUCTED;
+          case ALGAE_NET_RIGHT_WAITING, ALGAE_NET_RIGHT_RELEASE -> ObstructionKind.RIGHT_OBSTRUCTED;
+          default -> autoAlign.getObstruction();
+        };
     reefSnapAngle = autoAlign.getUsedScoringPose().getRotation().getDegrees();
     scoringLevel =
         switch (getState()) {

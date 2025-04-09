@@ -363,21 +363,21 @@ public class CollisionAvoidanceTest {
   @Test
   void stowsSafelyAfterRightNetScoreTest() {
     assertPath(
-        ObstructionKind.NONE,
+        ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT),
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
         List.of(
             Waypoint.ALGAE_NET_OUT_RIGHT,
             Waypoint.ALGAE_NET_UP,
             Waypoint.L3_UPRIGHT,
-            Waypoint.L3_RIGHT_LINEUP,
+            Waypoint.L3_LEFT_LINEUP,
             Waypoint.HANDOFF));
   }
 
   @Test
   void stowsSafelyAfterLeftNetScoreTest() {
     assertPath(
-        ObstructionKind.NONE,
+        ObstructionKind.LEFT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT),
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
         List.of(
