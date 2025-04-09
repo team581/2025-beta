@@ -17,14 +17,20 @@ import java.util.stream.Stream;
  * avoidance uses these as nodes within a graph to route from a current position to a goal position.
  */
 public enum Waypoint {
+  HANDOFF_TO_GROUND_ALGAE_INTAKE(
+      new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.ALGAE_INTAKE_FLOOR)),
   GROUND_ALGAE_INTAKE(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_GROUND, ArmState.ALGAE_INTAKE_FLOOR)),
   LOLLIPOP_INTAKE_RIGHT(
       new SuperstructurePosition(
           ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
+  LOLLIPOP_INTAKE_RIGHT_APPROACH(
+      new SuperstructurePosition(
+          ElevatorState.LOLLIPOP_CORAL_INTAKE_APPROACH, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE)),
+  LOLLIPOP_INTAKE_RIGHT_PUSH(
+      new SuperstructurePosition(
+          ElevatorState.LOLLIPOP_CORAL_INTAKE_PUSH, ArmState.LOLLIPOP_CORAL_INTAKE_PUSH)),
   HANDOFF(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF)),
-  HANDOFF_ARM_OUT_LEFT(new SuperstructurePosition(55, 180.0)),
-  HANDOFF_ARM_OUT_RIGHT(new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, 0.0)),
   HANDOFF_CLEARS_CLIMBER(new SuperstructurePosition(55, ArmState.CORAL_HANDOFF)),
 
   PROCESSOR(new SuperstructurePosition(ElevatorState.PROCESSOR, ArmState.ALGAE_PROCESSOR)),
@@ -76,17 +82,18 @@ public enum Waypoint {
   L4_LEFT_PLACE(
       new SuperstructurePosition(
           ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4)),
-  ALGAE_NET_UP(new SuperstructurePosition(48.0, ArmState.HOLDING_UPRIGHT)),
+  ALGAE_NET_UP(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.HOLDING_UPRIGHT)),
   ALGAE_NET_OUT_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT)),
   ALGAE_NET_OUT_LEFT(new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT)),
-  REEF_ALGAE_L2_LEFT_ARM(new SuperstructurePosition(55.0, ArmState.ALGAE_INTAKE_LEFT_L2)),
+  REEF_ALGAE_L2_UPRIGHT(
+      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.HOLDING_UPRIGHT)),
+  REEF_ALGAE_L3_UPRIGHT(
+      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.HOLDING_UPRIGHT)),
   REEF_ALGAE_L2_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2)),
   REEF_ALGAE_L2_LEFT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2)),
-  REEF_ALGAE_L3_ELEVATOR(
-      new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.CORAL_HANDOFF)),
   REEF_ALGAE_L3_RIGHT(
       new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3)),
   REEF_ALGAE_L3_LEFT(
@@ -144,6 +151,10 @@ public enum Waypoint {
 
   public void alwaysSafe(MutableValueGraph<Waypoint, WaypointEdge> graph, Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,
@@ -157,6 +168,10 @@ public enum Waypoint {
       ObstructionStrategy leftStrategy,
       Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,
@@ -169,6 +184,10 @@ public enum Waypoint {
       ObstructionStrategy rightStrategy,
       Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,
@@ -179,6 +198,10 @@ public enum Waypoint {
   public void avoidClimberAlwaysSafe(
       MutableValueGraph<Waypoint, WaypointEdge> graph, Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,
@@ -196,6 +219,10 @@ public enum Waypoint {
       ObstructionStrategy leftStrategy,
       Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,
@@ -209,6 +236,10 @@ public enum Waypoint {
       ObstructionStrategy rightStrategy,
       Waypoint... others) {
     for (var other : others) {
+      if (this == other) {
+        continue;
+      }
+
       graph.putEdgeValue(
           this,
           other,

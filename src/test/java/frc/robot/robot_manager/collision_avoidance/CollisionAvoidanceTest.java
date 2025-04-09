@@ -6,9 +6,59 @@ import frc.robot.arm.ArmState;
 import frc.robot.elevator.ElevatorState;
 import frc.robot.robot_manager.SuperstructurePosition;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class CollisionAvoidanceTest {
+  private static void assertNoCollision(
+      ObstructionKind obstruction, SuperstructurePosition start, SuperstructurePosition end) {
+    assertPath(
+        obstruction, start, end, List.of(Waypoint.getClosest(start), Waypoint.getClosest(end)));
+  }
+
+  private static void assertNoCollision(
+      ObstructionKind obstruction, Waypoint start, SuperstructurePosition end) {
+    assertPath(obstruction, start, end, List.of(start, Waypoint.getClosest(end)));
+  }
+
+  private static void assertNoCollision(
+      ObstructionKind obstruction, SuperstructurePosition start, Waypoint end) {
+    assertPath(obstruction, start, end, List.of(Waypoint.getClosest(start), end));
+  }
+
+  private static void assertNoCollision(ObstructionKind obstruction, Waypoint start, Waypoint end) {
+    assertPath(obstruction, start, end, List.of(start, end));
+  }
+
+  private static void assertPath(
+      ObstructionKind obstruction, Waypoint start, Waypoint end, List<Waypoint> expected) {
+    assertEquals(Optional.of(expected), CollisionAvoidance.aStar(start, end, obstruction));
+  }
+
+  private static void assertPath(
+      ObstructionKind obstruction,
+      SuperstructurePosition start,
+      Waypoint end,
+      List<Waypoint> expected) {
+    assertEquals(Optional.of(expected), CollisionAvoidance.aStar(start, end, obstruction));
+  }
+
+  private static void assertPath(
+      ObstructionKind obstruction,
+      Waypoint start,
+      SuperstructurePosition end,
+      List<Waypoint> expected) {
+    assertEquals(Optional.of(expected), CollisionAvoidance.aStar(start, end, obstruction));
+  }
+
+  private static void assertPath(
+      ObstructionKind obstruction,
+      SuperstructurePosition start,
+      SuperstructurePosition end,
+      List<Waypoint> expected) {
+    assertEquals(Optional.of(expected), CollisionAvoidance.aStar(start, end, obstruction));
+  }
+
   @Test
   public void hectorTest() {
     var currentRawAngle = 720;
@@ -78,29 +128,6 @@ public class CollisionAvoidanceTest {
     var expected = List.of(-90.0, -450.0);
     assertEquals(expected, result);
   }
-
-  //  @Test
-  // public void routePositionTest() {
-  //   SuperstructurePosition current = new SuperstructurePosition(ElevatorState.CORAL_HANDOFF,
-  // ArmState.CORAL_HANDOFF);
-  //   SuperstructurePosition goal = new
-  // SuperstructurePosition(ElevatorState.CORAL_SCORE_RIGHT_LINEUP_L4,
-  // ArmState.CORAL_SCORE_RIGHT_LINEUP_L4);
-
-  //   boolean climberRisky = false;
-  //   double currentAngle = -90.0;
-  //   ObstructionKind obstructionKind = ObstructionKind.RIGHT_OBSTRUCTED;
-  //   ObstructionStrategy leftStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
-  //   ObstructionStrategy rightStrategy = ObstructionStrategy.LONG_WAY_IF_BLOCKED;
-
-  //   var result =
-  //       CollisionAvoidance.routePosition(
-  //           current, goal, obstructionKind, currentAngle);
-
-  //   double expected = -360.0;
-
-  //   assertEquals(expected, result);
-  // }
 
   @Test
   public void armSetCollisionAvoidanceGoalTest() {
@@ -314,35 +341,15 @@ public class CollisionAvoidanceTest {
     assertEquals(expected, result);
   }
 
-  // @Test
-  // public void leftObstructedAstarTest() {
-  //   var result =
-  //       CollisionAvoidance.aStar(
-  //           new SuperstructurePosition(0, 90),
-  //           new SuperstructurePosition(50, 180),
-  //           ObstructionKind.LEFT_OBSTRUCTED);
-  //   var expected =
-  //       List.of(
-  //           Waypoint.ELEVATOR_0_ARM_UP,
-  //           Waypoint.CLIMBER_SAFE_ARM_UP,
-  //           Waypoint.L4_LEFT,
-  //           Waypoint.L4_LEFT_PLACE);
-  //   assertEquals(expected, result.get());
-  // }
-
   @Test
   public void rightObstructedAstarTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT),
-            new SuperstructurePosition(
-                ElevatorState.CORAL_SCORE_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4),
-            ObstructionKind.RIGHT_OBSTRUCTED);
     // Moves elevator first, only extends arm at the end
-    var expected =
-        List.of(Waypoint.L1_UPRIGHT, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP);
-
-    assertEquals(expected, result.get());
+    assertPath(
+        ObstructionKind.RIGHT_OBSTRUCTED,
+        new SuperstructurePosition(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT),
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_LINEUP_L4, ArmState.CORAL_SCORE_RIGHT_LINEUP_L4),
+        List.of(Waypoint.L1_UPRIGHT, Waypoint.L4_UPRIGHT, Waypoint.L4_RIGHT_LINEUP));
   }
 
   @Test
@@ -355,183 +362,190 @@ public class CollisionAvoidanceTest {
 
   @Test
   void stowsSafelyAfterRightNetScoreTest() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected =
+    assertPath(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_RIGHT),
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
         List.of(
             Waypoint.ALGAE_NET_OUT_RIGHT,
             Waypoint.ALGAE_NET_UP,
+            Waypoint.L3_UPRIGHT,
             Waypoint.HANDOFF_CLEARS_CLIMBER,
-            Waypoint.HANDOFF);
-
-    assertEquals(expected, result.orElseThrow());
+            Waypoint.HANDOFF));
   }
 
   @Test
-  void handoffToRightsL2ReefIntake() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.HANDOFF, Waypoint.REEF_ALGAE_L2_RIGHT);
+  void stowsSafelyAfterLeftNetScoreTest() {
+    assertPath(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.ALGAE_NET, ArmState.ALGAE_NET_LEFT),
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+        List.of(
+            Waypoint.ALGAE_NET_OUT_LEFT,
+            Waypoint.ALGAE_NET_UP,
+            Waypoint.L3_UPRIGHT,
+            Waypoint.HANDOFF_CLEARS_CLIMBER,
+            Waypoint.HANDOFF));
+  }
 
-    assertEquals(expected, result.orElseThrow());
+  @Test
+  void handoffToRightL2ReefIntake() {
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
   }
 
   @Test
   void handoffToLeftL2ReefIntake() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
-            ObstructionKind.NONE);
-    var expected =
-        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.REEF_ALGAE_L2_LEFT);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2));
   }
 
   @Test
   void l4PlaceToAlgaeLeftl2() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.L4_LEFT_PLACE, Waypoint.REEF_ALGAE_L2_LEFT);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2));
   }
 
   @Test
   void l4PlaceToAlgaeLeftl3() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_LEFT_L3),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.L4_LEFT_PLACE, Waypoint.REEF_ALGAE_L3_LEFT);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_LEFT_L3));
   }
 
   @Test
   void l4PlaceToAlgaeRightl2() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.L4_RIGHT_PLACE, Waypoint.REEF_ALGAE_L2_RIGHT);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
   }
 
   @Test
-  void l4PlaceToAlgaeRightl3() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.L4_RIGHT_PLACE, Waypoint.REEF_ALGAE_L3_RIGHT);
-
-    assertEquals(expected, result.orElseThrow());
-  }
-
-  @Test
-  void leftAlgael2ToHandoff() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected =
-        List.of(Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.HANDOFF_ARM_OUT_LEFT, Waypoint.HANDOFF);
-
-    assertEquals(expected, result.orElseThrow());
+  void assertNoCollision() {
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(
+            ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3));
   }
 
   @Test
   void rightAlgael2ToHandoff() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.HANDOFF);
-
-    assertEquals(expected, result.orElseThrow());
-  }
-
-  @Test
-  void leftAlgael3ToHandoff() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_LEFT_L3),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected =
-        List.of(Waypoint.REEF_ALGAE_L3_LEFT, Waypoint.REEF_ALGAE_L3_ELEVATOR, Waypoint.HANDOFF);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
   }
 
   @Test
   void rightAlgael3ToHandoff() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected = List.of(Waypoint.REEF_ALGAE_L3_RIGHT, Waypoint.HANDOFF);
-
-    assertEquals(expected, result.orElseThrow());
+    assertNoCollision(
+        ObstructionKind.NONE,
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3),
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
   }
 
   @Test
-  void handoffToLollipop() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            new SuperstructurePosition(
-                ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE),
-            ObstructionKind.NONE);
-    var expected =
-        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_ARM_OUT_RIGHT, Waypoint.LOLLIPOP_INTAKE_RIGHT);
+  void stowedUprightToL3RightAlgae() {
+    assertNoCollision(
+        ObstructionKind.LEFT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+    assertNoCollision(
+        ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+  }
 
-    assertEquals(expected, result.orElseThrow());
+  // Test the full lollipop auto
+  @Test
+  void lollipopAutoTest() {
+    // Lineup for preload
+    assertPath(
+        ObstructionKind.NONE,
+        Waypoint.L1_UPRIGHT,
+        Waypoint.L4_LEFT_LINEUP,
+        List.of(Waypoint.L1_UPRIGHT, Waypoint.L4_UPRIGHT, Waypoint.L4_LEFT_LINEUP));
+    // Score preload L4
+    assertNoCollision(
+        ObstructionKind.LEFT_OBSTRUCTED, Waypoint.L4_LEFT_LINEUP, Waypoint.L4_LEFT_PLACE);
+
+    // Lollipop intake approach
+    assertPath(
+        ObstructionKind.LEFT_OBSTRUCTED,
+        Waypoint.L4_LEFT_PLACE,
+        Waypoint.LOLLIPOP_INTAKE_RIGHT_APPROACH,
+        List.of(
+            Waypoint.L4_LEFT_PLACE, Waypoint.L4_UPRIGHT, Waypoint.LOLLIPOP_INTAKE_RIGHT_APPROACH));
+
+    // Lollipop intake
+    assertNoCollision(
+        ObstructionKind.NONE,
+        Waypoint.LOLLIPOP_INTAKE_RIGHT_APPROACH,
+        Waypoint.LOLLIPOP_INTAKE_RIGHT);
+    assertNoCollision(
+        ObstructionKind.NONE, Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.LOLLIPOP_INTAKE_RIGHT_PUSH);
+
+    // Stow after intake
+    assertNoCollision(
+        ObstructionKind.NONE, Waypoint.LOLLIPOP_INTAKE_RIGHT_PUSH, Waypoint.L1_UPRIGHT);
   }
 
   @Test
-  void lollipopToHandoff() {
-    var result =
-        CollisionAvoidance.aStar(
-            new SuperstructurePosition(
-                ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE),
-            new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-            ObstructionKind.NONE);
-    var expected =
-        List.of(Waypoint.LOLLIPOP_INTAKE_RIGHT, Waypoint.HANDOFF_ARM_OUT_RIGHT, Waypoint.HANDOFF);
+  void coralScoreLeftToReefAlgae() {
+    var scoreWaypoints =
+        List.of(
+            Waypoint.L2_LEFT_LINEUP,
+            Waypoint.L2_LEFT_PLACE,
+            Waypoint.L3_LEFT_LINEUP,
+            Waypoint.L3_LEFT_PLACE,
+            Waypoint.L4_LEFT_LINEUP,
+            Waypoint.L4_LEFT_PLACE);
+    for (var start : scoreWaypoints) {
+      for (var obstruction : ObstructionKind.values()) {
+        assertNoCollision(obstruction, start, Waypoint.REEF_ALGAE_L2_LEFT);
+        assertNoCollision(obstruction, start, Waypoint.REEF_ALGAE_L3_LEFT);
+      }
+    }
+  }
 
-    assertEquals(expected, result.orElseThrow());
+  @Test
+  void coralScoreRightToReefAlgae() {
+    var scoreWaypoints =
+        List.of(
+            Waypoint.L1_RIGHT_LINEUP,
+            Waypoint.L2_RIGHT_LINEUP,
+            Waypoint.L2_RIGHT_PLACE,
+            Waypoint.L3_RIGHT_LINEUP,
+            Waypoint.L3_RIGHT_PLACE,
+            Waypoint.L4_RIGHT_LINEUP,
+            Waypoint.L4_RIGHT_PLACE);
+    for (var start : scoreWaypoints) {
+      for (var obstruction : ObstructionKind.values()) {
+        assertNoCollision(obstruction, start, Waypoint.REEF_ALGAE_L2_RIGHT);
+        assertNoCollision(obstruction, start, Waypoint.REEF_ALGAE_L3_RIGHT);
+      }
+    }
+  }
+
+  @Test
+  void handoffToScoreUnobstructed() {
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L2_LEFT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L3_LEFT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L4_LEFT_LINEUP);
+
+    // TODO: Figure out optimal L1 scoring motion
+    // assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L1_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L2_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L3_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L4_RIGHT_LINEUP);
   }
 }
