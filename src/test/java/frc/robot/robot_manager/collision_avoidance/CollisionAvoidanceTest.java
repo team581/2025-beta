@@ -391,7 +391,7 @@ public class CollisionAvoidanceTest {
   @Test
   void handoffToRightL2ReefIntake() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
   }
@@ -399,7 +399,7 @@ public class CollisionAvoidanceTest {
   @Test
   void handoffToLeftL2ReefIntake() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.LEFT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2));
   }
@@ -407,7 +407,7 @@ public class CollisionAvoidanceTest {
   @Test
   void l4PlaceToAlgaeLeftl2() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.LEFT_OBSTRUCTED,
         new SuperstructurePosition(
             ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2));
@@ -416,7 +416,7 @@ public class CollisionAvoidanceTest {
   @Test
   void l4PlaceToAlgaeLeftl3() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.LEFT_OBSTRUCTED,
         new SuperstructurePosition(
             ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_LEFT_RELEASE_L4),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_LEFT_L3));
@@ -425,7 +425,7 @@ public class CollisionAvoidanceTest {
   @Test
   void l4PlaceToAlgaeRightl2() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(
             ElevatorState.CORAL_SCORE_RELEASE_L4, ArmState.CORAL_SCORE_RIGHT_RELEASE_L4),
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
@@ -434,7 +434,7 @@ public class CollisionAvoidanceTest {
   @Test
   void rightAlgael2ToHandoff() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
   }
@@ -442,7 +442,7 @@ public class CollisionAvoidanceTest {
   @Test
   void rightAlgael3ToHandoff() {
     assertNoCollision(
-        ObstructionKind.NONE,
+        ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3),
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
   }
@@ -451,7 +451,7 @@ public class CollisionAvoidanceTest {
   void stowedUprightToL3RightAlgae() {
     assertNoCollision(
         ObstructionKind.LEFT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
+    assertNoCollision(ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
     assertNoCollision(
         ObstructionKind.RIGHT_OBSTRUCTED, Waypoint.L1_UPRIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
   }
@@ -488,6 +488,12 @@ public class CollisionAvoidanceTest {
     // Stow after intake
     assertNoCollision(
         ObstructionKind.NONE, Waypoint.LOLLIPOP_INTAKE_RIGHT_PUSH, Waypoint.L1_UPRIGHT);
+
+    assertPath(
+        ObstructionKind.LEFT_OBSTRUCTED,
+        Waypoint.L1_UPRIGHT,
+        Waypoint.L4_LEFT_LINEUP,
+        List.of(Waypoint.L1_UPRIGHT, Waypoint.L4_UPRIGHT, Waypoint.L4_LEFT_LINEUP));
   }
 
   @Test
