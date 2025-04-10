@@ -27,64 +27,6 @@ import java.util.OptionalDouble;
 public class ArmSubsystem extends StateMachine<ArmState> {
   public static final double ARM_LENGTH_METERS = Units.inchesToMeters(37.416);
 
-  /**
-   * Denormalizes a goal angle to be in the same rotation as the current angle, always moving
-   * forward (clockwise) if adjustment is needed.
-   *
-   * @param currentAngle The current, non-normalized angle of the arm.
-   * @param normalizedGoalAngle The normalized goal angle (between [-180, 180))
-   * @return A denormalized goal angle that can be reached by moving forward
-   */
-  public static double denormalizeAngleForward(double currentAngle, double normalizedGoalAngle) {
-    // Normalize the current angle to [-180, 180)
-    double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
-
-    // Calculate the number of full rotations in the current angle
-    var fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
-
-    // Calculate base angle (same rotation as current)
-    double baseAngle = fullRotations * 360.0;
-
-    // Initialize result with the base angle + normalized goal
-    double result = baseAngle + normalizedGoalAngle;
-
-    // If moving to this angle would require moving backward, add 360 degrees
-    if (MathHelpers.angleModulus(normalizedGoalAngle - normalizedCurrentAngle) < 0) {
-      result += 360.0;
-    }
-
-    return result;
-  }
-
-  /**
-   * Denormalizes a goal angle to be in the same rotation as the current angle, always moving
-   * backward (counterclockwise) if adjustment is needed.
-   *
-   * @param currentAngle The current, non-normalized angle of the arm.
-   * @param normalizedGoalAngle The normalized goal angle (between [-180, 180))
-   * @return A denormalized goal angle that can be reached by moving backward
-   */
-  public static double denormalizeAngleBackward(double currentAngle, double normalizedGoalAngle) {
-    // Normalize the current angle to [-180, 180)
-    double normalizedCurrentAngle = MathHelpers.angleModulus(currentAngle);
-
-    // Calculate the number of full rotations in the current angle
-    var fullRotations = (int) Math.floor((currentAngle - normalizedCurrentAngle) / 360.0);
-
-    // Calculate base angle (same rotation as current)
-    double baseAngle = fullRotations * 360.0;
-
-    // Initialize result with the base angle + normalized goal
-    double result = baseAngle + normalizedGoalAngle;
-
-    // If moving to this angle would require moving forward, subtract 360 degrees
-    if (MathHelpers.angleModulus(normalizedGoalAngle - normalizedCurrentAngle) > 0) {
-      result -= 360.0;
-    }
-
-    return result;
-  }
-
   private static final double TOLERANCE = 2.0;
   private static final double NEAR_TOLERANCE = 35.0;
   private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
@@ -152,20 +94,20 @@ public class ArmSubsystem extends StateMachine<ArmState> {
     return rawMotorAngle;
   }
 
-  // -30, at 330
-  private double getRawAngleFromNormalAngle(double angle) {
+  private double getSetpoint(double angle) {
     if ((Math.abs(collisionAvoidanceGoal % 360) != Math.abs(angle))
         || (Math.abs((360 - collisionAvoidanceGoal) % 360) != Math.abs(angle))) {
       DogLog.log("Arm/getRawAngleFromNormalAngleBad", true);
-      return getRawAngleFromNormalAngleTest(angle, rawMotorAngle);
+      return getRawAngleFromNormalAngle(angle, rawMotorAngle);
     }
     DogLog.log("Arm/getRawAngleFromNormalAngleBad", false);
     return collisionAvoidanceGoal;
   }
 
-  public static double getRawAngleFromNormalAngleTest(double angle, double rawAngle) {
-    double solution1 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[0];
-    double solution2 = CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle)[1];
+  public static double getRawAngleFromNormalAngle(double angle, double rawAngle) {
+    double[] solutions = CollisionAvoidance.getCollisionAvoidanceSolutions(rawAngle, angle);
+    double solution1 = solutions[0];
+    double solution2 = solutions[1];
 
     if (Math.abs(solution2 - rawAngle) > Math.abs(solution1 - rawAngle)) {
       return solution1;
@@ -226,8 +168,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
       default -> {
         motor.setControl(
             motionMagicRequest.withPosition(
-                Units.degreesToRotations(getRawAngleFromNormalAngle(newState.getAngle()))));
-        DogLog.log("Arm/defaultSetPosition", getRawAngleFromNormalAngle(newState.getAngle()));
+                Units.degreesToRotations(getSetpoint(newState.getAngle()))));
+        DogLog.log("Arm/defaultSetPosition", getSetpoint(newState.getAngle()));
       }
     }
   }
@@ -248,8 +190,8 @@ public class ArmSubsystem extends StateMachine<ArmState> {
         case CORAL_HANDOFF -> {
           motor.setControl(
               motionMagicRequest.withPosition(
-                  Units.degreesToRotations(getRawAngleFromNormalAngle(usedHandoffAngle))));
-          DogLog.log("ArmCoralHandoffSetPostion", getRawAngleFromNormalAngle(usedHandoffAngle));
+                  Units.degreesToRotations(getSetpoint(usedHandoffAngle))));
+          DogLog.log("ArmCoralHandoffSetPostion", getSetpoint(usedHandoffAngle));
         }
         default -> {}
       }
