@@ -406,7 +406,6 @@ public class RobotManager extends StateMachine<RobotState> {
       case CORAL_INTAKE_LOLLIPOP_APPROACH -> {
         claw.setState(ClawState.IDLE_NO_GP);
         moveSuperstructure(
-            // TODO: We don't want to require unsafe mode here
             ElevatorState.LOLLIPOP_CORAL_INTAKE_INTAKE, ArmState.LOLLIPOP_CORAL_INTAKE_INTAKE);
         swerve.normalDriveRequest();
         vision.setState(VisionState.ALGAE_DETECTION);
