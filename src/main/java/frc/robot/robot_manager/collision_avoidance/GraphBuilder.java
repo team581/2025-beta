@@ -33,9 +33,7 @@ final class GraphBuilder {
     addHandoff(graph);
 
     // Create an immutable copy of the graph now that we've added all the nodes
-    var immutableGraph = ImmutableValueGraph.copyOf(graph);
-
-    return immutableGraph;
+    return ImmutableValueGraph.copyOf(graph);
   }
 
   /**
@@ -67,9 +65,9 @@ final class GraphBuilder {
   }
 
   private static void addHandoff(MutableValueGraph<Waypoint, WaypointEdge> graph) {
-    // TODO: Need to determine if this is safe
+    // TODO: Not sure if the is safe for L3_UPRIGHT
     Waypoint.HANDOFF_CLEARS_CLIMBER.avoidClimberAlwaysSafe(
-        graph, Waypoint.L1_UPRIGHT, Waypoint.L2_UPRIGHT, Waypoint.L3_UPRIGHT, Waypoint.L4_UPRIGHT);
+        graph, Waypoint.L3_UPRIGHT, Waypoint.L4_UPRIGHT);
   }
 
   private static void addHandoffToCoralScoring(MutableValueGraph<Waypoint, WaypointEdge> graph) {
@@ -87,18 +85,12 @@ final class GraphBuilder {
         Waypoint.L4_RIGHT_LINEUP);
 
     // TODO: Need to determine if this is safe
-    Waypoint.HANDOFF.avoidClimberLeftSideSpecial(
-        graph,
-        ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
-        Waypoint.L2_LEFT_LINEUP,
-        Waypoint.L3_LEFT_LINEUP,
-        Waypoint.L4_LEFT_LINEUP);
-    // TODO: Need to determine if this is safe
     Waypoint.HANDOFF.rightSideSpecial(
         graph,
         ObstructionStrategy.IMPOSSIBLE_IF_BLOCKED,
-        Waypoint.L2_RIGHT_LINEUP,
-        Waypoint.L3_RIGHT_LINEUP,
+        // Waypoint.L2_RIGHT_LINEUP,
+        // TODO: L3 probably is safe from here
+        // Waypoint.L3_RIGHT_LINEUP,
         Waypoint.L4_RIGHT_LINEUP);
   }
 
@@ -224,9 +216,6 @@ final class GraphBuilder {
    * happens fairly often.
    */
   private static void addHandoffToReefIntake(MutableValueGraph<Waypoint, WaypointEdge> graph) {
-    Waypoint.HANDOFF.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.REEF_ALGAE_L3_RIGHT);
-    Waypoint.HANDOFF.avoidClimberAlwaysSafe(
-        graph, Waypoint.REEF_ALGAE_L2_LEFT, Waypoint.REEF_ALGAE_L3_LEFT);
     Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
         graph,
         Waypoint.REEF_ALGAE_L2_LEFT,
@@ -308,11 +297,7 @@ final class GraphBuilder {
 
     for (var startPosition :
         new Waypoint[] {
-          Waypoint.L1_UPRIGHT,
-          Waypoint.L2_UPRIGHT,
-          Waypoint.L3_UPRIGHT,
-          Waypoint.L4_UPRIGHT,
-          Waypoint.HANDOFF_CLEARS_CLIMBER
+          Waypoint.L3_UPRIGHT, Waypoint.L4_UPRIGHT, Waypoint.HANDOFF_CLEARS_CLIMBER
         }) {
       startPosition.avoidClimberAlwaysSafe(graph, openAreaWaypoints);
     }

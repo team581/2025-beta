@@ -27,7 +27,7 @@ public class FeatureFlags {
       FeatureFlag.of("CollisionAvoidance/Obstruction", true);
 
   public static final BooleanSupplier USE_ALTERNATE_WAYPOINT_CHOOSER =
-      FeatureFlag.of("CollisionAvoidance/AlternateClosestWaypointChooser", false);
+      FeatureFlag.of("CollisionAvoidance/AlternateClosestWaypointChooser", true);
 
   public static final BooleanSupplier APPROACH_TAG_CHECK =
       FeatureFlag.of("Vision/ApproachTagCheck", false);
