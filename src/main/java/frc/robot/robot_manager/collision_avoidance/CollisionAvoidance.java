@@ -565,20 +565,25 @@ public class CollisionAvoidance {
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_LEFT_LINEUP,
         Waypoint.L3_LEFT_LINEUP,
-        Waypoint.L4_LEFT_LINEUP);
+        Waypoint.L4_LEFT_LINEUP,
+        Waypoint.REEF_ALGAE_L2_LEFT,
+        Waypoint.REEF_ALGAE_L3_LEFT);
     Waypoint.HANDOFF_CLEARS_CLIMBER.rightSideSpecial(
         graph,
         ObstructionStrategy.LONG_WAY_IF_BLOCKED,
         Waypoint.L2_RIGHT_LINEUP,
         Waypoint.L3_RIGHT_LINEUP,
-        Waypoint.L4_RIGHT_LINEUP);
-
-    Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
-        graph,
-        Waypoint.REEF_ALGAE_L2_LEFT,
-        Waypoint.REEF_ALGAE_L3_LEFT,
+        Waypoint.L4_RIGHT_LINEUP,
         Waypoint.REEF_ALGAE_L2_RIGHT,
         Waypoint.REEF_ALGAE_L3_RIGHT);
+
+    // Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(
+    //     graph,
+    //     Waypoint.REEF_ALGAE_L2_LEFT,
+    //     Waypoint.REEF_ALGAE_L3_LEFT,
+    //     Waypoint.REEF_ALGAE_L2_RIGHT,
+    //     Waypoint.REEF_ALGAE_L3_RIGHT);
+
     Waypoint.HANDOFF_CLEARS_CLIMBER.rightSideSpecial(
         graph, ObstructionStrategy.LONG_WAY_IF_BLOCKED, Waypoint.ALGAE_NET_UP);
 
@@ -595,15 +600,12 @@ public class CollisionAvoidance {
     Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(graph, l1AreaWaypoints.toArray(Waypoint[]::new));
     Waypoint.HANDOFF.alwaysSafe(
         graph,
-        Waypoint.HANDOFF_ARM_OUT_RIGHT,
-        Waypoint.HANDOFF_ARM_OUT_LEFT,
-        Waypoint.REEF_ALGAE_L2_RIGHT,
-        Waypoint.REEF_ALGAE_L3_RIGHT);
+        Waypoint.HANDOFF_ARM_OUT_RIGHT,//sus
+        Waypoint.HANDOFF_ARM_OUT_LEFT);
 
     Waypoint.HANDOFF.alwaysSafe(
         graph,
         Waypoint.HANDOFF_CLEARS_CLIMBER,
-        Waypoint.REEF_ALGAE_L3_ELEVATOR,
         Waypoint.L1_RIGHT_LINEUP);
 
     Waypoint.HANDOFF_CLEARS_CLIMBER.alwaysSafe(graph, Waypoint.REEF_ALGAE_L2_LEFT_ARM);
@@ -634,9 +636,9 @@ public class CollisionAvoidance {
     }
 
     // From Right down side to stow
-    Waypoint.PROCESSOR.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF);
+    Waypoint.PROCESSOR.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF);//sus
     Waypoint.GROUND_ALGAE_INTAKE.avoidClimberAlwaysSafe(
-        graph, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF);
+        graph, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF);//sus
     Waypoint.LOLLIPOP_INTAKE_RIGHT.avoidClimberAlwaysSafe(graph, Waypoint.HANDOFF_CLEARS_CLIMBER);
 
     // Create an immutable copy of the graph now that we've added all the nodes
