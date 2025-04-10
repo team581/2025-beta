@@ -370,7 +370,7 @@ public class CollisionAvoidanceTest {
             Waypoint.ALGAE_NET_OUT_RIGHT,
             Waypoint.ALGAE_NET_UP,
             Waypoint.L3_UPRIGHT,
-            Waypoint.L3_LEFT_LINEUP,
+            Waypoint.HANDOFF_CLEARS_CLIMBER,
             Waypoint.HANDOFF));
   }
 
@@ -384,24 +384,26 @@ public class CollisionAvoidanceTest {
             Waypoint.ALGAE_NET_OUT_LEFT,
             Waypoint.ALGAE_NET_UP,
             Waypoint.L3_UPRIGHT,
-            Waypoint.L3_RIGHT_LINEUP,
+            Waypoint.HANDOFF_CLEARS_CLIMBER,
             Waypoint.HANDOFF));
   }
 
   @Test
   void handoffToRightL2ReefIntake() {
-    assertNoCollision(
+    assertPath(
         ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2));
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
+        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.REEF_ALGAE_L2_RIGHT));
   }
 
   @Test
   void handoffToLeftL2ReefIntake() {
-    assertNoCollision(
+    assertPath(
         ObstructionKind.LEFT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
-        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2));
+        new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_LEFT_L2),
+        List.of(Waypoint.HANDOFF, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.REEF_ALGAE_L2_LEFT));
   }
 
   @Test
@@ -433,18 +435,20 @@ public class CollisionAvoidanceTest {
 
   @Test
   void rightAlgael2ToHandoff() {
-    assertNoCollision(
+    assertPath(
         ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L2, ArmState.ALGAE_INTAKE_RIGHT_L2),
-        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+        List.of(Waypoint.REEF_ALGAE_L2_RIGHT, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF));
   }
 
   @Test
   void rightAlgael3ToHandoff() {
-    assertNoCollision(
+    assertPath(
         ObstructionKind.RIGHT_OBSTRUCTED,
         new SuperstructurePosition(ElevatorState.ALGAE_INTAKE_L3, ArmState.ALGAE_INTAKE_RIGHT_L3),
-        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF));
+        new SuperstructurePosition(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF),
+        List.of(Waypoint.REEF_ALGAE_L3_RIGHT, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.HANDOFF));
   }
 
   @Test
@@ -488,7 +492,9 @@ public class CollisionAvoidanceTest {
 
     // Stow after intake
     assertNoCollision(
-        ObstructionKind.NONE, Waypoint.LOLLIPOP_INTAKE_RIGHT_PUSH, Waypoint.L1_UPRIGHT);
+        ObstructionKind.NONE, Waypoint.LOLLIPOP_INTAKE_RIGHT_PUSH, Waypoint.PROCESSOR);
+    assertNoCollision(
+        ObstructionKind.NONE, Waypoint.PROCESSOR, Waypoint.L1_UPRIGHT);
 
     assertPath(
         ObstructionKind.LEFT_OBSTRUCTED,
@@ -536,14 +542,14 @@ public class CollisionAvoidanceTest {
 
   @Test
   void handoffToScoreUnobstructed() {
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L2_LEFT_LINEUP);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L3_LEFT_LINEUP);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L4_LEFT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L2_LEFT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L3_LEFT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L4_LEFT_LINEUP);
 
     // TODO: Figure out optimal L1 scoring motion
     // assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L1_RIGHT_LINEUP);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L2_RIGHT_LINEUP);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L3_RIGHT_LINEUP);
-    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF, Waypoint.L4_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L2_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L3_RIGHT_LINEUP);
+    assertNoCollision(ObstructionKind.NONE, Waypoint.HANDOFF_CLEARS_CLIMBER, Waypoint.L4_RIGHT_LINEUP);
   }
 }
