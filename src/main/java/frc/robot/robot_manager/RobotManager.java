@@ -1600,7 +1600,8 @@ public class RobotManager extends StateMachine<RobotState> {
             ? shouldLoopAroundToScoreObstruction
             : ObstructionKind.NONE;
     var maybeCollisionAvoidanceResult =
-        CollisionAvoidance.routePosition(currentPosition, goal, obstructionKind, arm.getRawAngle());
+        CollisionAvoidance.routePosition(
+            currentPosition, goal, obstructionKind, arm.getRawAngle(), arm.getState());
 
     if (unsafe || maybeCollisionAvoidanceResult.isEmpty()) {
       elevator.setState(elevatorGoal);
