@@ -28,8 +28,6 @@ public class CollisionAvoidance {
   private static final double ARM_TOLERANCE = 10.0;
   private static final double CLIMBER_UNSAFE_ANGLE = 225.0;
 
-  private static boolean hasBeenEnabled = false;
-
   private static final ImmutableValueGraph<Waypoint, WaypointEdge> graph = createGraph();
 
   private static final Map<CollisionAvoidanceQuery, Optional<ImmutableList<Waypoint>>> aStarCache =
@@ -74,11 +72,8 @@ public class CollisionAvoidance {
     }
 
     var maybeEdge = graph.edgeValue(previousWaypoint, waypoint);
-    if (DriverStation.isEnabled()) {
-      hasBeenEnabled = true;
-    }
-    if (waypoint != lastWaypoint || !hasBeenEnabled || armState == ArmState.PRE_MATCH_HOMING) {
-      hasBeenEnabled = true;
+
+    if (waypoint != lastWaypoint ||armState == ArmState.PRE_MATCH_HOMING) {
       if (maybeEdge.isEmpty()) {
         return Optional.empty();
       }
