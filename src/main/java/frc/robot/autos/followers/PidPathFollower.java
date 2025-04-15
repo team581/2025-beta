@@ -19,7 +19,8 @@ public class PidPathFollower implements PathFollower {
   }
 
   @Override
-  public ChassisSpeeds calculateSpeeds(Pose2d currentPose, Pose2d targetPose) {
+  public ChassisSpeeds calculateSpeeds(
+      Pose2d currentPose, ChassisSpeeds currentSpeeds, Pose2d targetPose) {
     return new ChassisSpeeds(
         xController.calculate(currentPose.getX(), targetPose.getX()),
         yController.calculate(currentPose.getY(), targetPose.getY()),
