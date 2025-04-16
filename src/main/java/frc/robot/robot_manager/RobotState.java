@@ -122,7 +122,7 @@ public enum RobotState {
   REHOME_ELEVATOR(ClawGamePiece.EMPTY, true),
 
   FORCED_HANDOFF(ClawGamePiece.EMPTY, false),
-  FORCED_LOWSTOW(ClawGamePiece.EMPTY,false);
+  FORCED_LOWSTOW(ClawGamePiece.EMPTY, false);
 
   public final ClawGamePiece clawGp;
   public final boolean climbingOrRehoming;

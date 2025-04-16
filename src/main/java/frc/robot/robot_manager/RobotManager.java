@@ -379,7 +379,7 @@ public class RobotManager extends StateMachine<RobotState> {
         lights.setState(LightsState.OTHER);
         climber.setState(ClimberState.STOPPED);
       }
-      case FORCED_HANDOFF->{
+      case FORCED_HANDOFF -> {
         claw.setState(ClawState.IDLE_NO_GP);
         moveSuperstructure(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF, true);
         swerve.normalDriveRequest();
@@ -1243,6 +1243,7 @@ public class RobotManager extends StateMachine<RobotState> {
       }
     }
   }
+
   public void forcedLowStowRequest() {
     if (getState().climbingOrRehoming) {
       return;
@@ -1250,6 +1251,7 @@ public class RobotManager extends StateMachine<RobotState> {
 
     setStateFromRequest(RobotState.FORCED_LOWSTOW);
   }
+
   public void forcedHandoffRequest() {
     if (getState().climbingOrRehoming) {
       return;

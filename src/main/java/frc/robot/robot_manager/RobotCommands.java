@@ -72,10 +72,12 @@ public class RobotCommands {
                         && robot.groundManager.deploy.atGoal()))
         .withName("StowCommand");
   }
+
   public Command forcedLowStowCommand() {
     return Commands.runOnce(robot::forcedLowStowRequest, rmRequirements)
         .withName("ForcedLowStowCommand");
   }
+
   public Command forcedHandoffCommand() {
     return Commands.runOnce(robot::forcedHandoffRequest, rmRequirements)
         .withName("ForcedHandoffCommand");
