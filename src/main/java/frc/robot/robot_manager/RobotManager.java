@@ -122,7 +122,9 @@ public class RobotManager extends StateMachine<RobotState> {
           UNJAM,
           SPIN_TO_WIN,
           CORAL_INTAKE_LOLLIPOP_APPROACH,
-          ALGAE_FLING_WAIT ->
+          ALGAE_FLING_WAIT,
+          FORCED_HANDOFF,
+          FORCED_LOWSTOW ->
           currentState;
       case CORAL_L2_RIGHT_PLACE,
           CORAL_L2_LEFT_PLACE,
@@ -367,6 +369,22 @@ public class RobotManager extends StateMachine<RobotState> {
         swerve.normalDriveRequest();
         vision.setState(VisionState.TAGS);
         lights.setState(LightsState.IDLE_EMPTY);
+        climber.setState(ClimberState.STOPPED);
+      }
+      case FORCED_LOWSTOW -> {
+        claw.setState(ClawState.IDLE_NO_GP);
+        moveSuperstructure(ElevatorState.STOWED, ArmState.HOLDING_UPRIGHT, true);
+        swerve.normalDriveRequest();
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.OTHER);
+        climber.setState(ClimberState.STOPPED);
+      }
+      case FORCED_HANDOFF->{
+        claw.setState(ClawState.IDLE_NO_GP);
+        moveSuperstructure(ElevatorState.PRE_CORAL_HANDOFF, ArmState.CORAL_HANDOFF, true);
+        swerve.normalDriveRequest();
+        vision.setState(VisionState.TAGS);
+        lights.setState(LightsState.OTHER);
         climber.setState(ClimberState.STOPPED);
       }
       case STARTING_POSITION_CORAL -> {
@@ -1224,6 +1242,20 @@ public class RobotManager extends StateMachine<RobotState> {
         }
       }
     }
+  }
+  public void forcedLowStowRequest() {
+    if (getState().climbingOrRehoming) {
+      return;
+    }
+
+    setStateFromRequest(RobotState.FORCED_LOWSTOW);
+  }
+  public void forcedHandoffRequest() {
+    if (getState().climbingOrRehoming) {
+      return;
+    }
+
+    setStateFromRequest(RobotState.FORCED_HANDOFF);
   }
 
   public void algaeFlingRequest() {
