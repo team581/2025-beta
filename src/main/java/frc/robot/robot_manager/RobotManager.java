@@ -1695,7 +1695,8 @@ public class RobotManager extends StateMachine<RobotState> {
             ? shouldLoopAroundToScoreObstruction
             : ObstructionKind.NONE;
     var maybeCollisionAvoidanceResult =
-        CollisionAvoidance.routePosition(currentPosition, goal, obstructionKind, arm.getRawAngle());
+        CollisionAvoidance.routePosition(
+            currentPosition, goal, obstructionKind, arm.getRawAngle(), arm.getState());
 
     DogLog.log("CollisionAvoidance/LatestResultPresent", maybeCollisionAvoidanceResult.isPresent());
 

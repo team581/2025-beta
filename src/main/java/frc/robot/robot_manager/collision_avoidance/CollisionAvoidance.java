@@ -57,7 +57,8 @@ public class CollisionAvoidance {
       SuperstructurePosition currentPosition,
       SuperstructurePosition desiredPosition,
       ObstructionKind obstructionKind,
-      double rawArmAngle) {
+      double rawArmAngle,
+      ArmState armState) {
     double armGoal;
     var maybeWaypoint = route(currentPosition, desiredPosition, obstructionKind);
     if (maybeWaypoint.isEmpty()) {
@@ -73,7 +74,7 @@ public class CollisionAvoidance {
 
     var maybeEdge = graph.edgeValue(previousWaypoint, waypoint);
 
-    if (waypoint != lastWaypoint) {
+    if (waypoint != lastWaypoint ||armState == ArmState.PRE_MATCH_HOMING) {
       if (maybeEdge.isEmpty()) {
         return Optional.empty();
       }
